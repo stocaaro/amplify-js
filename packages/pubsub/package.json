@@ -28,6 +28,7 @@
     "build": "npm run clean && npm run build:esm && npm run build:cjs",
     "clean": "rimraf lib-esm lib dist",
     "format": "echo \"Not implemented\"",
+    "tsc": "tsc",
     "lint": "tslint 'src/**/*.ts'"
   },
   "repository": {

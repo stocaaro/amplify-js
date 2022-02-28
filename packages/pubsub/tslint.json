@@ -10,6 +10,7 @@
 		"no-var-keyword": true,
 		"object-literal-shorthand": true,
 		"no-eval": true,
+		"quotemark": [true, "single"],
 		"space-before-function-paren": [
 			true,
 			{
