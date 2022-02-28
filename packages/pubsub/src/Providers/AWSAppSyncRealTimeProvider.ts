@@ -15,7 +15,7 @@ import { GraphQLError } from 'graphql';
 import * as url from 'url';
 import { v4 as uuid } from 'uuid';
 import { Buffer } from 'buffer';
-import { ProvidertOptions } from '../types';
+import { ProviderOptions } from '../types';
 import {
 	Logger,
 	Credentials,
@@ -46,6 +46,28 @@ const dispatchApiEvent = (event: string, data: any, message: string) => {
 const MAX_DELAY_MS = 5000;
 
 const NON_RETRYABLE_CODES = [400, 401, 403];
+
+export interface AWSAppSyncRealTimeProviderOptions extends ProviderOptions {
+	appSyncGraphqlEndpoint: string;
+	authenticationType: string;
+	query: string;
+	variables: object;
+	apiKey: string;
+	region: string;
+	graphql_headers: () => {};
+	additionalHeaders?: { [key: string]: string };
+}
+
+type AuthAWSAppSyncRealTimeProviderOptions = Pick<
+	AWSAppSyncRealTimeProviderOptions,
+	'appSyncGraphqlEndpoint' | 'authenticationType' | 'apiKey' | 'region'
+> &
+	Partial<AWSAppSyncRealTimeProviderOptions>;
+
+type AuthInput = Partial<AWSAppSyncRealTimeProviderOptions> & {
+	canonicalUri: string;
+	payload: string;
+};
 
 type ObserverQuery = {
 	observer: ZenObservable.SubscriptionObserver<any>;
@@ -175,10 +197,10 @@ export class AWSAppSyncRealTimeProvider extends AbstractPubSubProvider {
 
 	subscribe(
 		_topics: string[] | string,
-		options?: ProvidertOptions
+		options: AWSAppSyncRealTimeProviderOptions
 	): Observable<any> {
-		const appSyncGraphqlEndpoint = options?.appSyncGraphqlEndpoint;
-
+		const appSyncGraphqlEndpoint = options.appSyncGraphqlEndpoint;
+		console.log('ITS ALIVE');
 		return new Observable(observer => {
 			if (!appSyncGraphqlEndpoint) {
 				observer.error({
@@ -243,10 +265,15 @@ export class AWSAppSyncRealTimeProvider extends AbstractPubSubProvider {
 		return !this.options
 			.aws_appsync_dangerously_connect_to_http_endpoint_for_testing;
 	}
+
 	private async _startSubscriptionWithAWSAppSyncRealTime({
 		options,
 		observer,
 		subscriptionId,
+	}: {
+		options: AWSAppSyncRealTimeProviderOptions;
+		observer: ZenObservable.SubscriptionObserver<any>;
+		subscriptionId: string;
 	}) {
 		const {
 			appSyncGraphqlEndpoint,
@@ -598,7 +625,7 @@ export class AWSAppSyncRealTimeProvider extends AbstractPubSubProvider {
 		apiKey,
 		region,
 		additionalHeaders,
-	}) {
+	}: AuthAWSAppSyncRealTimeProviderOptions) {
 		if (this.socketStatus === SOCKET_STATUS.READY) {
 			return;
 		}
@@ -672,7 +699,7 @@ export class AWSAppSyncRealTimeProvider extends AbstractPubSubProvider {
 		logger.debug(`Initializaling retryable Handshake`);
 		await jitteredExponentialRetry(
 			this._initializeHandshake.bind(this),
-			[{ awsRealTimeUrl }],
+			[awsRealTimeUrl],
 			MAX_DELAY_MS
 		);
 	}
@@ -772,7 +799,10 @@ export class AWSAppSyncRealTimeProvider extends AbstractPubSubProvider {
 				});
 			})();
 		} catch (err) {
-			const { errorType, errorCode } = err;
+			const { errorType, errorCode } = err as {
+				errorType: string;
+				errorCode: number;
+			};
 
 			if (NON_RETRYABLE_CODES.includes(errorCode)) {
 				throw new NonRetryableError(errorType);
@@ -792,15 +822,14 @@ export class AWSAppSyncRealTimeProvider extends AbstractPubSubProvider {
 		apiKey,
 		region,
 		additionalHeaders,
-	}): Promise<any> {
-		const headerHandler = {
+	}: AuthAWSAppSyncRealTimeProviderOptions): Promise<any> {
+		const headerHandler: { [key: string]: any } = {
 			API_KEY: this._awsRealTimeApiKeyHeader.bind(this),
 			AWS_IAM: this._awsRealTimeIAMHeader.bind(this),
 			OPENID_CONNECT: this._awsRealTimeOPENIDHeader.bind(this),
 			AMAZON_COGNITO_USER_POOLS: this._awsRealTimeCUPHeader.bind(this),
 			AWS_LAMBDA: this._customAuthHeader,
 		};
-
 		const handler = headerHandler[authenticationType];
 
 		if (typeof handler !== 'function') {
@@ -823,7 +852,7 @@ export class AWSAppSyncRealTimeProvider extends AbstractPubSubProvider {
 		return result;
 	}
 
-	private async _awsRealTimeCUPHeader({ host }) {
+	private async _awsRealTimeCUPHeader({ host }: AuthInput) {
 		const session = await Auth.currentSession();
 		return {
 			Authorization: session.getAccessToken().getJwtToken(),
@@ -831,7 +860,7 @@ export class AWSAppSyncRealTimeProvider extends AbstractPubSubProvider {
 		};
 	}
 
-	private async _awsRealTimeOPENIDHeader({ host }) {
+	private async _awsRealTimeOPENIDHeader({ host }: AuthInput) {
 		let token;
 		// backwards compatibility
 		const federatedInfo = await Cache.getItem('federatedInfo');
@@ -852,7 +881,7 @@ export class AWSAppSyncRealTimeProvider extends AbstractPubSubProvider {
 		};
 	}
 
-	private async _awsRealTimeApiKeyHeader({ apiKey, host }) {
+	private async _awsRealTimeApiKeyHeader({ apiKey, host }: AuthInput) {
 		const dt = new Date();
 		const dtStr = dt.toISOString().replace(/[:\-]|\.\d{3}/g, '');
 
@@ -868,7 +897,7 @@ export class AWSAppSyncRealTimeProvider extends AbstractPubSubProvider {
 		canonicalUri,
 		appSyncGraphqlEndpoint,
 		region,
-	}) {
+	}: AuthInput) {
 		const endpointInfo = {
 			region,
 			service: 'appsync',
@@ -878,11 +907,16 @@ export class AWSAppSyncRealTimeProvider extends AbstractPubSubProvider {
 		if (!credentialsOK) {
 			throw new Error('No credentials');
 		}
-		const creds = await Credentials.get().then(credentials => ({
-			secret_key: credentials.secretAccessKey,
-			access_key: credentials.accessKeyId,
-			session_token: credentials.sessionToken,
-		}));
+		const creds = await Credentials.get().then((credentials: any) => {
+			const { secretAccessKey, accessKeyId, sessionToken } =
+				Credentials.shear(credentials);
+
+			return {
+				secret_key: secretAccessKey,
+				access_key: accessKeyId,
+				session_token: sessionToken,
+			};
+		});
 
 		const request = {
 			url: `${appSyncGraphqlEndpoint}${canonicalUri}`,
@@ -895,8 +929,8 @@ export class AWSAppSyncRealTimeProvider extends AbstractPubSubProvider {
 		return signed_params.headers;
 	}
 
-	private _customAuthHeader({ host, additionalHeaders }) {
-		if (!additionalHeaders.Authorization) {
+	private _customAuthHeader({ host, additionalHeaders }: AuthInput) {
+		if (!additionalHeaders || !additionalHeaders['Authorization']) {
 			throw new Error('No auth token specified');
 		}
 
