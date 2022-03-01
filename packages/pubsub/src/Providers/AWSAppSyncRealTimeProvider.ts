@@ -200,7 +200,7 @@ export class AWSAppSyncRealTimeProvider extends AbstractPubSubProvider {
 		options: AWSAppSyncRealTimeProviderOptions
 	): Observable<any> {
 		const appSyncGraphqlEndpoint = options.appSyncGraphqlEndpoint;
-		console.log('ITS ALIVE');
+
 		return new Observable(observer => {
 			if (!appSyncGraphqlEndpoint) {
 				observer.error({
