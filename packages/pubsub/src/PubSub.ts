@@ -45,8 +45,7 @@ export class PubSubClass {
 	 * Lazy instantiate AWSAppSyncProvider when it is required by the API category
 	 */
 	private get awsAppSyncProvider() {
-		return (this._awsAppSyncProvider =
-			this._awsAppSyncProvider ?? new AWSAppSyncProvider(this._options));
+		return (this._awsAppSyncProvider = this._awsAppSyncProvider ?? new AWSAppSyncProvider(this._options));
 	}
 
 	/**
@@ -54,8 +53,7 @@ export class PubSubClass {
 	 */
 	private get awsAppSyncRealTimeProvider() {
 		return (this._awsAppSyncRealTimeProvider =
-			this._awsAppSyncRealTimeProvider ??
-			new AWSAppSyncRealTimeProvider(this._options));
+			this._awsAppSyncRealTimeProvider ?? new AWSAppSyncRealTimeProvider(this._options));
 	}
 
 	/**
@@ -110,9 +108,7 @@ export class PubSubClass {
 	 * @param providerName - the name of the plugin
 	 */
 	removePluggable(providerName: string): void {
-		this._pluggables = this._pluggables.filter(
-			pluggable => pluggable.getProviderName() !== providerName
-		);
+		this._pluggables = this._pluggables.filter(pluggable => pluggable.getProviderName() !== providerName);
 	}
 
 	private getProviderByName(providerName: string | symbol) {
@@ -123,9 +119,7 @@ export class PubSubClass {
 			return this.awsAppSyncRealTimeProvider;
 		}
 
-		return this._pluggables.find(
-			pluggable => pluggable.getProviderName() === providerName
-		);
+		return this._pluggables.find(pluggable => pluggable.getProviderName() === providerName);
 	}
 
 	private getProviders(options: ProviderOptions = {}) {
@@ -142,26 +136,13 @@ export class PubSubClass {
 		return [provider];
 	}
 
-	async publish(
-		topics: string[] | string,
-		msg: any,
-		options?: ProviderOptions
-	) {
-		return Promise.all(
-			this.getProviders(options).map(provider =>
-				provider.publish(topics, msg, options)
-			)
-		);
+	async publish(topics: string[] | string, msg: any, options?: ProviderOptions) {
+		return Promise.all(this.getProviders(options).map(provider => provider.publish(topics, msg, options)));
 	}
 
-	subscribe(
-		topics: string[] | string,
-		options?: ProviderOptions
-	): Observable<any> {
+	subscribe(topics: string[] | string, options?: ProviderOptions): Observable<any> {
 		if (isNode && this._options && this._options.ssr) {
-			throw new Error(
-				'Subscriptions are not supported for Server-Side Rendering (SSR)'
-			);
+			throw new Error('Subscriptions are not supported for Server-Side Rendering (SSR)');
 		}
 
 		logger.debug('subscribe options', options);
@@ -183,8 +164,7 @@ export class PubSubClass {
 				})
 			);
 
-			return () =>
-				subscriptions.forEach(subscription => subscription.unsubscribe());
+			return () => subscriptions.forEach(subscription => subscription.unsubscribe());
 		});
 	}
 }

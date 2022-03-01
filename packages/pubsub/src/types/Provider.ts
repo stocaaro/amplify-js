@@ -25,8 +25,5 @@ export interface PubSubProvider {
 
 	publish(topics: string[] | string, msg: any, options?: ProviderOptions): void;
 
-	subscribe(
-		topics: string[] | string,
-		options?: ProviderOptions
-	): Observable<any>;
+	subscribe(topics: string[] | string, options?: ProviderOptions): Observable<any>;
 }

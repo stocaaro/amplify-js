@@ -45,20 +45,17 @@ export interface MqttProviderOptions extends ProviderOptions {
 class ClientsQueue {
 	private promises: Map<string, Promise<any>> = new Map();
 
-	async get(
-		clientId: string,
-		clientFactory: (input: string) => Promise<any> | undefined
-	) {
-		let promise = this.promises.get(clientId);
-		if (promise) {
-			return promise;
+	async get(clientId: string, clientFactory: (input: string) => Promise<any>) {
+		const cachedPromise = this.promises.get(clientId);
+		if (cachedPromise) {
+			return cachedPromise;
 		}
 
-		promise = clientFactory(clientId);
+		const newPromise = clientFactory(clientId);
 
-		if (promise) this.promises.set(clientId, promise);
+		this.promises.set(clientId, newPromise);
 
-		return promise;
+		return newPromise;
 	}
 
 	get allClients() {
@@ -92,8 +89,7 @@ export class MqttOverWSProvider extends AbstractPubSubProvider {
 	}
 
 	protected get isSSLEnabled() {
-		return !this.options
-			.aws_appsync_dangerously_connect_to_http_endpoint_for_testing;
+		return !this.options.aws_appsync_dangerously_connect_to_http_endpoint_for_testing;
 	}
 
 	protected getTopicForValue(value: any) {
@@ -104,14 +100,7 @@ export class MqttOverWSProvider extends AbstractPubSubProvider {
 		return 'MqttOverWSProvider';
 	}
 
-	public onDisconnect({
-		clientId,
-		errorCode,
-		...args
-	}: {
-		clientId?: string;
-		errorCode?: number;
-	}) {
+	public onDisconnect({ clientId, errorCode, ...args }: { clientId?: string; errorCode?: number }) {
 		if (errorCode !== 0) {
 			logger.warn(clientId, JSON.stringify({ errorCode, ...args }, null, 2));
 
@@ -150,10 +139,7 @@ export class MqttOverWSProvider extends AbstractPubSubProvider {
 		// @ts-ignore
 		const client = new Paho.Client(url, clientId);
 		// client.trace = (args) => logger.debug(clientId, JSON.stringify(args, null, 2));
-		client.onMessageArrived = ({
-			destinationName: topic,
-			payloadString: msg,
-		}) => {
+		client.onMessageArrived = ({ destinationName: topic, payloadString: msg }) => {
 			this._onMessage(topic, msg);
 		};
 		client.onConnectionLost = ({ errorCode, ...args }) => {
@@ -172,17 +158,12 @@ export class MqttOverWSProvider extends AbstractPubSubProvider {
 		return client;
 	}
 
-	protected async connect(
-		clientId: string,
-		options: MqttProviderOptions = {}
-	): Promise<any> {
-		return await this.clientsQueue.get(clientId, clientId =>
-			this.newClient({ ...options, clientId })
-		);
+	protected async connect(clientId: string, options: MqttProviderOptions = {}): Promise<any> {
+		return await this.clientsQueue.get(clientId, clientId => this.newClient({ ...options, clientId }));
 	}
 
 	protected async disconnect(clientId: string): Promise<void> {
-		const client = await this.clientsQueue.get(clientId, () => undefined);
+		const client = await this.clientsQueue.get(clientId, () => new Promise(() => undefined));
 
 		if (client && client.isConnected()) {
 			client.disconnect();
@@ -202,11 +183,9 @@ export class MqttOverWSProvider extends AbstractPubSubProvider {
 		targetTopics.forEach(topic => client.send(topic, message));
 	}
 
-	protected _topicObservers: Map<string, Set<SubscriptionObserver<any>>> =
-		new Map();
+	protected _topicObservers: Map<string, Set<SubscriptionObserver<any>>> = new Map();
 
-	protected _clientIdObservers: Map<string, Set<SubscriptionObserver<any>>> =
-		new Map();
+	protected _clientIdObservers: Map<string, Set<SubscriptionObserver<any>>> = new Map();
 
 	private _onMessage(topic: string, msg: any) {
 		try {
@@ -230,10 +209,7 @@ export class MqttOverWSProvider extends AbstractPubSubProvider {
 		}
 	}
 
-	subscribe(
-		topics: string[] | string,
-		options: MqttProviderOptions = {}
-	): Observable<any> {
+	subscribe(topics: string[] | string, options: MqttProviderOptions = {}): Observable<any> {
 		const targetTopics = ([] as string[]).concat(topics);
 		logger.debug('Subscribing to topic(s)', targetTopics.join(','));
 
@@ -288,9 +264,7 @@ export class MqttOverWSProvider extends AbstractPubSubProvider {
 					}
 
 					targetTopics.forEach(topic => {
-						const observersForTopic =
-							this._topicObservers.get(topic) ||
-							(new Set() as Set<SubscriptionObserver<any>>);
+						const observersForTopic = this._topicObservers.get(topic) || (new Set() as Set<SubscriptionObserver<any>>);
 
 						observersForTopic.delete(observer);
 
