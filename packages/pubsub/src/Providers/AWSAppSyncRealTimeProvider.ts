@@ -15,7 +15,7 @@ import { GraphQLError } from 'graphql';
 import * as url from 'url';
 import { v4 as uuid } from 'uuid';
 import { Buffer } from 'buffer';
-import { ProvidertOptions } from '../types';
+import { ProviderOptions } from '../types';
 import {
 	Logger,
 	Credentials,
@@ -175,7 +175,7 @@ export class AWSAppSyncRealTimeProvider extends AbstractPubSubProvider {
 
 	subscribe(
 		_topics: string[] | string,
-		options?: ProvidertOptions
+		options?: ProviderOptions
 	): Observable<any> {
 		const { appSyncGraphqlEndpoint } = options;
 
