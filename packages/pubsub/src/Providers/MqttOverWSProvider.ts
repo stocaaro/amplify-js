@@ -37,6 +37,9 @@ export function mqttTopicMatch(filter: string, topic: string) {
 export interface MqttProviderOptions extends ProviderOptions {
 	clientId?: string;
 	url?: string;
+	endpoint?: string;
+	aws_pubsub_endpoint?: string;
+	aws_appsync_dangerously_connect_to_http_endpoint_for_testing?: boolean;
 }
 
 class ClientsQueue {
@@ -86,8 +89,7 @@ export class MqttOverWSProvider extends AbstractPubSubProvider {
 	}
 
 	protected get isSSLEnabled() {
-		return !this.options
-			.aws_appsync_dangerously_connect_to_http_endpoint_for_testing;
+		return !this.options.aws_appsync_dangerously_connect_to_http_endpoint_for_testing;
 	}
 
 	protected getTopicForValue(value) {
@@ -134,10 +136,7 @@ export class MqttOverWSProvider extends AbstractPubSubProvider {
 		// @ts-ignore
 		const client = new Paho.Client(url, clientId);
 		// client.trace = (args) => logger.debug(clientId, JSON.stringify(args, null, 2));
-		client.onMessageArrived = ({
-			destinationName: topic,
-			payloadString: msg,
-		}) => {
+		client.onMessageArrived = ({ destinationName: topic, payloadString: msg }) => {
 			this._onMessage(topic, msg);
 		};
 		client.onConnectionLost = ({ errorCode, ...args }) => {
@@ -156,13 +155,8 @@ export class MqttOverWSProvider extends AbstractPubSubProvider {
 		return client;
 	}
 
-	protected async connect(
-		clientId: string,
-		options: MqttProviderOptions = {}
-	): Promise<any> {
-		return await this.clientsQueue.get(clientId, clientId =>
-			this.newClient({ ...options, clientId })
-		);
+	protected async connect(clientId: string, options: MqttProviderOptions = {}): Promise<any> {
+		return await this.clientsQueue.get(clientId, clientId => this.newClient({ ...options, clientId }));
 	}
 
 	protected async disconnect(clientId: string): Promise<void> {
@@ -186,11 +180,9 @@ export class MqttOverWSProvider extends AbstractPubSubProvider {
 		targetTopics.forEach(topic => client.send(topic, message));
 	}
 
-	protected _topicObservers: Map<string, Set<SubscriptionObserver<any>>> =
-		new Map();
+	protected _topicObservers: Map<string, Set<SubscriptionObserver<any>>> = new Map();
 
-	protected _clientIdObservers: Map<string, Set<SubscriptionObserver<any>>> =
-		new Map();
+	protected _clientIdObservers: Map<string, Set<SubscriptionObserver<any>>> = new Map();
 
 	private _onMessage(topic: string, msg: any) {
 		try {
@@ -214,10 +206,7 @@ export class MqttOverWSProvider extends AbstractPubSubProvider {
 		}
 	}
 
-	subscribe(
-		topics: string[] | string,
-		options: MqttProviderOptions = {}
-	): Observable<any> {
+	subscribe(topics: string[] | string, options: MqttProviderOptions = {}): Observable<any> {
 		const targetTopics = ([] as string[]).concat(topics);
 		logger.debug('Subscribing to topic(s)', targetTopics.join(','));
 
@@ -272,9 +261,7 @@ export class MqttOverWSProvider extends AbstractPubSubProvider {
 					}
 
 					targetTopics.forEach(topic => {
-						const observersForTopic =
-							this._topicObservers.get(topic) ||
-							(new Set() as Set<SubscriptionObserver<any>>);
+						const observersForTopic = this._topicObservers.get(topic) || (new Set() as Set<SubscriptionObserver<any>>);
 
 						observersForTopic.delete(observer);
 

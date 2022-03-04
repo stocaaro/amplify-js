@@ -96,40 +96,35 @@ export class AWSAppSyncProvider extends MqttOverWSProvider {
 				const { mqttConnections = [], newSubscriptions } = options;
 
 				// creates a map of {"topic": "alias"}
-				const newAliases = Object.entries(newSubscriptions).map(
-					([alias, v]: [string, { topic: string }]) => [v.topic, alias]
-				);
-
-				// Merge new aliases with old ones
-				this._topicAlias = new Map([
-					...Array.from(this._topicAlias.entries()),
-					...(newAliases as [string, string][]),
+				const newAliases = Object.entries(newSubscriptions).map(([alias, v]: [string, { topic: string }]) => [
+					v.topic,
+					alias,
 				]);
 
+				// Merge new aliases with old ones
+				this._topicAlias = new Map([...Array.from(this._topicAlias.entries()), ...(newAliases as [string, string][])]);
+
 				// group by urls
-				const map: [string, { url: string; topics: Set<string> }][] =
-					Object.entries(
-						targetTopics.reduce((acc, elem) => {
-							const connectionInfoForTopic = mqttConnections.find(
-								c => c.topics.indexOf(elem) > -1
-							);
+				const map: [string, { url: string; topics: Set<string> }][] = Object.entries(
+					targetTopics.reduce((acc, elem) => {
+						const connectionInfoForTopic = mqttConnections.find(c => c.topics.indexOf(elem) > -1);
 
-							if (connectionInfoForTopic) {
-								const { client: clientId, url } = connectionInfoForTopic;
+						if (connectionInfoForTopic) {
+							const { client: clientId, url } = connectionInfoForTopic;
 
-								if (!acc[clientId]) {
-									acc[clientId] = {
-										url,
-										topics: new Set(),
-									};
-								}
-
-								acc[clientId].topics.add(elem);
+							if (!acc[clientId]) {
+								acc[clientId] = {
+									url,
+									topics: new Set(),
+								};
 							}
 
-							return acc;
-						}, {})
-					);
+							acc[clientId].topics.add(elem);
+						}
+
+						return acc;
+					}, {})
+				);
 
 				// reconnect everything we have in the map
 				await Promise.all(
@@ -172,9 +167,7 @@ export class AWSAppSyncProvider extends MqttOverWSProvider {
 						client.unsubscribe(t);
 						this._topicClient.delete(t);
 
-						if (
-							!Array.from(this._topicClient.values()).some(c => c === client)
-						) {
+						if (!Array.from(this._topicClient.values()).some(c => c === client)) {
 							this.disconnect(client.clientId);
 						}
 					}
@@ -189,9 +182,7 @@ export class AWSAppSyncProvider extends MqttOverWSProvider {
 			const alias = this._topicAlias.get(topic);
 
 			value.data = Object.entries(value.data).reduce(
-				(obj, [origKey, val]) => (
-					(obj[(alias || origKey) as string] = val), obj
-				),
+				(obj, [origKey, val]) => ((obj[(alias || origKey) as string] = val), obj),
 				{}
 			);
 
