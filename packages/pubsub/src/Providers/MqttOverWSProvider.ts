@@ -189,15 +189,11 @@ export class MqttOverWSProvider extends AbstractPubSubProvider {
 		targetTopics.forEach(topic => client.send(topic, message));
 	}
 
-	protected _topicObservers: Map<
-		string,
-		Set<SubscriptionObserver<any>>
-	> = new Map();
+	protected _topicObservers: Map<string, Set<SubscriptionObserver<any>>> =
+		new Map();
 
-	protected _clientIdObservers: Map<
-		string,
-		Set<SubscriptionObserver<any>>
-	> = new Map();
+	protected _clientIdObservers: Map<string, Set<SubscriptionObserver<any>>> =
+		new Map();
 
 	private _onMessage(topic: string, msg: any) {
 		try {
