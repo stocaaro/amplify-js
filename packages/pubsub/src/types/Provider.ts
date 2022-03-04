@@ -15,7 +15,7 @@ import { ProviderOptions } from './PubSub';
 
 export interface PubSubProvider {
 	// configure your provider
-	configure(config: object): object;
+	configure(config?: object): object;
 
 	// return 'Analytics';
 	getCategory(): string;

@@ -27,38 +27,33 @@ const { isNode } = browserOrNode();
 const logger = new Logger('PubSub');
 
 export class PubSubClass {
-	private _options: PubSubOptions;
+	private _options?: PubSubOptions;
 
 	private _pluggables: PubSubProvider[];
 
 	/**
 	 * Internal instance of AWSAppSyncProvider used by the API category to subscribe to AppSync
 	 */
-	private _awsAppSyncProvider: AWSAppSyncProvider;
+	private _awsAppSyncProvider?: AWSAppSyncProvider;
 
 	/**
 	 * Internal instance of AWSAppSyncRealTimeProvider used by the API category to subscribe to AppSync
 	 */
-	private _awsAppSyncRealTimeProvider: AWSAppSyncRealTimeProvider;
+	private _awsAppSyncRealTimeProvider?: AWSAppSyncRealTimeProvider;
 
 	/**
 	 * Lazy instantiate AWSAppSyncProvider when it is required by the API category
 	 */
 	private get awsAppSyncProvider() {
-		if (!this._awsAppSyncProvider) {
-			this._awsAppSyncProvider = new AWSAppSyncProvider(this._options);
-		}
-		return this._awsAppSyncProvider;
+		return (this._awsAppSyncProvider = this._awsAppSyncProvider ?? new AWSAppSyncProvider(this._options));
 	}
 
 	/**
 	 * Lazy instantiate AWSAppSyncRealTimeProvider when it is required by the API category
 	 */
 	private get awsAppSyncRealTimeProvider() {
-		if (!this._awsAppSyncRealTimeProvider) {
-			this._awsAppSyncRealTimeProvider = new AWSAppSyncRealTimeProvider(this._options);
-		}
-		return this._awsAppSyncRealTimeProvider;
+		return (this._awsAppSyncRealTimeProvider =
+			this._awsAppSyncRealTimeProvider ?? new AWSAppSyncRealTimeProvider(this._options));
 	}
 
 	/**
@@ -66,7 +61,7 @@ export class PubSubClass {
 	 *
 	 * @param {PubSubOptions} options - Configuration object for PubSub
 	 */
-	constructor(options: PubSubOptions) {
+	constructor(options?: PubSubOptions) {
 		this._options = options;
 		logger.debug('PubSub Options', this._options);
 		this._pluggables = [];
@@ -116,7 +111,7 @@ export class PubSubClass {
 		this._pluggables = this._pluggables.filter(pluggable => pluggable.getProviderName() !== providerName);
 	}
 
-	private getProviderByName(providerName) {
+	private getProviderByName(providerName: string | symbol) {
 		if (providerName === INTERNAL_AWS_APPSYNC_PUBSUB_PROVIDER) {
 			return this.awsAppSyncProvider;
 		}
@@ -174,5 +169,5 @@ export class PubSubClass {
 	}
 }
 
-export const PubSub = new PubSubClass(null);
+export const PubSub = new PubSubClass();
 Amplify.register(PubSub);

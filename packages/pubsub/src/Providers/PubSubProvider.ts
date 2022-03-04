@@ -45,5 +45,5 @@ export abstract class AbstractPubSubProvider implements PubSubProvider {
 
 	public abstract publish(topics: string[] | string, msg: any, options?: ProviderOptions): void;
 
-	public abstract subscribe<T>(topics: string[] | string, options?: ProviderOptions): Observable<any>;
+	public abstract subscribe(topics: string[] | string, options?: ProviderOptions): Observable<any>;
 }
