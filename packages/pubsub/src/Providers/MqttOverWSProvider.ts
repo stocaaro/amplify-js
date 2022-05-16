@@ -16,7 +16,7 @@ import Observable from 'zen-observable-ts';
 
 import { AbstractPubSubProvider } from './PubSubProvider';
 import { ProviderOptions, SubscriptionObserver } from '../types';
-import { ConsoleLogger as Logger } from '@aws-amplify/core';
+import { ConsoleLogger as Logger, SocketConnectivity } from '@aws-amplify/core';
 
 const logger = new Logger('MqttOverWSProvider');
 
@@ -37,6 +37,7 @@ export function mqttTopicMatch(filter: string, topic: string) {
 export interface MqttProviderOptions extends ProviderOptions {
 	clientId?: string;
 	url?: string;
+	reconnect?: boolean;
 }
 
 /**
@@ -80,9 +81,13 @@ const topicSymbol = typeof Symbol !== 'undefined' ? Symbol('topic') : '@@topic';
 
 export class MqttOverWSProvider extends AbstractPubSubProvider {
 	private _clientsQueue = new ClientsQueue();
+	private readonly _socketConnectivity: SocketConnectivity;
+	private _reconnect: boolean;
 
 	constructor(options: MqttProviderOptions = {}) {
 		super({ ...options, clientId: options.clientId || uuid() });
+		this._socketConnectivity = new SocketConnectivity();
+		this._reconnect = options['reconnect'] ?? false;
 	}
 
 	protected get clientId() {
@@ -129,24 +134,28 @@ export class MqttOverWSProvider extends AbstractPubSubProvider {
 			if (!clientIdObservers) {
 				return;
 			}
-			clientIdObservers.forEach(observer => {
-				observer.error('Disconnected, error code: ' + errorCode);
-				// removing observers for disconnected clientId
-				this._topicObservers.forEach((observerForTopic, observerTopic) => {
-					observerForTopic.delete(observer);
-					if (observerForTopic.size === 0) {
-						topicsToDelete.push(observerTopic);
-					}
+			this.disconnect(clientId);
+			this._socketConnectivity.disconnected();
+			if (!this._reconnect) {
+				clientIdObservers.forEach(observer => {
+					observer.error('Disconnected, error code: ' + errorCode);
+					// removing observers for disconnected clientId
+					this._topicObservers.forEach((observerForTopic, observerTopic) => {
+						observerForTopic.delete(observer);
+						if (observerForTopic.size === 0) {
+							topicsToDelete.push(observerTopic);
+						}
+					});
 				});
-			});
 
-			// forgiving any trace of clientId
-			this._clientIdObservers.delete(clientId);
+				// forgiving any trace of clientId
+				this._clientIdObservers.delete(clientId);
 
-			// Removing topics that are not listen by an observer
-			topicsToDelete.forEach(topic => {
-				this._topicObservers.delete(topic);
-			});
+				// Removing topics that are not listen by an observer
+				topicsToDelete.forEach(topic => {
+					this._topicObservers.delete(topic);
+				});
+			}
 		}
 	}
 
@@ -190,9 +199,15 @@ export class MqttOverWSProvider extends AbstractPubSubProvider {
 		clientId: string,
 		options: MqttProviderOptions = {}
 	): Promise<any> {
-		return await this.clientsQueue.get(clientId, clientId =>
-			this.newClient({ ...options, clientId })
-		);
+		return await this.clientsQueue.get(clientId, async clientId => {
+			const client = await this.newClient({ ...options, clientId });
+			this._topicObservers.forEach(
+				(_value: Set<SubscriptionObserver<any>>, key: string) => {
+					client.subscribe(key);
+				}
+			);
+			return client;
+		});
 	}
 
 	protected async disconnect(clientId: string): Promise<void> {
@@ -276,18 +291,30 @@ export class MqttOverWSProvider extends AbstractPubSubProvider {
 			}
 			observersForClientId.add(observer);
 			this._clientIdObservers.set(clientId, observersForClientId);
-
 			(async () => {
 				const { url = await this.endpoint } = options;
 
-				try {
-					client = await this.connect(clientId, { url });
-					targetTopics.forEach(topic => {
-						client.subscribe(topic);
+				const getClient = async () => {
+					try {
+						client = await this.connect(clientId, { url });
+					} catch (e) {
+						observer.error(e);
+					}
+				};
+
+				// Establish the initial connection
+				await getClient();
+
+				// If reconnect is on, then verify the connection each time socket network is available
+				if (this._reconnect) {
+					this._socketConnectivity.status().subscribe(({ online }) => {
+						if (online) getClient();
 					});
-				} catch (e) {
-					observer.error(e);
 				}
+
+				targetTopics.forEach(topic => {
+					client.subscribe(topic);
+				});
 			})();
 
 			return () => {
