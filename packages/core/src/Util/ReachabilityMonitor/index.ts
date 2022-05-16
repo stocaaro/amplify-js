@@ -1,3 +1,3 @@
-import { Reachability } from '@aws-amplify/core';
+import { default as Reachability } from '../Reachability';
 
 export const ReachabilityMonitor = new Reachability().networkMonitor();
