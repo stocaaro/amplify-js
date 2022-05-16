@@ -50,7 +50,11 @@ class ClientsQueue {
 	async get(clientId: string, clientFactory?: (input: string) => Promise<any>) {
 		const cachedPromise = this.promises.get(clientId);
 		if (cachedPromise) {
-			return cachedPromise;
+			try {
+				return await cachedPromise;
+			} catch (error) {
+				logger.warn('Client error when attempting to use cached client', error);
+			}
 		}
 
 		if (clientFactory) {
