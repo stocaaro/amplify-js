@@ -45,14 +45,22 @@ export interface MqttProviderOptions extends ProviderOptions {
  */
 export type MqttProvidertOptions = MqttProviderOptions;
 
-class ClientsQueue {
+export class ClientsQueue {
 	private promises: Map<string, Promise<any>> = new Map();
+	private returnCachedFailures: boolean;
+
+	constructor(returnCachedFailures?: boolean) {
+		this.returnCachedFailures = returnCachedFailures ?? true;
+	}
 
 	async get(clientId: string, clientFactory?: (input: string) => Promise<any>) {
 		const cachedPromise = this.promises.get(clientId);
-		if (cachedPromise) {
+		if (this.returnCachedFailures) {
+			if (cachedPromise) return cachedPromise;
+		} else {
 			try {
-				return await cachedPromise;
+				const cachedClient = await cachedPromise;
+				if (cachedClient) return cachedClient;
 			} catch (error) {
 				logger.warn('Client error when attempting to use cached client', error);
 			}
@@ -60,9 +68,7 @@ class ClientsQueue {
 
 		if (clientFactory) {
 			const newPromise = clientFactory(clientId);
-
 			this.promises.set(clientId, newPromise);
-
 			return newPromise;
 		}
 		return undefined;
@@ -80,7 +86,7 @@ class ClientsQueue {
 const topicSymbol = typeof Symbol !== 'undefined' ? Symbol('topic') : '@@topic';
 
 export class MqttOverWSProvider extends AbstractPubSubProvider {
-	private _clientsQueue = new ClientsQueue();
+	protected _clientsQueue;
 	private readonly _socketConnectivity: SocketConnectivity;
 	private _reconnect: boolean;
 
@@ -88,6 +94,7 @@ export class MqttOverWSProvider extends AbstractPubSubProvider {
 		super({ ...options, clientId: options.clientId || uuid() });
 		this._socketConnectivity = new SocketConnectivity();
 		this._reconnect = options['reconnect'] ?? false;
+		this._clientsQueue = new ClientsQueue(false);
 	}
 
 	protected get clientId() {
@@ -203,6 +210,7 @@ export class MqttOverWSProvider extends AbstractPubSubProvider {
 			const client = await this.newClient({ ...options, clientId });
 			this._topicObservers.forEach(
 				(_value: Set<SubscriptionObserver<any>>, key: string) => {
+					logger.debug(client === undefined);
 					client.subscribe(key);
 				}
 			);
@@ -226,7 +234,6 @@ export class MqttOverWSProvider extends AbstractPubSubProvider {
 		const url = await this.endpoint;
 
 		const client = await this.connect(this.clientId, { url });
-
 		logger.debug('Publishing to topic(s)', targetTopics.join(','), message);
 		targetTopics.forEach(topic => client.send(topic, message));
 	}
@@ -311,10 +318,11 @@ export class MqttOverWSProvider extends AbstractPubSubProvider {
 						if (online) getClient();
 					});
 				}
-
-				targetTopics.forEach(topic => {
-					client.subscribe(topic);
-				});
+				if (client) {
+					targetTopics.forEach(topic => {
+						client.subscribe(topic);
+					});
+				}
 			})();
 
 			return () => {

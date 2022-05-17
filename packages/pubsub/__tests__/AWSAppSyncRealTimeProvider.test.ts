@@ -7,6 +7,17 @@ import Cache from '@aws-amplify/cache';
 import { MESSAGE_TYPES } from '../src/Providers/AWSAppSyncRealTimeProvider/constants';
 import { FakeWebSocketInterface, delay, replaceConstant } from './helpers';
 
+jest.mock('@aws-amplify/core', () => ({
+	__esModule: true,
+	...jest.requireActual('@aws-amplify/core'),
+	browserOrNode() {
+		return {
+			isBrowser: false,
+			isNode: true,
+		};
+	},
+}));
+
 describe('AWSAppSyncRealTimeProvider', () => {
 	describe('isCustomDomain()', () => {
 		test('Custom domain returns `true`', () => {

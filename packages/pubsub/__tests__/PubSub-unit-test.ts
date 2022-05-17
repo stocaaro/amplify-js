@@ -18,11 +18,21 @@ const mockConnect = jest.fn(options => {
 	options.onSuccess();
 });
 
+jest.mock('@aws-amplify/core', () => ({
+	__esModule: true,
+	...jest.requireActual('@aws-amplify/core'),
+	browserOrNode() {
+		return {
+			isBrowser: false,
+			isNode: true,
+		};
+	},
+}));
+
 const pahoClientMock = jest.fn().mockImplementation((host, clientId) => {
 	if (pahoClientMockCache[clientId]) {
 		return pahoClientMockCache[clientId];
 	}
-
 	var client = {} as any;
 
 	client.connect = mockConnect;

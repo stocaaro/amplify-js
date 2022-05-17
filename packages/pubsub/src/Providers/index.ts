@@ -14,4 +14,9 @@ export * from './PubSubProvider';
 export * from './AWSAppSyncProvider';
 export * from './AWSAppSyncRealTimeProvider';
 export * from './AWSIotProvider';
-export * from './MqttOverWSProvider';
+export {
+	MqttProviderOptions,
+	MqttProvidertOptions,
+	MqttOverWSProvider,
+	mqttTopicMatch,
+} from './MqttOverWSProvider';

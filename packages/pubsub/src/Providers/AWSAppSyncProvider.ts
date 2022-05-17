@@ -14,7 +14,11 @@ import { Client } from 'paho-mqtt';
 import Observable from 'zen-observable-ts';
 import { ConsoleLogger as Logger } from '@aws-amplify/core';
 
-import { MqttOverWSProvider } from './MqttOverWSProvider';
+import {
+	ClientsQueue,
+	MqttOverWSProvider,
+	MqttProviderOptions,
+} from './MqttOverWSProvider';
 
 const logger = new Logger('AWSAppSyncProvider');
 
@@ -22,6 +26,11 @@ const logger = new Logger('AWSAppSyncProvider');
  * @deprecated Unused, all usecases have migrated to AWSAppSyncRealtimeProvider
  */
 export class AWSAppSyncProvider extends MqttOverWSProvider {
+	constructor(options: MqttProviderOptions = {}) {
+		super({ ...options });
+		this._clientsQueue = new ClientsQueue();
+	}
+
 	protected get endpoint() {
 		throw new Error('Not supported');
 	}
