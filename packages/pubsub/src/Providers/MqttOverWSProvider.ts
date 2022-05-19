@@ -12,7 +12,7 @@
  */
 import * as Paho from 'paho-mqtt';
 import { v4 as uuid } from 'uuid';
-import Observable from 'zen-observable-ts';
+import Observable, { ZenObservable } from 'zen-observable-ts';
 
 import { AbstractPubSubProvider } from './PubSubProvider';
 import { ProviderOptions, SubscriptionObserver } from '../types';
@@ -298,6 +298,8 @@ export class MqttOverWSProvider extends AbstractPubSubProvider {
 			}
 			observersForClientId.add(observer);
 			this._clientIdObservers.set(clientId, observersForClientId);
+
+			let reconnectSubscription: ZenObservable.Subscription;
 			(async () => {
 				const { url = await this.endpoint } = options;
 
@@ -314,9 +316,11 @@ export class MqttOverWSProvider extends AbstractPubSubProvider {
 
 				// If reconnect is on, then verify the connection each time socket network is available
 				if (this._reconnect) {
-					this._socketConnectivity.status().subscribe(({ online }) => {
-						if (online) getClient();
-					});
+					reconnectSubscription = this._socketConnectivity
+						.status()
+						.subscribe(({ online }) => {
+							if (online) getClient();
+						});
 				}
 				if (client) {
 					targetTopics.forEach(topic => {
@@ -327,6 +331,8 @@ export class MqttOverWSProvider extends AbstractPubSubProvider {
 
 			return () => {
 				logger.debug('Unsubscribing from topic(s)', targetTopics.join(','));
+
+				reconnectSubscription?.unsubscribe();
 
 				if (client) {
 					this._clientIdObservers.get(clientId)?.delete(observer);

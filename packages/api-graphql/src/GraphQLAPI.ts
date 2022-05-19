@@ -224,7 +224,13 @@ export class GraphQLAPIClass {
 	 * @returns An Observable if the query is a subscription query, else a promise of the graphql result.
 	 */
 	graphql<T = any>(
-		{ query: paramQuery, variables = {}, authMode, authToken }: GraphQLOptions,
+		{
+			query: paramQuery,
+			variables = {},
+			authMode,
+			authToken,
+			reconnect,
+		}: GraphQLOptions,
 		additionalHeaders?: { [key: string]: string }
 	): Observable<GraphQLResult<T>> | Promise<GraphQLResult<T>> {
 		const query =
@@ -233,7 +239,7 @@ export class GraphQLAPIClass {
 				: parse(print(paramQuery));
 
 		const [operationDef = {}] = query.definitions.filter(
-			(def) => def.kind === 'OperationDefinition'
+			def => def.kind === 'OperationDefinition'
 		);
 		const { operation: operationType } =
 			operationDef as OperationDefinitionNode;
@@ -261,7 +267,10 @@ export class GraphQLAPIClass {
 				);
 				return responsePromise;
 			case 'subscription':
-				return this._graphqlSubscribe({ query, variables, authMode }, headers);
+				return this._graphqlSubscribe(
+					{ query, variables, authMode, reconnect },
+					headers
+				);
 			default:
 				throw new Error(`invalid operation type: ${operationType}`);
 		}
@@ -384,6 +393,7 @@ export class GraphQLAPIClass {
 			variables,
 			authMode: defaultAuthenticationType,
 			authToken,
+			reconnect,
 		}: GraphQLOptions,
 		additionalHeaders = {}
 	): Observable<any> {
@@ -409,6 +419,7 @@ export class GraphQLAPIClass {
 				graphql_headers,
 				additionalHeaders,
 				authToken,
+				reconnect,
 			});
 		} else {
 			logger.debug('No pubsub module applied for subscription');
@@ -421,14 +432,14 @@ export class GraphQLAPIClass {
 	 */
 	_ensureCredentials() {
 		return this.Credentials.get()
-			.then((credentials) => {
+			.then(credentials => {
 				if (!credentials) return false;
 				const cred = this.Credentials.shear(credentials);
 				logger.debug('set credentials for api', cred);
 
 				return true;
 			})
-			.catch((err) => {
+			.catch(err => {
 				logger.warn('ensure credentials error', err);
 				return false;
 			});

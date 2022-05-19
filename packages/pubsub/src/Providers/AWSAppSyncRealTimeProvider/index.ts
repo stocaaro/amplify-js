@@ -26,6 +26,7 @@ import {
 	jitteredExponentialRetry,
 	NonRetryableError,
 	ICredentials,
+	SocketConnectivity,
 } from '@aws-amplify/core';
 import Cache from '@aws-amplify/cache';
 import Auth, { GRAPHQL_AUTH_MODE } from '@aws-amplify/auth';
@@ -76,6 +77,7 @@ export interface AWSAppSyncRealTimeProviderOptions extends ProviderOptions {
 	region?: string;
 	graphql_headers?: () => {} | (() => Promise<{}>);
 	additionalHeaders?: { [key: string]: string };
+	reconnect?: boolean;
 }
 
 type AWSAppSyncRealTimeAuthInput =
@@ -91,6 +93,7 @@ export class AWSAppSyncRealTimeProvider extends AbstractPubSubProvider {
 	private keepAliveTimeout = DEFAULT_KEEP_ALIVE_TIMEOUT;
 	private subscriptionObserverMap: Map<string, ObserverQuery> = new Map();
 	private promiseArray: Array<{ res: Function; rej: Function }> = [];
+	private readonly _socketConnectivity = new SocketConnectivity();
 
 	getNewWebSocket(url, protocol) {
 		return new WebSocket(url, protocol);
@@ -118,6 +121,7 @@ export class AWSAppSyncRealTimeProvider extends AbstractPubSubProvider {
 		options?: AWSAppSyncRealTimeProviderOptions
 	): Observable<any> {
 		const appSyncGraphqlEndpoint = options?.appSyncGraphqlEndpoint;
+		const reconnect = options?.reconnect ?? false;
 
 		return new Observable(observer => {
 			if (!options || !appSyncGraphqlEndpoint) {
@@ -132,25 +136,56 @@ export class AWSAppSyncRealTimeProvider extends AbstractPubSubProvider {
 				});
 				observer.complete();
 			} else {
-				const subscriptionId = uuid();
-				this._startSubscriptionWithAWSAppSyncRealTime({
-					options,
-					observer,
-					subscriptionId,
-				}).catch<any>(err => {
-					observer.error({
-						errors: [
-							{
-								...new GraphQLError(
-									`${CONTROL_MSG.REALTIME_SUBSCRIPTION_INIT_ERROR}: ${err}`
-								),
-							},
-						],
-					});
-					observer.complete();
-				});
+				let subscriptionStarting = false;
+				let subscriptionId = uuid();
+				console.log('Init connection');
+				const startSubscription = () => {
+					if (!subscriptionStarting) {
+						subscriptionStarting = true;
+						subscriptionId = uuid();
+						console.log(subscriptionId);
+						console.log('start called twice?');
+
+						const startSubscriptionPromise =
+							this._startSubscriptionWithAWSAppSyncRealTime({
+								options,
+								observer,
+								subscriptionId,
+								reconnect,
+							}).catch<any>(err => {
+								observer.error({
+									errors: [
+										{
+											...new GraphQLError(
+												`${CONTROL_MSG.REALTIME_SUBSCRIPTION_INIT_ERROR}: ${err}`
+											),
+										},
+									],
+								});
+								observer.complete();
+							});
+						startSubscriptionPromise.finally(() => {
+							subscriptionStarting = false;
+						});
+					}
+				};
+
+				startSubscription();
+
+				let reconnectSubscription: ZenObservable.Subscription = undefined;
+				console.log('Is reconnect on?');
+				if (reconnect) {
+					console.log('Reconnect is on');
+					reconnectSubscription = this._socketConnectivity
+						.status()
+						.subscribe(({ online }) => {
+							if (online) startSubscription();
+						});
+				}
 
 				return async () => {
+					console.log('Reconnect has been turned off');
+					reconnectSubscription?.unsubscribe();
 					// Cleanup after unsubscribing or observer.complete was called after _startSubscriptionWithAWSAppSyncRealTime
 					try {
 						// Waiting that subscription has been connected before trying to unsubscribe
@@ -188,10 +223,12 @@ export class AWSAppSyncRealTimeProvider extends AbstractPubSubProvider {
 		options,
 		observer,
 		subscriptionId,
+		reconnect,
 	}: {
 		options: AWSAppSyncRealTimeProviderOptions;
 		observer: ZenObservable.SubscriptionObserver<any>;
 		subscriptionId: string;
+		reconnect: boolean;
 	}) {
 		const {
 			appSyncGraphqlEndpoint,
@@ -258,18 +295,25 @@ export class AWSAppSyncRealTimeProvider extends AbstractPubSubProvider {
 				authenticationType,
 				region,
 				additionalHeaders,
+				reconnect,
 			});
 		} catch (err) {
 			logger.debug({ err });
 			const message = err['message'] ?? '';
-			observer.error({
-				errors: [
-					{
-						...new GraphQLError(`${CONTROL_MSG.CONNECTION_FAILED}: ${message}`),
-					},
-				],
-			});
-			observer.complete();
+			if (reconnect) {
+				this._socketConnectivity.disconnected();
+			} else {
+				observer.error({
+					errors: [
+						{
+							...new GraphQLError(
+								`${CONTROL_MSG.CONNECTION_FAILED}: ${message}`
+							),
+						},
+					],
+				});
+				observer.complete();
+			}
 			const { subscriptionFailedCallback } =
 				this.subscriptionObserverMap.get(subscriptionId) || {};
 
@@ -382,7 +426,10 @@ export class AWSAppSyncRealTimeProvider extends AbstractPubSubProvider {
 		}
 	}
 
-	private _handleIncomingSubscriptionMessage(message: MessageEvent) {
+	private _handleIncomingSubscriptionMessage(
+		reconnect: boolean,
+		message: MessageEvent
+	) {
 		logger.debug(
 			`subscription message from AWS AppSync RealTime: ${message.data}`
 		);
@@ -440,7 +487,11 @@ export class AWSAppSyncRealTimeProvider extends AbstractPubSubProvider {
 		if (type === MESSAGE_TYPES.GQL_CONNECTION_KEEP_ALIVE) {
 			if (this.keepAliveTimeoutId) clearTimeout(this.keepAliveTimeoutId);
 			this.keepAliveTimeoutId = setTimeout(
-				this._errorDisconnect.bind(this, CONTROL_MSG.TIMEOUT_DISCONNECT),
+				this._errorDisconnect.bind(
+					this,
+					CONTROL_MSG.TIMEOUT_DISCONNECT,
+					reconnect
+				),
 				this.keepAliveTimeout
 			);
 			return;
@@ -459,6 +510,7 @@ export class AWSAppSyncRealTimeProvider extends AbstractPubSubProvider {
 					subscriptionState,
 				});
 
+				console.log('GQL ERROR');
 				observer.error({
 					errors: [
 						{
@@ -478,17 +530,21 @@ export class AWSAppSyncRealTimeProvider extends AbstractPubSubProvider {
 		}
 	}
 
-	private _errorDisconnect(msg: string) {
+	private _errorDisconnect(msg: string, reconnect) {
 		logger.debug(`Disconnect error: ${msg}`);
 		this.subscriptionObserverMap.forEach(({ observer }) => {
 			if (observer && !observer.closed) {
-				observer.error({
-					errors: [{ ...new GraphQLError(msg) }],
-				});
+				if (!reconnect) {
+					observer.error({
+						errors: [{ ...new GraphQLError(msg) }],
+					});
+				}
 			}
 		});
+
 		this.subscriptionObserverMap.clear();
 		if (this.awsRealTimeSocket) {
+			this._socketConnectivity.disconnected();
 			this.awsRealTimeSocket.close();
 		}
 
@@ -539,6 +595,7 @@ export class AWSAppSyncRealTimeProvider extends AbstractPubSubProvider {
 		apiKey,
 		region,
 		additionalHeaders,
+		reconnect,
 	}: AWSAppSyncRealTimeProviderOptions) {
 		if (this.socketStatus === SOCKET_STATUS.READY) {
 			return;
@@ -585,7 +642,7 @@ export class AWSAppSyncRealTimeProvider extends AbstractPubSubProvider {
 
 					const awsRealTimeUrl = `${discoverableEndpoint}?header=${headerQs}&payload=${payloadQs}`;
 
-					await this._initializeRetryableHandshake(awsRealTimeUrl);
+					await this._initializeRetryableHandshake(awsRealTimeUrl, reconnect);
 
 					this.promiseArray.forEach(({ res }) => {
 						logger.debug('Notifying connection successful');
@@ -609,16 +666,22 @@ export class AWSAppSyncRealTimeProvider extends AbstractPubSubProvider {
 		});
 	}
 
-	private async _initializeRetryableHandshake(awsRealTimeUrl: string) {
+	private async _initializeRetryableHandshake(
+		awsRealTimeUrl: string,
+		reconnect: boolean
+	) {
 		logger.debug(`Initializaling retryable Handshake`);
 		await jitteredExponentialRetry(
 			this._initializeHandshake.bind(this),
-			[awsRealTimeUrl],
+			[awsRealTimeUrl, reconnect],
 			MAX_DELAY_MS
 		);
 	}
 
-	private async _initializeHandshake(awsRealTimeUrl: string) {
+	private async _initializeHandshake(
+		awsRealTimeUrl: string,
+		reconnect: boolean
+	) {
 		logger.debug(`Initializing handshake ${awsRealTimeUrl}`);
 		// Because connecting the socket is async, is waiting until connection is open
 		// Step 1: connect websocket
@@ -668,14 +731,26 @@ export class AWSAppSyncRealTimeProvider extends AbstractPubSubProvider {
 								if (this.awsRealTimeSocket) {
 									this.keepAliveTimeout = connectionTimeoutMs;
 									this.awsRealTimeSocket.onmessage =
-										this._handleIncomingSubscriptionMessage.bind(this);
+										this._handleIncomingSubscriptionMessage.bind(
+											this,
+											reconnect
+										);
+
 									this.awsRealTimeSocket.onerror = err => {
 										logger.debug(err);
-										this._errorDisconnect(CONTROL_MSG.CONNECTION_CLOSED);
+										console.log(reconnect);
+										this._errorDisconnect(
+											CONTROL_MSG.CONNECTION_CLOSED,
+											reconnect
+										);
 									};
 									this.awsRealTimeSocket.onclose = event => {
 										logger.debug(`WebSocket closed ${event.reason}`);
-										this._errorDisconnect(CONTROL_MSG.CONNECTION_CLOSED);
+										console.log(reconnect);
+										this._errorDisconnect(
+											CONTROL_MSG.CONNECTION_CLOSED,
+											reconnect
+										);
 									};
 								}
 								res('Cool, connected to AWS AppSyncRealTime');

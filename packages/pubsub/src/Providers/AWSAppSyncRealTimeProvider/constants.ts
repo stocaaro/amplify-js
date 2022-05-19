@@ -92,4 +92,4 @@ export const START_ACK_TIMEOUT = 15000;
 /**
  * Default Time in milleseconds to wait for GQL_CONNECTION_KEEP_ALIVE message
  */
-export const DEFAULT_KEEP_ALIVE_TIMEOUT = 5 * 60 * 1000;
+export const DEFAULT_KEEP_ALIVE_TIMEOUT = 1 * 60 * 1000;

@@ -20,6 +20,7 @@ export interface GraphQLOptions {
 	variables?: object;
 	authMode?: keyof typeof GRAPHQL_AUTH_MODE;
 	authToken?: string;
+	reconnect?: boolean;
 }
 
 export interface GraphQLResult<T = object> {
