@@ -11,15 +11,44 @@ type ConnectionStatus = {
 	online: boolean;
 };
 
+type ConnectivityStatus = 'connected' | 'disconnected';
+
+type SocketStatus = {
+	networkStatus: ConnectivityStatus;
+	socketStatus: ConnectivityStatus | 'connecting';
+	intendedSocketStatus: ConnectivityStatus;
+};
+
 export class SocketConnectivity {
+	// Connection status is network Status alone
 	private connectionStatus: ConnectionStatus;
 	private observer: ZenObservable.SubscriptionObserver<ConnectionStatus>;
+
+	// Socket Status is status information about the network, socket and intended socket Status
+	socketStatus: SocketStatus;
+	socketStatusObservable: Observable<SocketStatus>;
+	private socketStatusObserver: ZenObservable.SubscriptionObserver<SocketStatus>;
+
 	private subscription: ZenObservable.Subscription;
 	private timeout: ReturnType<typeof setTimeout>;
 	constructor() {
 		this.connectionStatus = {
 			online: false,
 		};
+
+		this.socketStatus = {
+			networkStatus: 'disconnected',
+			socketStatus: 'disconnected',
+			intendedSocketStatus: 'disconnected',
+		};
+
+		this.socketStatusObservable = new Observable(
+			(
+				socketStatusObserver: ZenObservable.SubscriptionObserver<SocketStatus>
+			) => {
+				this.socketStatusObserver = socketStatusObserver;
+			}
+		);
 	}
 
 	status(): Observable<ConnectionStatus> {
@@ -27,15 +56,17 @@ export class SocketConnectivity {
 			throw new Error('Subscriber already exists');
 		}
 		return new Observable(observer => {
-			this.observer = observer;
 			// Will be used to forward socket connection changes, enhancing Reachability
-
 			this.subscription = ReachabilityMonitor.subscribe(({ online }) => {
+				// Maintain the connection status
 				this.connectionStatus.online = online;
-
 				const observerResult = { ...this.connectionStatus }; // copyOf status
+				this.observer.next(observerResult);
 
-				observer.next(observerResult);
+				// Maintain the socket status
+				this.updateSocketStatus({
+					networkStatus: 'connected',
+				});
 			});
 
 			return () => {
@@ -53,13 +84,47 @@ export class SocketConnectivity {
 	}
 
 	disconnected() {
+		this.updateSocketStatus({ socketStatus: 'disconnected' });
+		const socketStatusObserverResult = { ...this.socketStatus };
+		this.socketStatusObserver.next(socketStatusObserverResult);
+
 		if (this.observer && typeof this.observer.next === 'function') {
 			this.observer.next({ online: false }); // Notify network issue from the socket
 
 			this.timeout = setTimeout(() => {
+				// Maintain the connection status
 				const observerResult = { ...this.connectionStatus }; // copyOf status
 				this.observer.next(observerResult);
 			}, RECONNECTING_IN); // giving time for socket cleanup and network status stabilization
+		}
+	}
+
+	openingSocket() {
+		this.updateSocketStatus({
+			intendedSocketStatus: 'connected',
+			socketStatus: 'connecting',
+		});
+	}
+
+	closingSocket() {
+		this.updateSocketStatus({
+			intendedSocketStatus: 'disconnected',
+		});
+	}
+
+	connectionEstablished() {
+		this.updateSocketStatus({
+			socketStatus: 'connected',
+		});
+	}
+
+	private updateSocketStatus(statusUpdates: Partial<SocketStatus>) {
+		// Maintain the socket status
+		const newSocketStatus = { ...this.socketStatus, ...statusUpdates };
+		if (newSocketStatus !== this.socketStatus) {
+			this.socketStatus = { ...this.socketStatus, ...statusUpdates };
+			const socketStatusObserverResult = { ...this.socketStatus };
+			this.socketStatusObserver.next(socketStatusObserverResult);
 		}
 	}
 }

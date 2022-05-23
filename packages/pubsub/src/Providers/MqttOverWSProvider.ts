@@ -143,6 +143,12 @@ export class MqttOverWSProvider extends AbstractPubSubProvider {
 			}
 			this.disconnect(clientId);
 			this._socketConnectivity.disconnected();
+
+			// When the connection is closed with no open topics, there is no need to reconnect
+			if (this._topicObservers.size === 0) {
+				this._socketConnectivity.closingSocket();
+			}
+
 			if (!this._reconnect) {
 				clientIdObservers.forEach(observer => {
 					observer.error('Disconnected, error code: ' + errorCode);
@@ -199,6 +205,8 @@ export class MqttOverWSProvider extends AbstractPubSubProvider {
 			});
 		});
 
+		this._socketConnectivity.connectionEstablished();
+
 		return client;
 	}
 
@@ -207,6 +215,8 @@ export class MqttOverWSProvider extends AbstractPubSubProvider {
 		options: MqttProviderOptions = {}
 	): Promise<any> {
 		return await this.clientsQueue.get(clientId, async clientId => {
+			this._socketConnectivity.openingSocket();
+
 			const client = await this.newClient({ ...options, clientId });
 			this._topicObservers.forEach(
 				(_value: Set<SubscriptionObserver<any>>, key: string) => {
