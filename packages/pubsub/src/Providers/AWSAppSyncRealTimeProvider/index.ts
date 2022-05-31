@@ -30,7 +30,10 @@ import {
 } from '@aws-amplify/core';
 import Cache from '@aws-amplify/cache';
 import Auth, { GRAPHQL_AUTH_MODE } from '@aws-amplify/auth';
-import { AbstractPubSubProvider } from '../PubSubProvider';
+import {
+	AbstractPubSubProvider,
+	SubscriptionWithSocketState,
+} from '../PubSubProvider';
 import { CONTROL_MSG } from '../../index';
 import {
 	AMPLIFY_SYMBOL,
@@ -117,9 +120,25 @@ export class AWSAppSyncRealTimeProvider extends AbstractPubSubProvider {
 	}
 
 	subscribe(
+		topics: string[] | string,
+		options?: AWSAppSyncRealTimeProviderOptions & { includeSocketState?: false }
+	): Observable<any>;
+	subscribe(
+		topics: string[] | string,
+		options?: AWSAppSyncRealTimeProviderOptions & { includeSocketState: true }
+	): SubscriptionWithSocketState;
+	subscribe(
 		_topics: string[] | string,
-		options?: AWSAppSyncRealTimeProviderOptions
-	): Observable<any> {
+		options?: AWSAppSyncRealTimeProviderOptions & {
+			includeSocketState?: boolean;
+		}
+	): Observable<any> | SubscriptionWithSocketState;
+	subscribe(
+		_topics: string[] | string,
+		options?: AWSAppSyncRealTimeProviderOptions & {
+			includeSocketState?: boolean;
+		}
+	): Observable<any> | SubscriptionWithSocketState {
 		const appSyncGraphqlEndpoint = options?.appSyncGraphqlEndpoint;
 		const reconnect = options?.reconnect ?? false;
 

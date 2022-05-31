@@ -10,11 +10,20 @@
  * CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language governing permissions
  * and limitations under the License.
  */
-import Observable from 'zen-observable-ts';
+import Observable, { ZenObservable } from 'zen-observable-ts';
 import { PubSubProvider, ProviderOptions } from '../types';
-import { ConsoleLogger as Logger } from '@aws-amplify/core';
+import {
+	ConsoleLogger as Logger,
+	SocketConnectivity,
+	SocketStatus,
+} from '@aws-amplify/core';
 
 const logger = new Logger('AbstractPubSubProvider');
+
+export type SubscriptionWithSocketState = {
+	socketStatusObservable: Observable<SocketStatus>;
+	dataObservable: Observable<any>;
+};
 
 export abstract class AbstractPubSubProvider implements PubSubProvider {
 	private _config: ProviderOptions;
@@ -51,6 +60,10 @@ export abstract class AbstractPubSubProvider implements PubSubProvider {
 
 	public abstract subscribe(
 		topics: string[] | string,
-		options?: ProviderOptions
+		options?: ProviderOptions & { includeSocketState?: false }
 	): Observable<any>;
+	public abstract subscribe(
+		topics: string[] | string,
+		options?: ProviderOptions & { includeSocketState: true }
+	): SubscriptionWithSocketState;
 }

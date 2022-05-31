@@ -14,7 +14,10 @@ import * as Paho from 'paho-mqtt';
 import { v4 as uuid } from 'uuid';
 import Observable, { ZenObservable } from 'zen-observable-ts';
 
-import { AbstractPubSubProvider } from './PubSubProvider';
+import {
+	AbstractPubSubProvider,
+	SubscriptionWithSocketState,
+} from './PubSubProvider';
 import { ProviderOptions, SubscriptionObserver } from '../types';
 import { ConsoleLogger as Logger, SocketConnectivity } from '@aws-amplify/core';
 
@@ -38,6 +41,7 @@ export interface MqttProviderOptions extends ProviderOptions {
 	clientId?: string;
 	url?: string;
 	reconnect?: boolean;
+	includeSocketState?: boolean;
 }
 
 /**
@@ -92,12 +96,17 @@ export class MqttOverWSProvider extends AbstractPubSubProvider {
 
 	constructor(options: MqttProviderOptions = {}) {
 		super({ ...options, clientId: options.clientId || uuid() });
+		console.log('asd');
+		console.log(this.options);
 		this._socketConnectivity = new SocketConnectivity();
 		this._reconnect = options['reconnect'] ?? false;
 		this._clientsQueue = new ClientsQueue(false);
 	}
 
 	protected get clientId() {
+		console.log('asd');
+		console.log('asd');
+		console.log(this.options);
 		return this.options.clientId;
 	}
 
@@ -174,7 +183,8 @@ export class MqttOverWSProvider extends AbstractPubSubProvider {
 
 	public async newClient({ url, clientId }: MqttProviderOptions): Promise<any> {
 		logger.debug('Creating new MQTT client', clientId);
-
+		console.log('asd');
+		console.log(this.options);
 		// @ts-ignore
 		const client = new Paho.Client(url, clientId);
 		// client.trace = (args) => logger.debug(clientId, JSON.stringify(args, null, 2));
@@ -278,12 +288,23 @@ export class MqttOverWSProvider extends AbstractPubSubProvider {
 
 	subscribe(
 		topics: string[] | string,
-		options: MqttProviderOptions = {}
-	): Observable<any> {
+		options?: MqttProviderOptions & { includeSocketState?: false }
+	): Observable<any>;
+	subscribe(
+		topics: string[] | string,
+		options?: MqttProviderOptions & { includeSocketState: true }
+	): SubscriptionWithSocketState;
+	subscribe(
+		topics: string[] | string,
+		options?: MqttProviderOptions
+	): Observable<any> | SubscriptionWithSocketState {
+		options = options ?? {};
 		const targetTopics = ([] as string[]).concat(topics);
+		const includeSocketState = options?.includeSocketState;
+		console.log(includeSocketState);
+		console.log('THis is the socket state inclusion thing');
 		logger.debug('Subscribing to topic(s)', targetTopics.join(','));
-
-		return new Observable(observer => {
+		const subscriptionObservable = new Observable<any>(observer => {
 			targetTopics.forEach(topic => {
 				// this._topicObservers is used to notify the observers according to the topic received on the message
 				let observersForTopic = this._topicObservers.get(topic);
@@ -299,6 +320,7 @@ export class MqttOverWSProvider extends AbstractPubSubProvider {
 
 			// @ts-ignore
 			let client: Paho.Client;
+
 			const { clientId = this.clientId } = options;
 
 			// this._clientIdObservers is used to close observers when client gets disconnected
@@ -308,7 +330,6 @@ export class MqttOverWSProvider extends AbstractPubSubProvider {
 			}
 			observersForClientId.add(observer);
 			this._clientIdObservers.set(clientId, observersForClientId);
-
 			let reconnectSubscription: ZenObservable.Subscription;
 			(async () => {
 				const { url = await this.endpoint } = options;
@@ -325,7 +346,7 @@ export class MqttOverWSProvider extends AbstractPubSubProvider {
 				await getClient();
 
 				// If reconnect is on, then verify the connection each time socket network is available
-				if (this._reconnect) {
+				if (includeSocketState) {
 					reconnectSubscription = this._socketConnectivity
 						.status()
 						.subscribe(({ online }) => {
@@ -372,5 +393,14 @@ export class MqttOverWSProvider extends AbstractPubSubProvider {
 				return null;
 			};
 		});
+		console.log(this._reconnect);
+		if (includeSocketState) {
+			return {
+				socketStatusObservable: this._socketConnectivity.socketStatusObservable,
+				dataObservable: subscriptionObservable,
+			};
+		} else {
+			return subscriptionObservable;
+		}
 	}
 }

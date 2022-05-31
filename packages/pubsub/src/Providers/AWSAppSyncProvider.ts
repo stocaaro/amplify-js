@@ -19,6 +19,7 @@ import {
 	MqttOverWSProvider,
 	MqttProviderOptions,
 } from './MqttOverWSProvider';
+import { SubscriptionWithSocketState } from './PubSubProvider';
 
 const logger = new Logger('AWSAppSyncProvider');
 
@@ -90,7 +91,18 @@ export class AWSAppSyncProvider extends MqttOverWSProvider {
 		this._cleanUp(clientId);
 	}
 
-	subscribe(topics: string[] | string, options: any = {}): Observable<any> {
+	subscribe(
+		topics: string[] | string,
+		options?: { [key: string]: any } & { includeSocketState?: false }
+	): Observable<any>;
+	subscribe(
+		topics: string[] | string,
+		options?: { [key: string]: any } & { includeSocketState?: true }
+	): SubscriptionWithSocketState;
+	subscribe(
+		topics: string[] | string,
+		options?: { [key: string]: any }
+	): Observable<any> | SubscriptionWithSocketState {
 		const result = new Observable<any>(observer => {
 			const targetTopics = ([] as string[]).concat(topics);
 			logger.debug('Subscribing to topic(s)', targetTopics.join(','));

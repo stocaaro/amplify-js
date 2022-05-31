@@ -11,6 +11,7 @@
  * and limitations under the License.
  */
 import Observable from 'zen-observable-ts';
+import { SubscriptionWithSocketState } from '../Providers';
 import { ProviderOptions } from './PubSub';
 
 export interface PubSubProvider {
@@ -27,6 +28,10 @@ export interface PubSubProvider {
 
 	subscribe(
 		topics: string[] | string,
-		options?: ProviderOptions
+		options?: ProviderOptions & { includeSocketState?: false }
 	): Observable<any>;
+	subscribe(
+		topics: string[] | string,
+		options?: ProviderOptions & { includeSocketState?: true }
+	): SubscriptionWithSocketState;
 }

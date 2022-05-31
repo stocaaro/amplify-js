@@ -19,9 +19,14 @@ import {
 	ConsoleLogger as Logger,
 	INTERNAL_AWS_APPSYNC_PUBSUB_PROVIDER,
 	INTERNAL_AWS_APPSYNC_REALTIME_PUBSUB_PROVIDER,
+	SocketStatus,
 } from '@aws-amplify/core';
 import { PubSubProvider, PubSubOptions, ProviderOptions } from './types';
-import { AWSAppSyncProvider, AWSAppSyncRealTimeProvider } from './Providers';
+import {
+	AWSAppSyncProvider,
+	AWSAppSyncRealTimeProvider,
+	SubscriptionWithSocketState,
+} from './Providers';
 
 const { isNode } = browserOrNode();
 const logger = new Logger('PubSub');
@@ -161,30 +166,107 @@ export class PubSubClass {
 
 	subscribe(
 		topics: string[] | string,
+		options?: ProviderOptions & { includeSocketState?: false }
+	): Observable<any>;
+	subscribe(
+		topics: string[] | string,
+		options?: ProviderOptions & { includeSocketState: true }
+	): SubscriptionWithSocketState;
+	subscribe(
+		topics: string[] | string,
 		options?: ProviderOptions
-	): Observable<any> {
+	): Observable<any> | SubscriptionWithSocketState {
 		if (isNode && this._options && this._options.ssr) {
 			throw new Error(
 				'Subscriptions are not supported for Server-Side Rendering (SSR)'
 			);
 		}
 
+		const includeSocketState = Boolean(options?.includeSocketState).valueOf();
+
 		logger.debug('subscribe options', options);
 
 		const providers = this.getProviders(options);
 
-		return new Observable(observer => {
+		if (includeSocketState) {
 			const observables = providers.map(provider => ({
 				provider,
-				observable: provider.subscribe(topics, options),
+				subscriptionWithSocketState: provider.subscribe(topics, {
+					...options,
+					includeSocketState: includeSocketState,
+				}),
 			}));
+			const combinedDataObservable = new CombinedObservable<
+				any,
+				{ provider: typeof providers[number] }
+			>();
+			const combinedSocketStateObservable = new CombinedObservable<
+				SocketStatus,
+				{ provider: typeof providers[number] }
+			>();
+			const dataObservable = observables.map(
+				({ provider, subscriptionWithSocketState }) => {
+					combinedDataObservable.add(
+						subscriptionWithSocketState.dataObservable,
+						{ provider }
+					);
+					combinedSocketStateObservable.add(
+						subscriptionWithSocketState.socketStatusObservable,
+						{ provider }
+					);
+				}
+			);
 
-			const subscriptions = observables.map(({ provider, observable }) =>
+			return {
+				dataObservable: combinedDataObservable.build(),
+				socketStatusObservable: combinedSocketStateObservable.build(),
+			};
+		} else {
+			const observables = providers.map(provider => ({
+				provider,
+				dataObservable: provider.subscribe(topics, {
+					...options,
+				}),
+			}));
+			const combinedDataObservable = new CombinedObservable<
+				any,
+				{ provider: typeof providers[number] }
+			>();
+			const dataObservable = observables.map(({ provider, dataObservable }) => {
+				combinedDataObservable.add(dataObservable, { provider });
+			});
+			return combinedDataObservable.build();
+		}
+	}
+}
+
+class CombinedObservable<T = any, R = {}> {
+	private _observables: {
+		observable: Observable<T>;
+		metadata: R;
+	}[];
+
+	constructor() {
+		this._observables = [];
+	}
+
+	add(observable: Observable<T>, metadata: R): void {
+		this._observables.push({ observable, metadata });
+	}
+
+	build(): Observable<any> {
+		return new Observable(observer => {
+			const subscriptions = this._observables.map(({ metadata, observable }) =>
 				observable.subscribe({
 					start: console.error,
-					next: value => observer.next({ provider, value }),
-					error: error => observer.error({ provider, error }),
-					// complete: observer.complete, // TODO: when all completed, complete the outer one
+					next: value => observer.next({ ...metadata, value }),
+					error: error => observer.error({ ...metadata, error }),
+					complete: () => {
+						this._observables = this._observables.filter(row => {
+							return row.metadata !== metadata || row.observable !== observable;
+						});
+						if (this._observables.length === 0) observer.complete;
+					},
 				})
 			);
 

@@ -13,7 +13,7 @@ type ConnectionStatus = {
 
 type ConnectivityStatus = 'connected' | 'disconnected';
 
-type SocketStatus = {
+export type SocketStatus = {
 	networkStatus: ConnectivityStatus;
 	socketStatus: ConnectivityStatus | 'connecting';
 	intendedSocketStatus: ConnectivityStatus;
@@ -46,6 +46,7 @@ export class SocketConnectivity {
 			(
 				socketStatusObserver: ZenObservable.SubscriptionObserver<SocketStatus>
 			) => {
+				console.log('Setting the observer');
 				this.socketStatusObserver = socketStatusObserver;
 			}
 		);
@@ -56,6 +57,7 @@ export class SocketConnectivity {
 			throw new Error('Subscriber already exists');
 		}
 		return new Observable(observer => {
+			this.observer = observer;
 			// Will be used to forward socket connection changes, enhancing Reachability
 			this.subscription = ReachabilityMonitor.subscribe(({ online }) => {
 				// Maintain the connection status
@@ -64,8 +66,9 @@ export class SocketConnectivity {
 				this.observer.next(observerResult);
 
 				// Maintain the socket status
+				console.log('Usering the observer');
 				this.updateSocketStatus({
-					networkStatus: 'connected',
+					networkStatus: online ? 'connected' : 'disconnected',
 				});
 			});
 
@@ -85,8 +88,6 @@ export class SocketConnectivity {
 
 	disconnected() {
 		this.updateSocketStatus({ socketStatus: 'disconnected' });
-		const socketStatusObserverResult = { ...this.socketStatus };
-		this.socketStatusObserver.next(socketStatusObserverResult);
 
 		if (this.observer && typeof this.observer.next === 'function') {
 			this.observer.next({ online: false }); // Notify network issue from the socket
@@ -121,10 +122,9 @@ export class SocketConnectivity {
 	private updateSocketStatus(statusUpdates: Partial<SocketStatus>) {
 		// Maintain the socket status
 		const newSocketStatus = { ...this.socketStatus, ...statusUpdates };
-		if (newSocketStatus !== this.socketStatus) {
-			this.socketStatus = { ...this.socketStatus, ...statusUpdates };
-			const socketStatusObserverResult = { ...this.socketStatus };
-			this.socketStatusObserver.next(socketStatusObserverResult);
+		this.socketStatus = { ...this.socketStatus, ...statusUpdates };
+		if (newSocketStatus !== this.socketStatus && this.socketStatusObserver) {
+			this.socketStatusObserver.next({ ...this.socketStatus });
 		}
 	}
 }
