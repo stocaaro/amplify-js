@@ -20,9 +20,9 @@ import {
 
 const logger = new Logger('AbstractPubSubProvider');
 
-export type SubscriptionWithSocketState = {
+export type SubscriptionWithSocketState<T = any> = {
 	socketStatusObservable: Observable<SocketStatus>;
-	dataObservable: Observable<any>;
+	dataObservable: Observable<T>;
 };
 
 export abstract class AbstractPubSubProvider implements PubSubProvider {

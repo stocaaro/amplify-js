@@ -21,6 +21,7 @@ export interface GraphQLOptions {
 	authMode?: keyof typeof GRAPHQL_AUTH_MODE;
 	authToken?: string;
 	reconnect?: boolean;
+	includeSocketState?: boolean;
 }
 
 export interface GraphQLResult<T = object> {

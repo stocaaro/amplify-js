@@ -12,7 +12,10 @@
  */
 import { Auth } from '@aws-amplify/auth';
 import Cache from '@aws-amplify/cache';
-import { AWSAppSyncRealTimeProvider } from '@aws-amplify/pubsub';
+import {
+	AWSAppSyncRealTimeProvider,
+	SubscriptionWithSocketState,
+} from '@aws-amplify/pubsub';
 import { RestAPIClass } from '@aws-amplify/api-rest';
 import {
 	GraphQLAPIClass,
@@ -235,7 +238,10 @@ export class APIClass {
 	graphql<T = any>(
 		options: GraphQLOptions,
 		additionalHeaders?: { [key: string]: string }
-	): Promise<GraphQLResult<any>> | Observable<object> {
+	):
+		| Promise<GraphQLResult<any>>
+		| Observable<object>
+		| SubscriptionWithSocketState {
 		return this._graphqlApi.graphql(options, additionalHeaders);
 	}
 }

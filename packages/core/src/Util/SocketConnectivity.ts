@@ -46,7 +46,6 @@ export class SocketConnectivity {
 			(
 				socketStatusObserver: ZenObservable.SubscriptionObserver<SocketStatus>
 			) => {
-				console.log('Setting the observer');
 				this.socketStatusObserver = socketStatusObserver;
 			}
 		);
@@ -66,7 +65,6 @@ export class SocketConnectivity {
 				this.observer.next(observerResult);
 
 				// Maintain the socket status
-				console.log('Usering the observer');
 				this.updateSocketStatus({
 					networkStatus: online ? 'connected' : 'disconnected',
 				});

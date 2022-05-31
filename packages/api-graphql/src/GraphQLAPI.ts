@@ -26,7 +26,7 @@ import {
 	Credentials,
 	INTERNAL_AWS_APPSYNC_REALTIME_PUBSUB_PROVIDER,
 } from '@aws-amplify/core';
-import PubSub from '@aws-amplify/pubsub';
+import PubSub, { SubscriptionWithSocketState } from '@aws-amplify/pubsub';
 import Auth from '@aws-amplify/auth';
 import Cache from '@aws-amplify/cache';
 import {
@@ -230,9 +230,13 @@ export class GraphQLAPIClass {
 			authMode,
 			authToken,
 			reconnect,
+			includeSocketState,
 		}: GraphQLOptions,
 		additionalHeaders?: { [key: string]: string }
-	): Observable<GraphQLResult<T>> | Promise<GraphQLResult<T>> {
+	):
+		| Observable<GraphQLResult<T>>
+		| Promise<GraphQLResult<T>>
+		| SubscriptionWithSocketState {
 		const query =
 			typeof paramQuery === 'string'
 				? parse(paramQuery)
@@ -268,7 +272,7 @@ export class GraphQLAPIClass {
 				return responsePromise;
 			case 'subscription':
 				return this._graphqlSubscribe(
-					{ query, variables, authMode, reconnect },
+					{ query, variables, authMode, reconnect, includeSocketState },
 					headers
 				);
 			default:
@@ -394,9 +398,10 @@ export class GraphQLAPIClass {
 			authMode: defaultAuthenticationType,
 			authToken,
 			reconnect,
+			includeSocketState,
 		}: GraphQLOptions,
 		additionalHeaders = {}
-	): Observable<any> {
+	): Observable<any> | SubscriptionWithSocketState {
 		const {
 			aws_appsync_region: region,
 			aws_appsync_graphqlEndpoint: appSyncGraphqlEndpoint,
@@ -420,6 +425,7 @@ export class GraphQLAPIClass {
 				additionalHeaders,
 				authToken,
 				reconnect,
+				includeSocketState: true,
 			});
 		} else {
 			logger.debug('No pubsub module applied for subscription');

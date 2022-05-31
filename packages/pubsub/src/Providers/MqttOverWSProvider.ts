@@ -96,17 +96,12 @@ export class MqttOverWSProvider extends AbstractPubSubProvider {
 
 	constructor(options: MqttProviderOptions = {}) {
 		super({ ...options, clientId: options.clientId || uuid() });
-		console.log('asd');
-		console.log(this.options);
 		this._socketConnectivity = new SocketConnectivity();
 		this._reconnect = options['reconnect'] ?? false;
 		this._clientsQueue = new ClientsQueue(false);
 	}
 
 	protected get clientId() {
-		console.log('asd');
-		console.log('asd');
-		console.log(this.options);
 		return this.options.clientId;
 	}
 
@@ -183,8 +178,6 @@ export class MqttOverWSProvider extends AbstractPubSubProvider {
 
 	public async newClient({ url, clientId }: MqttProviderOptions): Promise<any> {
 		logger.debug('Creating new MQTT client', clientId);
-		console.log('asd');
-		console.log(this.options);
 		// @ts-ignore
 		const client = new Paho.Client(url, clientId);
 		// client.trace = (args) => logger.debug(clientId, JSON.stringify(args, null, 2));
@@ -300,9 +293,7 @@ export class MqttOverWSProvider extends AbstractPubSubProvider {
 	): Observable<any> | SubscriptionWithSocketState {
 		options = options ?? {};
 		const targetTopics = ([] as string[]).concat(topics);
-		const includeSocketState = options?.includeSocketState;
-		console.log(includeSocketState);
-		console.log('THis is the socket state inclusion thing');
+		const includeSocketState = options?.includeSocketState ?? false;
 		logger.debug('Subscribing to topic(s)', targetTopics.join(','));
 		const subscriptionObservable = new Observable<any>(observer => {
 			targetTopics.forEach(topic => {
@@ -393,7 +384,6 @@ export class MqttOverWSProvider extends AbstractPubSubProvider {
 				return null;
 			};
 		});
-		console.log(this._reconnect);
 		if (includeSocketState) {
 			return {
 				socketStatusObservable: this._socketConnectivity.socketStatusObservable,

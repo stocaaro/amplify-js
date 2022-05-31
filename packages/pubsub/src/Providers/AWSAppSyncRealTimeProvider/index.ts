@@ -141,8 +141,9 @@ export class AWSAppSyncRealTimeProvider extends AbstractPubSubProvider {
 	): Observable<any> | SubscriptionWithSocketState {
 		const appSyncGraphqlEndpoint = options?.appSyncGraphqlEndpoint;
 		const reconnect = options?.reconnect ?? false;
+		const includeSocketState = options?.includeSocketState ?? false;
 
-		return new Observable(observer => {
+		const subscriptionObservable = new Observable(observer => {
 			if (!options || !appSyncGraphqlEndpoint) {
 				observer.error({
 					errors: [
@@ -231,6 +232,15 @@ export class AWSAppSyncRealTimeProvider extends AbstractPubSubProvider {
 				};
 			}
 		});
+
+		if (includeSocketState) {
+			return {
+				socketStatusObservable: this._socketConnectivity.socketStatusObservable,
+				dataObservable: subscriptionObservable,
+			};
+		} else {
+			return subscriptionObservable;
+		}
 	}
 
 	protected get isSSLEnabled() {
