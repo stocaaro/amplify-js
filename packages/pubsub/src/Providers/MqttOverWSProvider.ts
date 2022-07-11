@@ -16,7 +16,10 @@ import Observable from 'zen-observable-ts';
 
 import { AbstractPubSubProvider } from './PubSubProvider';
 import { ProviderOptions, SubscriptionObserver } from '../types';
-import { ConsoleLogger as Logger } from '@aws-amplify/core';
+import { ConsoleLogger as Logger, Hub } from '@aws-amplify/core';
+import { ConnectionStateMonitor } from '../utils/ConnectionStateMonitor';
+import { AMPLIFY_SYMBOL } from './constants';
+import { CONNECTION_STATE_CHANGE } from '..';
 
 const logger = new Logger('MqttOverWSProvider');
 
@@ -72,13 +75,32 @@ class ClientsQueue {
 	}
 }
 
+const dispatchPubSubEvent = (event: string, data: any, message: string) => {
+	Hub.dispatch('pubsub', { event, data, message }, 'PubSub', AMPLIFY_SYMBOL);
+};
+
 const topicSymbol = typeof Symbol !== 'undefined' ? Symbol('topic') : '@@topic';
 
 export class MqttOverWSProvider extends AbstractPubSubProvider {
 	private _clientsQueue = new ClientsQueue();
+	private readonly connectionStateMonitor = new ConnectionStateMonitor();
 
 	constructor(options: MqttProviderOptions = {}) {
 		super({ ...options, clientId: options.clientId || uuid() });
+
+		// Monitor the connection health state and pass changes along to Hub
+		this.connectionStateMonitor.connectionStateObservable.subscribe(
+			connectionStateChange => {
+				dispatchPubSubEvent(
+					CONNECTION_STATE_CHANGE,
+					{
+						provider: this,
+						connectionState: connectionStateChange,
+					},
+					`Connection state is ${connectionStateChange}`
+				);
+			}
+		);
 	}
 
 	protected get clientId() {
@@ -149,6 +171,7 @@ export class MqttOverWSProvider extends AbstractPubSubProvider {
 	public async newClient({ url, clientId }: MqttProviderOptions): Promise<any> {
 		logger.debug('Creating new MQTT client', clientId);
 
+		this.connectionStateMonitor.openingConnection();
 		// @ts-ignore
 		const client = new Paho.Client(url, clientId);
 		// client.trace = (args) => logger.debug(clientId, JSON.stringify(args, null, 2));
@@ -175,9 +198,14 @@ export class MqttOverWSProvider extends AbstractPubSubProvider {
 				useSSL: this.isSSLEnabled,
 				mqttVersion: 3,
 				onSuccess: () => resolve(client),
-				onFailure: reject,
+				onFailure: () => {
+					reject();
+					this.connectionStateMonitor.connectionFailed();
+				},
 			});
 		});
+
+		this.connectionStateMonitor.connectionEstablished();
 
 		return client;
 	}
@@ -196,6 +224,7 @@ export class MqttOverWSProvider extends AbstractPubSubProvider {
 
 		if (client && client.isConnected()) {
 			client.disconnect();
+			this.connectionStateMonitor.closed();
 		}
 		this.clientsQueue.remove(clientId);
 	}
@@ -293,6 +322,8 @@ export class MqttOverWSProvider extends AbstractPubSubProvider {
 					this._clientIdObservers.get(clientId)?.delete(observer);
 					// No more observers per client => client not needed anymore
 					if (this._clientIdObservers.get(clientId)?.size === 0) {
+						this.connectionStateMonitor.closing();
+
 						this.disconnect(clientId);
 						this._clientIdObservers.delete(clientId);
 					}

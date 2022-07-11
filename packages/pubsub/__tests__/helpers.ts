@@ -1,7 +1,7 @@
 import { Hub } from '@aws-amplify/core';
 import Observable from 'zen-observable-ts';
 import { ConnectionState, CONNECTION_STATE_CHANGE } from '../src';
-import * as constants from '../src/Providers/AWSAppSyncRealTimeProvider/constants';
+import * as constants from '../src/Providers/constants';
 
 export function delay(timeout) {
 	return new Promise(resolve => {
@@ -11,37 +11,26 @@ export function delay(timeout) {
 	});
 }
 
-export class FakeWebSocketInterface {
-	readonly webSocket: FakeWebSocket;
-	readyForUse: Promise<void>;
-	hasClosed: Promise<undefined>;
+export class HubConnectionListener {
 	teardownHubListener: () => void;
 	observedConnectionStates: ConnectionState[] = [];
 	currentConnectionState: ConnectionState;
 
-	private readyResolve: (value: PromiseLike<any>) => void;
 	private connectionStateObservers: ZenObservable.Observer<ConnectionState>[] =
 		[];
 
-	constructor() {
-		this.readyForUse = new Promise((res, rej) => {
-			this.readyResolve = res;
-		});
+	constructor(channel: string) {
 		let closeResolver: (value: PromiseLike<any>) => void;
-		this.hasClosed = new Promise((res, rej) => {
-			closeResolver = res;
-		});
-		this.webSocket = new FakeWebSocket(() => closeResolver);
 
-		this.teardownHubListener = Hub.listen('api', (data: any) => {
+		this.teardownHubListener = Hub.listen(channel, (data: any) => {
 			const { payload } = data;
 			if (payload.event === CONNECTION_STATE_CHANGE) {
-				const connectionState = payload.data.connectionState as ConnectionState;
-				this.observedConnectionStates.push(connectionState);
+				const State = payload.data.connectionState as ConnectionState;
+				this.observedConnectionStates.push(State);
 				this.connectionStateObservers.forEach(observer => {
-					observer?.next?.(connectionState);
+					observer?.next?.(State);
 				});
-				this.currentConnectionState = connectionState;
+				this.currentConnectionState = State;
 			}
 		});
 	}
@@ -66,6 +55,62 @@ export class FakeWebSocketInterface {
 		this.connectionStateObservers.forEach(observer => {
 			observer?.complete?.();
 		});
+	}
+
+	async waitForConnectionState(connectionStates: ConnectionState[]) {
+		return new Promise<void>((res, rej) => {
+			this.connectionStateObserver().subscribe(value => {
+				if (connectionStates.includes(String(value) as ConnectionState)) {
+					res(undefined);
+				}
+			});
+		});
+	}
+
+	async waitUntilConnectionStateIn(connectionStates: ConnectionState[]) {
+		return new Promise<void>((res, rej) => {
+			if (connectionStates.includes(this.currentConnectionState)) {
+				res(undefined);
+			}
+			res(this.waitForConnectionState(connectionStates));
+		});
+	}
+}
+
+export class FakeWebSocketInterface {
+	readonly webSocket: FakeWebSocket;
+	readyForUse: Promise<void>;
+	hasClosed: Promise<undefined>;
+	hubConnectionListener: HubConnectionListener;
+
+	private readyResolve: (value: PromiseLike<any>) => void;
+
+	constructor() {
+		this.hubConnectionListener = new HubConnectionListener('api');
+		this.readyForUse = new Promise((res, rej) => {
+			this.readyResolve = res;
+		});
+		let closeResolver: (value: PromiseLike<any>) => void;
+		this.hasClosed = new Promise((res, rej) => {
+			closeResolver = res;
+		});
+		this.webSocket = new FakeWebSocket(() => closeResolver);
+	}
+
+	get observedConnectionStates() {
+		return this.hubConnectionListener.observedConnectionStates;
+	}
+
+	allConnectionStateObserver() {
+		return this.hubConnectionListener.allConnectionStateObserver();
+	}
+
+	connectionStateObserver() {
+		return this.hubConnectionListener.connectionStateObserver();
+	}
+
+	teardown() {
+		this.hubConnectionListener.teardown();
 	}
 
 	async standardConnectionHandshake() {
@@ -166,22 +211,13 @@ export class FakeWebSocketInterface {
 	}
 
 	async waitForConnectionState(connectionStates: ConnectionState[]) {
-		return new Promise<void>((res, rej) => {
-			this.connectionStateObserver().subscribe(value => {
-				if (connectionStates.includes(String(value) as ConnectionState)) {
-					res(undefined);
-				}
-			});
-		});
+		return this.hubConnectionListener.waitForConnectionState(connectionStates);
 	}
 
 	async waitUntilConnectionStateIn(connectionStates: ConnectionState[]) {
-		return new Promise<void>((res, rej) => {
-			if (connectionStates.includes(this.currentConnectionState)) {
-				res(undefined);
-			}
-			res(this.waitForConnectionState(connectionStates));
-		});
+		return this.hubConnectionListener.waitUntilConnectionStateIn(
+			connectionStates
+		);
 	}
 }
 
