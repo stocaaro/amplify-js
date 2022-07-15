@@ -166,12 +166,24 @@ export class FakeWebSocketInterface {
 		return this.webSocket;
 	}
 
-	async handShakeMessage() {
+	async handShakeMessage(payload = { connectionTimeoutMs: 100_000 }) {
 		await this.sendMessage(
-			new MessageEvent('connection_ack', {
+			new MessageEvent(constants.MESSAGE_TYPES.GQL_CONNECTION_ACK, {
 				data: JSON.stringify({
 					type: constants.MESSAGE_TYPES.GQL_CONNECTION_ACK,
-					payload: { connectionTimeoutMs: 100_000 },
+					payload: payload,
+				}),
+			})
+		);
+	}
+
+	async startAckMessage(payload = {}) {
+		await this.sendMessage(
+			new MessageEvent(constants.MESSAGE_TYPES.GQL_START_ACK, {
+				data: JSON.stringify({
+					type: constants.MESSAGE_TYPES.GQL_START_ACK,
+					payload: payload,
+					id: this.webSocket.subscriptionId,
 				}),
 			})
 		);

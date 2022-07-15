@@ -126,15 +126,9 @@ describe('AWSAppSyncRealTimeProvider', () => {
 
 					// Wait for the socket to be ready
 					await fakeWebSocketInterface?.standardConnectionHandshake();
-					await fakeWebSocketInterface?.sendMessage(
-						new MessageEvent('start_ack', {
-							data: JSON.stringify({
-								type: MESSAGE_TYPES.GQL_START_ACK,
-								payload: { connectionTimeoutMs: 100 },
-								id: fakeWebSocketInterface?.webSocket.subscriptionId,
-							}),
-						})
-					);
+					await fakeWebSocketInterface?.startAckMessage({
+						connectionTimeoutMs: 100,
+					});
 
 					await fakeWebSocketInterface?.waitUntilConnectionStateIn([
 						'Connected',
@@ -382,15 +376,9 @@ describe('AWSAppSyncRealTimeProvider', () => {
 						error: () => {},
 					});
 					await fakeWebSocketInterface?.standardConnectionHandshake();
-					await fakeWebSocketInterface?.sendMessage(
-						new MessageEvent('start_ack', {
-							data: JSON.stringify({
-								type: MESSAGE_TYPES.GQL_START_ACK,
-								payload: { connectionTimeoutMs: 100 },
-								id: fakeWebSocketInterface?.webSocket.subscriptionId,
-							}),
-						})
-					);
+					await fakeWebSocketInterface?.startAckMessage({
+						connectionTimeoutMs: 100,
+					});
 					await fakeWebSocketInterface?.sendDataMessage({
 						type: MESSAGE_TYPES.GQL_DATA,
 						payload: { data: {} },
@@ -414,15 +402,9 @@ describe('AWSAppSyncRealTimeProvider', () => {
 						error: () => {},
 					});
 					await fakeWebSocketInterface?.standardConnectionHandshake();
-					await fakeWebSocketInterface?.sendMessage(
-						new MessageEvent('start_ack', {
-							data: JSON.stringify({
-								type: MESSAGE_TYPES.GQL_START_ACK,
-								payload: { connectionTimeoutMs: 100 },
-								id: fakeWebSocketInterface?.webSocket.subscriptionId,
-							}),
-						})
-					);
+					await fakeWebSocketInterface?.startAckMessage({
+						connectionTimeoutMs: 100,
+					});
 					await fakeWebSocketInterface?.sendDataMessage({
 						type: MESSAGE_TYPES.GQL_DATA,
 						payload: { data: {} },
@@ -572,24 +554,11 @@ describe('AWSAppSyncRealTimeProvider', () => {
 						async () => {
 							await fakeWebSocketInterface?.readyForUse;
 							await fakeWebSocketInterface?.triggerOpen();
-							await fakeWebSocketInterface?.sendMessage(
-								new MessageEvent('connection_ack', {
-									data: JSON.stringify({
-										type: constants.MESSAGE_TYPES.GQL_CONNECTION_ACK,
-										payload: { connectionTimeoutMs: 100 },
-									}),
-								})
-							);
+							await fakeWebSocketInterface?.handShakeMessage({
+								connectionTimeoutMs: 100,
+							});
 
-							await fakeWebSocketInterface?.sendMessage(
-								new MessageEvent('start_ack', {
-									data: JSON.stringify({
-										type: MESSAGE_TYPES.GQL_START_ACK,
-										payload: {},
-										id: fakeWebSocketInterface?.webSocket.subscriptionId,
-									}),
-								})
-							);
+							await fakeWebSocketInterface?.startAckMessage();
 
 							await fakeWebSocketInterface?.sendDataMessage({
 								type: MESSAGE_TYPES.GQL_CONNECTION_KEEP_ALIVE,
@@ -629,24 +598,10 @@ describe('AWSAppSyncRealTimeProvider', () => {
 
 					await fakeWebSocketInterface?.readyForUse;
 					await fakeWebSocketInterface?.triggerOpen();
-					await fakeWebSocketInterface?.sendMessage(
-						new MessageEvent('connection_ack', {
-							data: JSON.stringify({
-								type: constants.MESSAGE_TYPES.GQL_CONNECTION_ACK,
-								payload: { connectionTimeoutMs: 100 },
-							}),
-						})
-					);
-
-					await fakeWebSocketInterface?.sendMessage(
-						new MessageEvent('start_ack', {
-							data: JSON.stringify({
-								type: MESSAGE_TYPES.GQL_START_ACK,
-								payload: {},
-								id: fakeWebSocketInterface?.webSocket.subscriptionId,
-							}),
-						})
-					);
+					await fakeWebSocketInterface?.handShakeMessage({
+						connectionTimeoutMs: 100,
+					});
+					await fakeWebSocketInterface?.startAckMessage();
 
 					await fakeWebSocketInterface?.sendDataMessage({
 						type: MESSAGE_TYPES.GQL_CONNECTION_KEEP_ALIVE,
@@ -665,16 +620,7 @@ describe('AWSAppSyncRealTimeProvider', () => {
 					await fakeWebSocketInterface?.triggerOpen();
 
 					await fakeWebSocketInterface?.handShakeMessage();
-
-					fakeWebSocketInterface?.sendMessage(
-						new MessageEvent('start_ack', {
-							data: JSON.stringify({
-								type: MESSAGE_TYPES.GQL_START_ACK,
-								payload: {},
-								id: fakeWebSocketInterface?.webSocket.subscriptionId,
-							}),
-						})
-					);
+					await fakeWebSocketInterface?.startAckMessage();
 
 					// Wait until the socket is automatically reconnected
 					await fakeWebSocketInterface?.waitUntilConnectionStateIn([
@@ -701,25 +647,8 @@ describe('AWSAppSyncRealTimeProvider', () => {
 					const subscription = observer.subscribe({ error: () => {} });
 					// Resolve the message delivery actions
 
-					await fakeWebSocketInterface?.readyForUse;
-					await fakeWebSocketInterface?.triggerOpen();
-					await fakeWebSocketInterface?.sendMessage(
-						new MessageEvent('connection_ack', {
-							data: JSON.stringify({
-								type: constants.MESSAGE_TYPES.GQL_CONNECTION_ACK,
-							}),
-						})
-					);
-
-					await fakeWebSocketInterface?.sendMessage(
-						new MessageEvent('start_ack', {
-							data: JSON.stringify({
-								type: MESSAGE_TYPES.GQL_START_ACK,
-								payload: {},
-								id: fakeWebSocketInterface?.webSocket.subscriptionId,
-							}),
-						})
-					);
+					await fakeWebSocketInterface?.standardConnectionHandshake();
+					await fakeWebSocketInterface?.startAckMessage();
 
 					await fakeWebSocketInterface?.waitUntilConnectionStateIn([
 						'Connected',
@@ -748,15 +677,7 @@ describe('AWSAppSyncRealTimeProvider', () => {
 					await fakeWebSocketInterface?.triggerOpen();
 					await fakeWebSocketInterface?.handShakeMessage();
 
-					fakeWebSocketInterface?.sendMessage(
-						new MessageEvent('start_ack', {
-							data: JSON.stringify({
-								type: MESSAGE_TYPES.GQL_START_ACK,
-								payload: {},
-								id: fakeWebSocketInterface?.webSocket.subscriptionId,
-							}),
-						})
-					);
+					await fakeWebSocketInterface?.startAckMessage();
 
 					// Wait until the socket is automatically reconnected
 					await fakeWebSocketInterface?.waitUntilConnectionStateIn([
