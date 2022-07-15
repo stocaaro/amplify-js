@@ -25,12 +25,12 @@ export class HubConnectionListener {
 		this.teardownHubListener = Hub.listen(channel, (data: any) => {
 			const { payload } = data;
 			if (payload.event === CONNECTION_STATE_CHANGE) {
-				const State = payload.data.connectionState as ConnectionState;
-				this.observedConnectionStates.push(State);
+				const state = payload.data.connectionState as ConnectionState;
+				this.observedConnectionStates.push(state);
 				this.connectionStateObservers.forEach(observer => {
-					observer?.next?.(State);
+					observer?.next?.(state);
 				});
-				this.currentConnectionState = State;
+				this.currentConnectionState = state;
 			}
 		});
 	}

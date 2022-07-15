@@ -25,11 +25,7 @@ import {
 	Reachability,
 } from '@aws-amplify/core';
 import * as Paho from 'paho-mqtt';
-import {
-	ConnectionState,
-	ConnectionState,
-	CONNECTION_STATE_CHANGE,
-} from '../src';
+import { ConnectionState, CONNECTION_STATE_CHANGE } from '../src';
 import { HubConnectionListener } from './helpers';
 import Observable from 'zen-observable-ts';
 
@@ -328,7 +324,7 @@ describe('PubSub', () => {
 				hubConnectionListener = new HubConnectionListener('pubsub');
 
 				// Setup a mock of the reachability monitor where the initial value is online.
-				const spyon = jest
+				jest
 					.spyOn(Reachability.prototype, 'networkMonitor')
 					.mockImplementationOnce(
 						() =>

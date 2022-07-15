@@ -78,8 +78,19 @@ describe('AWSAppSyncRealTimeProvider', () => {
 				);
 
 				let provider: AWSAppSyncRealTimeProvider;
+				let reachabilityObserver: ZenObservable.Observer<{ online: boolean }>;
 
 				beforeEach(async () => {
+					// Set the network to "online" for these tests
+					jest
+						.spyOn(Reachability.prototype, 'networkMonitor')
+						.mockImplementation(
+							() =>
+								new Observable(observer => {
+									reachabilityObserver = observer;
+								})
+						);
+
 					fakeWebSocketInterface = new FakeWebSocketInterface();
 					provider = new AWSAppSyncRealTimeProvider();
 
@@ -95,16 +106,6 @@ describe('AWSAppSyncRealTimeProvider', () => {
 					Object.defineProperty(constants, 'MAX_DELAY_MS', {
 						value: 100,
 					});
-
-					// Set the network to "online" for these tests
-					const spyon = jest
-						.spyOn(Reachability.prototype, 'networkMonitor')
-						.mockImplementationOnce(
-							() =>
-								new Observable(observer => {
-									observer.next?.({ online: true });
-								})
-						);
 				});
 
 				afterEach(async () => {
@@ -614,6 +615,164 @@ describe('AWSAppSyncRealTimeProvider', () => {
 						'DEBUG',
 						'Disconnect error: Timeout disconnect'
 					);
+				});
+
+				test('subscription connection disruption triggers automatic reconnection', async () => {
+					expect.assertions(1);
+
+					const observer = provider.subscribe('test', {
+						appSyncGraphqlEndpoint: 'ws://localhost:8080',
+					});
+
+					const subscription = observer.subscribe({ error: () => {} });
+					// Resolve the message delivery actions
+
+					await fakeWebSocketInterface?.readyForUse;
+					await fakeWebSocketInterface?.triggerOpen();
+					await fakeWebSocketInterface?.sendMessage(
+						new MessageEvent('connection_ack', {
+							data: JSON.stringify({
+								type: constants.MESSAGE_TYPES.GQL_CONNECTION_ACK,
+								payload: { connectionTimeoutMs: 100 },
+							}),
+						})
+					);
+
+					await fakeWebSocketInterface?.sendMessage(
+						new MessageEvent('start_ack', {
+							data: JSON.stringify({
+								type: MESSAGE_TYPES.GQL_START_ACK,
+								payload: {},
+								id: fakeWebSocketInterface?.webSocket.subscriptionId,
+							}),
+						})
+					);
+
+					await fakeWebSocketInterface?.sendDataMessage({
+						type: MESSAGE_TYPES.GQL_CONNECTION_KEEP_ALIVE,
+						payload: { data: {} },
+					});
+
+					await fakeWebSocketInterface?.waitUntilConnectionStateIn([
+						'Connected',
+					]);
+
+					// Wait until the socket is automatically disconnected
+					await fakeWebSocketInterface?.waitUntilConnectionStateIn([
+						'ConnectionDisrupted',
+					]);
+
+					await fakeWebSocketInterface?.triggerOpen();
+
+					await fakeWebSocketInterface?.handShakeMessage();
+
+					fakeWebSocketInterface?.sendMessage(
+						new MessageEvent('start_ack', {
+							data: JSON.stringify({
+								type: MESSAGE_TYPES.GQL_START_ACK,
+								payload: {},
+								id: fakeWebSocketInterface?.webSocket.subscriptionId,
+							}),
+						})
+					);
+
+					// Wait until the socket is automatically reconnected
+					await fakeWebSocketInterface?.waitUntilConnectionStateIn([
+						'Connected',
+					]);
+
+					expect(fakeWebSocketInterface?.observedConnectionStates).toEqual([
+						'Disconnected',
+						'Connecting',
+						'Connected',
+						'ConnectionDisrupted',
+						'Connecting',
+						'Connected',
+					]);
+				});
+
+				test('subscription connection disruption by network outage triggers automatic reconnection once network recovers', async () => {
+					expect.assertions(1);
+
+					const observer = provider.subscribe('test', {
+						appSyncGraphqlEndpoint: 'ws://localhost:8080',
+					});
+
+					const subscription = observer.subscribe({ error: () => {} });
+					// Resolve the message delivery actions
+
+					await fakeWebSocketInterface?.readyForUse;
+					await fakeWebSocketInterface?.triggerOpen();
+					await fakeWebSocketInterface?.sendMessage(
+						new MessageEvent('connection_ack', {
+							data: JSON.stringify({
+								type: constants.MESSAGE_TYPES.GQL_CONNECTION_ACK,
+							}),
+						})
+					);
+
+					await fakeWebSocketInterface?.sendMessage(
+						new MessageEvent('start_ack', {
+							data: JSON.stringify({
+								type: MESSAGE_TYPES.GQL_START_ACK,
+								payload: {},
+								id: fakeWebSocketInterface?.webSocket.subscriptionId,
+							}),
+						})
+					);
+
+					await fakeWebSocketInterface?.waitUntilConnectionStateIn([
+						'Connected',
+					]);
+
+					reachabilityObserver?.next?.({ online: false });
+
+					await fakeWebSocketInterface?.waitUntilConnectionStateIn([
+						'ConnectedPendingNetwork',
+					]);
+
+					fakeWebSocketInterface?.closeInterface();
+
+					// Wait until the socket is automatically disconnected
+					await fakeWebSocketInterface?.waitUntilConnectionStateIn([
+						'ConnectionDisruptedPendingNetwork',
+					]);
+
+					reachabilityObserver?.next?.({ online: true });
+
+					// Wait until the socket is automatically disconnected
+					await fakeWebSocketInterface?.waitUntilConnectionStateIn([
+						'ConnectionDisrupted',
+					]);
+
+					await fakeWebSocketInterface?.triggerOpen();
+					await fakeWebSocketInterface?.handShakeMessage();
+
+					fakeWebSocketInterface?.sendMessage(
+						new MessageEvent('start_ack', {
+							data: JSON.stringify({
+								type: MESSAGE_TYPES.GQL_START_ACK,
+								payload: {},
+								id: fakeWebSocketInterface?.webSocket.subscriptionId,
+							}),
+						})
+					);
+
+					// Wait until the socket is automatically reconnected
+					await fakeWebSocketInterface?.waitUntilConnectionStateIn([
+						'Connected',
+					]);
+
+					expect(fakeWebSocketInterface?.observedConnectionStates).toEqual([
+						'Disconnected',
+						'Connecting',
+						'Connected',
+						'ConnectedPendingNetwork',
+						'ConnectionDisruptedPendingNetwork',
+						'ConnectionDisrupted',
+						'Connecting',
+						'Connected',
+					]);
 				});
 
 				test('socket is closed when subscription is closed', async () => {
