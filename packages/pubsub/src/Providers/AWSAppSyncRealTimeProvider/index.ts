@@ -556,6 +556,8 @@ export class AWSAppSyncRealTimeProvider extends AbstractPubSubProvider {
 
 		if (this.awsRealTimeSocket) {
 			this.connectionStateMonitor.closed();
+			this.awsRealTimeSocket.onclose = null;
+			this.awsRealTimeSocket.onerror = null;
 			this.awsRealTimeSocket.close();
 		}
 
