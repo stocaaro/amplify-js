@@ -12,12 +12,15 @@
  */
 import * as Paho from 'paho-mqtt';
 import { v4 as uuid } from 'uuid';
-import Observable from 'zen-observable-ts';
+import Observable, { Observer, ZenObservable } from 'zen-observable-ts';
 
 import { AbstractPubSubProvider } from './PubSubProvider';
 import { ProviderOptions, SubscriptionObserver } from '../types';
 import { ConsoleLogger as Logger, Hub } from '@aws-amplify/core';
-import { ConnectionStateMonitor } from '../utils/ConnectionStateMonitor';
+import {
+	ConnectionState,
+	ConnectionStateMonitor,
+} from '../utils/ConnectionStateMonitor';
 import { AMPLIFY_SYMBOL } from './constants';
 import { CONNECTION_STATE_CHANGE } from '..';
 
@@ -52,17 +55,19 @@ class ClientsQueue {
 
 	async get(clientId: string, clientFactory?: (input: string) => Promise<any>) {
 		const cachedPromise = this.promises.get(clientId);
-		if (cachedPromise) {
-			return cachedPromise;
-		}
-
-		if (clientFactory) {
+		if (cachedPromise === undefined && clientFactory) {
 			const newPromise = clientFactory(clientId);
-
 			this.promises.set(clientId, newPromise);
-
 			return newPromise;
 		}
+
+		try {
+			const cachedClient = await cachedPromise;
+			if (cachedClient) return cachedClient;
+		} catch (error) {
+			logger.warn('Client error when attempting to use cached client', error);
+		}
+
 		return undefined;
 	}
 
@@ -84,9 +89,13 @@ const topicSymbol = typeof Symbol !== 'undefined' ? Symbol('topic') : '@@topic';
 export class MqttOverWSProvider extends AbstractPubSubProvider {
 	private _clientsQueue = new ClientsQueue();
 	private readonly connectionStateMonitor = new ConnectionStateMonitor();
+	private reconnectObservers: Observer<void>[];
+	private connectionState: ConnectionState;
 
 	constructor(options: MqttProviderOptions = {}) {
 		super({ ...options, clientId: options.clientId || uuid() });
+
+		this.reconnectObservers = [];
 
 		// Monitor the connection health state and pass changes along to Hub
 		this.connectionStateMonitor.connectionStateObservable.subscribe(
@@ -99,6 +108,15 @@ export class MqttOverWSProvider extends AbstractPubSubProvider {
 					},
 					`Connection state is ${connectionStateChange}`
 				);
+
+				this.connectionState = connectionStateChange;
+
+				// Trigger reconnection when the connection is disrupted
+				if ('ConnectionDisrupted' === connectionStateChange) {
+					this.reconnectObservers.forEach(reconnectObserver => {
+						reconnectObserver.next?.();
+					});
+				}
 			}
 		);
 	}
@@ -147,24 +165,7 @@ export class MqttOverWSProvider extends AbstractPubSubProvider {
 			if (!clientIdObservers) {
 				return;
 			}
-			clientIdObservers.forEach(observer => {
-				observer.error('Disconnected, error code: ' + errorCode);
-				// removing observers for disconnected clientId
-				this._topicObservers.forEach((observerForTopic, observerTopic) => {
-					observerForTopic.delete(observer);
-					if (observerForTopic.size === 0) {
-						topicsToDelete.push(observerTopic);
-					}
-				});
-			});
-
-			// forgiving any trace of clientId
-			this._clientIdObservers.delete(clientId);
-
-			// Removing topics that are not listen by an observer
-			topicsToDelete.forEach(topic => {
-				this._topicObservers.delete(topic);
-			});
+			this.disconnect(clientId);
 		}
 	}
 
@@ -214,19 +215,25 @@ export class MqttOverWSProvider extends AbstractPubSubProvider {
 		clientId: string,
 		options: MqttProviderOptions = {}
 	): Promise<any> {
-		return await this.clientsQueue.get(clientId, clientId =>
-			this.newClient({ ...options, clientId })
-		);
+		return await this.clientsQueue.get(clientId, async clientId => {
+			const client = await this.newClient({ ...options, clientId });
+			this._topicObservers.forEach(
+				(_value: Set<SubscriptionObserver<any>>, key: string) => {
+					client.subscribe(key);
+				}
+			);
+			return client;
+		});
 	}
 
 	protected async disconnect(clientId: string): Promise<void> {
 		const client = await this.clientsQueue.get(clientId);
+		this.clientsQueue.remove(clientId);
 
 		if (client && client.isConnected()) {
 			client.disconnect();
-			this.connectionStateMonitor.closed();
 		}
-		this.clientsQueue.remove(clientId);
+		this.connectionStateMonitor.closed();
 	}
 
 	async publish(topics: string[] | string, msg: any) {
@@ -275,6 +282,8 @@ export class MqttOverWSProvider extends AbstractPubSubProvider {
 	): Observable<any> {
 		const targetTopics = ([] as string[]).concat(topics);
 		logger.debug('Subscribing to topic(s)', targetTopics.join(','));
+		let reconnectSubscription: ZenObservable.Subscription | undefined =
+			undefined;
 
 		return new Observable(observer => {
 			targetTopics.forEach(topic => {
@@ -303,28 +312,40 @@ export class MqttOverWSProvider extends AbstractPubSubProvider {
 			this._clientIdObservers.set(clientId, observersForClientId);
 
 			(async () => {
-				const { url = await this.endpoint } = options;
+				const getClient = async () => {
+					try {
+						const { url = await this.endpoint } = options;
+						client = await this.connect(clientId, { url });
+						targetTopics.forEach(topic => {
+							client.subscribe(topic);
+						});
+					} catch (e) {
+						observer.error(e);
+					}
+				};
 
-				try {
-					client = await this.connect(clientId, { url });
-					targetTopics.forEach(topic => {
-						client.subscribe(topic);
-					});
-				} catch (e) {
-					observer.error(e);
-				}
+				// Establish the initial connection
+				await getClient();
+
+				// Add an observable to the reconnection list to manage reconnection for this subscription
+				reconnectSubscription = new Observable(observer => {
+					this.reconnectObservers.push(observer);
+				}).subscribe(() => {
+					getClient();
+				});
 			})();
 
 			return () => {
 				logger.debug('Unsubscribing from topic(s)', targetTopics.join(','));
 
+				reconnectSubscription?.unsubscribe();
+
 				if (client) {
 					this._clientIdObservers.get(clientId)?.delete(observer);
 					// No more observers per client => client not needed anymore
 					if (this._clientIdObservers.get(clientId)?.size === 0) {
-						this.connectionStateMonitor.closing();
-
 						this.disconnect(clientId);
+						this.connectionStateMonitor.closing();
 						this._clientIdObservers.delete(clientId);
 					}
 
