@@ -299,8 +299,6 @@ export class MqttOverWSProvider extends AbstractPubSubProvider {
 				observersForTopic.add(observer);
 			});
 
-			// @ts-ignore
-			let client: Paho.Client;
 			const { clientId = this.clientId } = options;
 
 			// this._clientIdObservers is used to close observers when client gets disconnected
@@ -315,7 +313,7 @@ export class MqttOverWSProvider extends AbstractPubSubProvider {
 				const getClient = async () => {
 					try {
 						const { url = await this.endpoint } = options;
-						client = await this.connect(clientId, { url });
+						const client = await this.connect(clientId, { url });
 						targetTopics.forEach(topic => {
 							client.subscribe(topic);
 						});
@@ -336,35 +334,37 @@ export class MqttOverWSProvider extends AbstractPubSubProvider {
 			})();
 
 			return () => {
-				logger.debug('Unsubscribing from topic(s)', targetTopics.join(','));
+				(async () => {
+					const client = await this.clientsQueue.get(clientId);
 
-				reconnectSubscription?.unsubscribe();
+					reconnectSubscription?.unsubscribe();
 
-				if (client) {
-					this._clientIdObservers.get(clientId)?.delete(observer);
-					// No more observers per client => client not needed anymore
-					if (this._clientIdObservers.get(clientId)?.size === 0) {
-						this.disconnect(clientId);
-						this.connectionStateMonitor.closing();
-						this._clientIdObservers.delete(clientId);
-					}
-
-					targetTopics.forEach(topic => {
-						const observersForTopic =
-							this._topicObservers.get(topic) ||
-							(new Set() as Set<SubscriptionObserver<any>>);
-
-						observersForTopic.delete(observer);
-
-						// if no observers exists for the topic, topic should be removed
-						if (observersForTopic.size === 0) {
-							this._topicObservers.delete(topic);
-							if (client.isConnected()) {
-								client.unsubscribe(topic);
-							}
+					if (client) {
+						this._clientIdObservers.get(clientId)?.delete(observer);
+						// No more observers per client => client not needed anymore
+						if (this._clientIdObservers.get(clientId)?.size === 0) {
+							this.disconnect(clientId);
+							this.connectionStateMonitor.closing();
+							this._clientIdObservers.delete(clientId);
 						}
-					});
-				}
+
+						targetTopics.forEach(topic => {
+							const observersForTopic =
+								this._topicObservers.get(topic) ||
+								(new Set() as Set<SubscriptionObserver<any>>);
+
+							observersForTopic.delete(observer);
+
+							// if no observers exists for the topic, topic should be removed
+							if (observersForTopic.size === 0) {
+								this._topicObservers.delete(topic);
+								if (client.isConnected()) {
+									client.unsubscribe(topic);
+								}
+							}
+						});
+					}
+				})();
 
 				return null;
 			};

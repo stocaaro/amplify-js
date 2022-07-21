@@ -275,7 +275,8 @@ describe('PubSub', () => {
 			});
 		});
 
-		test('trigger observer error when disconnected', done => {
+		test('trigger reconnection when disconnected', async () => {
+			let hubConnectionListener = new HubConnectionListener('pubsub');
 			const pubsub = new PubSub();
 
 			const awsIotProvider = new AWSIoTProvider({
@@ -284,11 +285,23 @@ describe('PubSub', () => {
 			});
 			pubsub.addPluggable(awsIotProvider);
 
-			pubsub.subscribe('topic', { clientId: '123' }).subscribe({
-				error: () => done(),
-			});
+			pubsub.subscribe('topic', { clientId: '123' }).subscribe({});
+
+			await hubConnectionListener.waitUntilConnectionStateIn(['Connected']);
 
 			awsIotProvider.onDisconnect({ errorCode: 1, clientId: '123' });
+			await hubConnectionListener.waitUntilConnectionStateIn([
+				'ConnectionDisrupted',
+			]);
+			await hubConnectionListener.waitUntilConnectionStateIn(['Connected']);
+			expect(hubConnectionListener.observedConnectionStates).toEqual([
+				'Disconnected',
+				'Connecting',
+				'Connected',
+				'ConnectionDisrupted',
+				'Connecting',
+				'Connected',
+			]);
 		});
 
 		test('should remove MqttOverWSProvider', () => {
@@ -347,10 +360,8 @@ describe('PubSub', () => {
 				const sub = pubsub.subscribe('topic', { clientId: '123' }).subscribe({
 					error: () => {},
 				});
-
 				await hubConnectionListener.waitUntilConnectionStateIn(['Connected']);
 				sub.unsubscribe();
-				awsIotProvider.onDisconnect({ errorCode: 1, clientId: '123' });
 				await hubConnectionListener.waitUntilConnectionStateIn([
 					'Disconnected',
 				]);
@@ -417,7 +428,7 @@ describe('PubSub', () => {
 
 				awsIotProvider.onDisconnect({ errorCode: 1, clientId: '123' });
 				await hubConnectionListener.waitUntilConnectionStateIn([
-					'Disconnected',
+					'ConnectionDisruptedPendingNetwork',
 				]);
 
 				expect(hubConnectionListener.observedConnectionStates).toEqual([
@@ -425,7 +436,7 @@ describe('PubSub', () => {
 					'Connecting',
 					'Connected',
 					'ConnectedPendingNetwork',
-					'Disconnected',
+					'ConnectionDisruptedPendingNetwork',
 				]);
 			});
 		});
@@ -548,6 +559,7 @@ describe('PubSub', () => {
 		});
 
 		test('On unsubscribe when is the last observer it should disconnect the websocket', async () => {
+			const hubConnectionListener = new HubConnectionListener('pubsub');
 			const pubsub = new PubSub();
 
 			const spyDisconnect = jest.spyOn(
@@ -567,14 +579,12 @@ describe('PubSub', () => {
 				error: error => console.log('error', error),
 			});
 
-			// TODO: we should now when the connection is established to wait for that first
-			await (() => {
-				return new Promise(res => {
-					setTimeout(res, 100);
-				});
-			})();
+			await hubConnectionListener.waitUntilConnectionStateIn(['Connected']);
 
 			subscription1.unsubscribe();
+
+			await hubConnectionListener.waitUntilConnectionStateIn(['Disconnected']);
+
 			expect(spyDisconnect).toHaveBeenCalled();
 			spyDisconnect.mockClear();
 		});

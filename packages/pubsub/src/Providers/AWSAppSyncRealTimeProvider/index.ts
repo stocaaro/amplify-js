@@ -111,7 +111,7 @@ export class AWSAppSyncRealTimeProvider extends AbstractPubSubProvider {
 					CONNECTION_STATE_CHANGE,
 					{
 						provider: this,
-						connectionState: connectionState,
+						connectionState,
 					},
 					`Connection state is ${connectionState}`
 				);
@@ -170,7 +170,7 @@ export class AWSAppSyncRealTimeProvider extends AbstractPubSubProvider {
 				observer.complete();
 			} else {
 				let subscriptionStartActive = false;
-				let subscriptionId = uuid();
+				const subscriptionId = uuid();
 				const startSubscription = () => {
 					if (!subscriptionStartActive) {
 						subscriptionStartActive = true;
@@ -705,7 +705,6 @@ export class AWSAppSyncRealTimeProvider extends AbstractPubSubProvider {
 					newSocket.onopen = () => {
 						this.awsRealTimeSocket = newSocket;
 						res();
-						//return Promise.resolve();
 					};
 				});
 			})();
