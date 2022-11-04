@@ -1,21 +1,11 @@
-/*
- * Copyright 2017-2022 Amazon.com, Inc. or its affiliates. All Rights Reserved.
- *
- * Licensed under the Apache License, Version 2.0 (the "License"). You may not use this file except in compliance with
- * the License. A copy of the License is located at
- *
- *     http://aws.amazon.com/apache2.0/
- *
- * or in the "license" file accompanying this file. This file is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR
- * CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language governing permissions
- * and limitations under the License.
- */
+// Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved.
+// SPDX-License-Identifier: Apache-2.0
 
 import {
 	Amplify,
 	ConsoleLogger as Logger,
 	Hub,
-	Parser,
+	parseAWSExports,
 } from '@aws-amplify/core';
 import { AWSPinpointProvider } from './Providers/AWSPinpointProvider';
 
@@ -95,7 +85,7 @@ export class AnalyticsClass {
 	public configure(config?) {
 		if (!config) return this._config;
 		logger.debug('configure Analytics', config);
-		const amplifyConfig = Parser.parseMobilehubConfig(config);
+		const amplifyConfig = parseAWSExports(config);
 		this._config = Object.assign(
 			{},
 			this._config,
@@ -217,7 +207,15 @@ export class AnalyticsClass {
 	 * @return - A promise which resolves if buffer doesn't overflow
 	 */
 	public async startSession(provider?: string) {
-		const params = { event: { name: '_session.start' }, provider };
+		const event = { name: '_session.start' };
+		const params = { event, provider };
+
+		dispatchAnalyticsEvent(
+			'record',
+			event,
+			'Recording Analytics session start event'
+		);
+
 		return this._sendEvent(params);
 	}
 
@@ -227,7 +225,15 @@ export class AnalyticsClass {
 	 * @return - A promise which resolves if buffer doesn't overflow
 	 */
 	public async stopSession(provider?: string) {
-		const params = { event: { name: '_session.stop' }, provider };
+		const event = { name: '_session.stop' };
+		const params = { event, provider };
+
+		dispatchAnalyticsEvent(
+			'record',
+			event,
+			'Recording Analytics session stop event'
+		);
+
 		return this._sendEvent(params);
 	}
 
@@ -239,43 +245,11 @@ export class AnalyticsClass {
 	public async record(
 		event: AnalyticsEvent | PersonalizeAnalyticsEvent | KinesisAnalyticsEvent,
 		provider?: string
-	);
-	/**
-	 * Record one analytic event and send it to Pinpoint
-	 * @deprecated Use the new syntax and pass in the event as an object instead.
-	 * @param eventName - The name of the event
-	 * @param [attributes] - Attributes of the event
-	 * @param [metrics] - Event metrics
-	 * @return - A promise which resolves if buffer doesn't overflow
-	 */
-	public async record(
-		eventName: string,
-		attributes?: EventAttributes,
-		metrics?: EventMetrics
-	);
-	public async record(
-		event:
-			| string
-			| AnalyticsEvent
-			| PersonalizeAnalyticsEvent
-			| KinesisAnalyticsEvent,
-		providerOrAttributes?: string | EventAttributes,
-		metrics?: EventMetrics
 	) {
-		let params = null;
-		// this is just for compatibility, going to be deprecated
-		if (typeof event === 'string') {
-			params = {
-				event: {
-					name: event,
-					attributes: providerOrAttributes,
-					metrics,
-				},
-				provider: 'AWSPinpoint',
-			};
-		} else {
-			params = { event, provider: providerOrAttributes };
-		}
+		const params = { event, provider };
+
+		dispatchAnalyticsEvent('record', params.event, 'Recording Analytics event');
+
 		return this._sendEvent(params);
 	}
 
