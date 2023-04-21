@@ -30,7 +30,7 @@ jobs:
       - name: Pwd
         run: pwd # || true
       - name: Build
-        run: npm i # || true
+        run: yarn install # || true
         # Runs Snyk Code (SAST) analysis and uploads result into GitHub.
         # Use || true to not fail the pipeline
       - name: Snyk test
