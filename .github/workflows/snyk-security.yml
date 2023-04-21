@@ -22,7 +22,7 @@ on:
   push:
     branches: ["release" ]
   schedule:
-    - cron: 45 22 * * *'
+    - cron: 45 15 * * *'
 
 permissions:
   contents: read
