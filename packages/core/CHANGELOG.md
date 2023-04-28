@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [5.2.0](https://github.com/aws-amplify/amplify-js/compare/@aws-amplify/core@5.1.12...@aws-amplify/core@5.2.0) (2023-04-28)
+
+### Features
+
+- **core:** Use lerna prepublishOnly version npm publish and use the aws-amplify version ([439475b](https://github.com/aws-amplify/amplify-js/commit/439475bc2b3e9a49983e1fe9c0e002eeed86dc1c))
+
 ## [5.1.12](https://github.com/aws-amplify/amplify-js/compare/@aws-amplify/core@5.1.11...@aws-amplify/core@5.1.12) (2023-04-20)
 
 **Note:** Version bump only for package @aws-amplify/core
