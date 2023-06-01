@@ -1,5 +1,5 @@
 import { GraphQLResult, GRAPHQL_AUTH_MODE } from '@aws-amplify/api';
-import { InternalAPI } from '@aws-amplify/api/internal';
+import { InternalAPI } from '@aws-amplify/api/internals';
 import { Auth } from '@aws-amplify/auth';
 import { Cache } from '@aws-amplify/cache';
 import {
@@ -85,7 +85,7 @@ class SubscriptionProcessor {
 		private readonly errorHandler: ErrorHandler,
 		private readonly amplifyContext: AmplifyContext = {
 			Auth,
-			InternalAPI: InternalAPI,
+			InternalAPI,
 			Cache,
 		}
 	) {}
