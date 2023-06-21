@@ -1,0 +1,12 @@
+name: PR Validation
+on:
+  pull_request:
+
+jobs:
+  codeql:
+    uses: aws-amplify/amplify-ui/.github/workflows/callable-codeql.yml
+  unit-tests:
+    uses: aws-amplify/amplify-ui/.github/workflows/callable-unit-tests.yml
+  bundle-size-tests:
+    uses: aws-amplify/amplify-ui/.github/workflows/callable-bundle-size-tests.yml
+  
