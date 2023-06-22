@@ -16,14 +16,26 @@ jobs:
         with:
           # Minimal depth 2 so we can checkout the commit before possible merge commit.
           fetch-depth: 2
+      - uses: actions/cache@v2
+        id: cache-package-list
+        with:
+          path: |
+            **/package-list.json
+          key: ${{ runner.os }}-package-list-${{ hashFiles('**/package.json') }}
+          restore-keys: |
+            ${{ runner.os }}-package-list-
       - name: Install
+        if: steps.cache-package-list.outputs.cache-hit != 'true'
         run: yarn
         shell: bash
       # Need the repo checked out in order to read the file
-      - name: Get Package Names
-        id: get_package_names
+      - name: Dump Package List
+        if: steps.cache-package-list.outputs.cache-hit != 'true'
         run: |
-          echo "packages=$(yarn lerna ls | egrep -v "lerna|Done|yarn" | jq -R -s -c 'split("\n")[:-1]')" >> $GITHUB_OUTPUT
-          echo $GITHUB_OUTPUT
+          echo "packages=$(yarn lerna ls | egrep -v "lerna|Done|yarn" | jq -R -s -c 'split("\n")[:-1]')" > package-list.json
+      - name: Get Package List
+        id: get_package_list
+        run: |
+          cat package-list.json >> $GITHUB_OUTPUT
     outputs:
-      packages: ${{ steps.get_package_names.outputs.packages }}
+      packages: ${{ steps.get_package_list.outputs.packages }}
