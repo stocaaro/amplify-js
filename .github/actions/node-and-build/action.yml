@@ -11,6 +11,12 @@ runs:
       env:
         SEGMENT_DOWNLOAD_TIMEOUT_MINS: 2
     - name: Install
-      run: yarn install
+      run: |
+        mv .yarnrc ._yarnrc
+        yarn
+      shell: bash
+    - name: Bootstrap
+      run: yarn bootstrap
     - name: Build packages
       run: yarn build
+      shell: bash
