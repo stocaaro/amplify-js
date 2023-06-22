@@ -2,10 +2,14 @@ name: 'Unit Tests'
 
 on:
   workflow_call:
+    inputs:
+      package:
+        required: true
+        type: string
 
 jobs:
   unit_test:
-    name: Unit Tests
+    name: Unit Tests - ${{ inputs.package }}
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
@@ -16,6 +20,6 @@ jobs:
       - name: Setup node and build the repository
         uses: ./.github/actions/node-and-build
       - name: Run tests
-        run: yarn test
+        run: npx lerna exec --scope ${{ inputs.package }} yarn test
       - name: Run coverage
-        run: yarn coverage
+        run: npx lerna exec --scope ${{ inputs.package }} yarn coverage

@@ -14,11 +14,20 @@ jobs:
           fetch-depth: 2
       - name: Setup node and build the repository
         uses: ./.github/actions/node-and-build
+  get-package-names:
+    uses: ./.github/workflows/callable-get-package-names.yml
   codeql:
     uses: ./.github/workflows/callable-codeql.yml
   unit-tests:
-    needs: prebuild
+    needs:
+      - prebuild
+      - get-package-names
+    strategy:
+      matrix:
+        package: ${{ fromJSON(needs.get-package-list.outputs.packages) }}
     uses: ./.github/workflows/callable-unit-tests.yml
+    with:
+      package: ${{ matrix.package }}
   bundle-size-tests:
     needs: prebuild
     uses: ./.github/workflows/callable-bundle-size-tests.yml

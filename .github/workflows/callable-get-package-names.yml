@@ -1,0 +1,25 @@
+name: 'Capture Package Names List to Outputs'
+
+on:
+  workflow_call:
+
+jobs:
+  get-package-list:
+    # Prepares the 'bazelversion' axis of the test matrix
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@24cb9080177205b6e8c946b17badbe402adc938f # v3.4.0 https://github.com/actions/checkout/commit/24cb9080177205b6e8c946b17badbe402adc938f
+        with:
+          # Minimal depth 2 so we can checkout the commit before possible merge commit.
+          fetch-depth: 2
+      - name: Install
+        run: yarn
+        shell: bash
+      # Need the repo checked out in order to read the file
+      - name: Get Package Names
+        id: get_package_names
+        run: |
+          echo "packages=$(yarn lerna ls | egrep -v "lerna|Done|yarn" | jq -R -s -c 'split("\n")[:-1]')" >>  >> $GITHUB_OUTPUT
+    outputs:
+      packages: ${{ steps.get_package_names.outputs.packages }}
