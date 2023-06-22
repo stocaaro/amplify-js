@@ -21,5 +21,3 @@ jobs:
         uses: ./.github/actions/node-and-build
       - name: Run tests
         run: npx lerna exec --scope ${{ inputs.package }} yarn test
-      - name: Run coverage
-        run: npx lerna exec --scope ${{ inputs.package }} yarn coverage
