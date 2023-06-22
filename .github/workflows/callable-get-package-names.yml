@@ -20,6 +20,6 @@ jobs:
       - name: Get Package Names
         id: get_package_names
         run: |
-          echo "packages=$(yarn lerna ls | egrep -v "lerna|Done|yarn" | jq -R -s -c 'split("\n")[:-1]')" >>  >> $GITHUB_OUTPUT
+          echo "packages=$(yarn lerna ls | egrep -v "lerna|Done|yarn" | jq -R -s -c 'split("\n")[:-1]')" >> $GITHUB_OUTPUT
     outputs:
       packages: ${{ steps.get_package_names.outputs.packages }}
