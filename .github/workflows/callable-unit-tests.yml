@@ -23,6 +23,8 @@ jobs:
         with:
           # Minimal depth 2 so we can checkout the commit before possible merge commit.
           fetch-depth: 2
+      - name: Install
+        run: yarn install
       - name: Build packages
         run: yarn build
       - name: Run tests
