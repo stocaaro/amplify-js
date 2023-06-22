@@ -21,7 +21,7 @@ jobs:
   unit-tests:
     needs:
       - prebuild
-      - get-package-names
+      - get-package-list
     strategy:
       matrix:
         package: ${{ fromJSON(needs.get-package-list.outputs.packages) }}
@@ -33,7 +33,7 @@ jobs:
     uses: ./.github/workflows/callable-bundle-size-tests.yml
   echo-pl:
     needs:
-      - get-package-names
+      - get-package-list
     runs-on: ubuntu-latest
     steps:
       - name: Output package list
