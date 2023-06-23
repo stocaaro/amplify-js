@@ -16,12 +16,11 @@ jobs:
       matrix:
         BROWSER: [chrome, firefox]
     steps:
-      - name: Restore cache
-        uses: actions/cache@88522ab9f39a2ea568f7027eddc7d8d8bc9d59c8 # v3.3.1 https://github.com/actions/cache/commit/88522ab9f39a2ea568f7027eddc7d8d8bc9d59c8
-        id: cache-js-build
+      - name: Checkout repository
+        uses: actions/checkout@24cb9080177205b6e8c946b17badbe402adc938f # v3.4.0 https://github.com/actions/checkout/commit/24cb9080177205b6e8c946b17badbe402adc938f
         with:
-          key: aws-amplify-js-build-${{ github.sha }}
-          path: ./aws-amplify
+          # Minimal depth 2 so we can checkout the commit before possible merge commit.
+          fetch-depth: 2
       - name: Setup node and build the repository
         uses: ./.github/actions/node-and-build
       - name: Checkout stating repo
