@@ -22,9 +22,9 @@ jobs:
           repository: stocaaro/amplify-js-samples-staging
           path: aws-amplify-staging
           token: ${{ secrets.GH_PAT }}
+
   e2e:
     needs: prebuild
-    steps:
-      - uses: ./.github/workflows/callable-e2e-example.yml
-        with:
-          GH_PAT: ${{ secrets.GH_PAT }}
+    uses: ./.github/workflows/callable-e2e-example.yml
+    with:
+      GH_PAT: ${{ secrets.GH_PAT }}
