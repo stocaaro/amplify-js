@@ -26,5 +26,4 @@ jobs:
   e2e:
     needs: prebuild
     uses: ./.github/workflows/callable-e2e-example.yml
-    with:
-      GH_PAT: ${{ secrets.GH_PAT }}
+    secrets: inherit
