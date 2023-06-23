@@ -1,0 +1,8 @@
+name: 'E2E'
+
+on:
+  workflow_call:
+
+jobs:
+  e2e-example:
+    uses: ./.github/workflows/callable-e2e-example.yml

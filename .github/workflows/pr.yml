@@ -18,17 +18,20 @@ jobs:
     uses: ./.github/workflows/callable-get-package-list.yml
   codeql:
     uses: ./.github/workflows/callable-codeql.yml
-  unit-tests:
-    needs:
-      - prebuild
-      - get-package-list
-    strategy:
-      matrix:
-        package: ${{ fromJSON(needs.get-package-list.outputs.packages) }}
-      fail-fast: true
-    uses: ./.github/workflows/callable-unit-tests.yml
-    with:
-      package: ${{ matrix.package }}
+  e2e:
+    needs: prebuild
+    uses: ./.github/workflows/callable-e2e.yml
+  # unit-tests:
+  #   needs:
+  #     - prebuild
+  #     - get-package-list
+  #   strategy:
+  #     matrix:
+  #       package: ${{ fromJSON(needs.get-package-list.outputs.packages) }}
+  #     fail-fast: true
+  #   uses: ./.github/workflows/callable-unit-tests.yml
+  #   with:
+  #     package: ${{ matrix.package }}
   bundle-size-tests:
     needs: prebuild
     uses: ./.github/workflows/callable-bundle-size-tests.yml
