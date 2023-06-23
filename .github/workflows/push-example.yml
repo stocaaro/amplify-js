@@ -13,6 +13,15 @@ jobs:
           fetch-depth: 2
       - name: Setup node and build the repository
         uses: ./.github/actions/node-and-build
+  test-checkout:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout stating repo
+        uses: actions/checkout@24cb9080177205b6e8c946b17badbe402adc938f
+        with:
+          repository: stocaaro/amplify-js-samples-staging
+          path: aws-amplify-staging
+          token: ${{ secrets.GH_PAT }}
   e2e:
     needs: prebuild
     uses: ./.github/workflows/callable-e2e.yml
