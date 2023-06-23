@@ -47,6 +47,7 @@ jobs:
       - name: Publish to verdaccio
         run: |
           echo 'Test'
+          pwd
           npm i -g npm-cli-adduser
           npm-cli-adduser
           sleep 1
@@ -59,7 +60,7 @@ jobs:
           .circleci/retry-yarn-script.sh -s publish:verdaccio -n 5 -r true
           yarn info aws-amplify@unstable description
           npm info aws-amplify@unstable version
-        working-directory: ./aws-amplify
+        # working-directory: ./aws-amplify
         shell: bash
 
       - name: Run E2E test
