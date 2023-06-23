@@ -15,48 +15,48 @@ jobs:
     strategy:
       matrix:
         BROWSER: [chrome, firefox]
-      steps:
-        - name: Restore cache
-          uses: actions/cache@88522ab9f39a2ea568f7027eddc7d8d8bc9d59c8 # v3.3.1 https://github.com/actions/cache/commit/88522ab9f39a2ea568f7027eddc7d8d8bc9d59c8
-          id: cache-js-build
-          with:
-            key: aws-amplify-js-build-${{ github.sha }}
-            path: ./aws-amplify
-        - name: Setup node and build the repository
-          uses: ./.github/actions/node-and-build
-        - name: Checkout stating repo
-          uses: actions/checkout@24cb9080177205b6e8c946b17badbe402adc938f
-          with:
-            repository: stocaaro/amplify-js-samples-staging
-            path: aws-amplify-staging
-            token: ${{ secrets.GH_PAT }}
+    steps:
+      - name: Restore cache
+        uses: actions/cache@88522ab9f39a2ea568f7027eddc7d8d8bc9d59c8 # v3.3.1 https://github.com/actions/cache/commit/88522ab9f39a2ea568f7027eddc7d8d8bc9d59c8
+        id: cache-js-build
+        with:
+          key: aws-amplify-js-build-${{ github.sha }}
+          path: ./aws-amplify
+      - name: Setup node and build the repository
+        uses: ./.github/actions/node-and-build
+      - name: Checkout stating repo
+        uses: actions/checkout@24cb9080177205b6e8c946b17badbe402adc938f
+        with:
+          repository: stocaaro/amplify-js-samples-staging
+          path: aws-amplify-staging
+          token: ${{ secrets.GH_PAT }}
 
-        - name: Prepare staging repo
-          run: |
-            yarn
-          working-directory: ./aws-amplify-staging
+      - name: Prepare staging repo
+        run: |
+          yarn
+        working-directory: ./aws-amplify-staging
 
-        - name: Start verdaccio
-          run: |
-            npx verdaccio@5.25.0 &
-            sleep 15 # TODO waits until verdaccio is up and running
+      - name: Start verdaccio
+        run: |
+          npx verdaccio@5.25.0 &
+          sleep 15 # TODO waits until verdaccio is up and running
 
-        - name: Publish to verdaccio
-          run: |
-            npm i -g npm-cli-adduser
-            npm-cli-adduser
-            sleep 1
-            yarn config set registry $NPM_REGISTRY
-            npm set registry $NPM_REGISTRY
-            git config --global user.email $NPM_EMAIL
-            git config --global user.name $NPM_USER
-            git status
-            git --no-pager diff
-            .circleci/retry-yarn-script.sh -s publish:verdaccio -n 5 -r true
-            yarn info aws-amplify@unstable description
-          working-directory: ./aws-amplify
+      - name: Publish to verdaccio
+        run: |
+          npm i -g npm-cli-adduser
+          npm-cli-adduser
+          sleep 1
+          yarn config set registry $NPM_REGISTRY
+          npm set registry $NPM_REGISTRY
+          git config --global user.email $NPM_EMAIL
+          git config --global user.name $NPM_USER
+          git status
+          git --no-pager diff
+          .circleci/retry-yarn-script.sh -s publish:verdaccio -n 5 -r true
+          yarn info aws-amplify@unstable description
+        working-directory: ./aws-amplify
 
-        - name: Run E2E test
-          run: |
-            ../aws-amplify/.circleci/retry-yarn-script.sh -s 'ci:test react storage storageApp storage ${{ matrix.BROWSER }}'
-          working-directory: ./aws-amplify-staging
+      - name: Run E2E test
+        run: |
+          ../aws-amplify/.circleci/retry-yarn-script.sh -s 'ci:test react storage storageApp storage ${{ matrix.BROWSER }}'
+        working-directory: ./aws-amplify-staging
