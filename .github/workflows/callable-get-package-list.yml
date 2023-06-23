@@ -33,6 +33,7 @@ jobs:
         if: steps.cache-package-list.outputs.cache-hit != 'true'
         run: |
           echo "packages=$(yarn lerna ls | egrep -v "lerna|Done|yarn" | jq -R -s -c 'split("\n")[:-1]')" > package-list.json
+          cat package-list.json
       - name: Get Package List
         id: get_package_list
         run: |
