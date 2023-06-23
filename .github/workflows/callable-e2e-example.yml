@@ -46,6 +46,7 @@ jobs:
 
       - name: Publish to verdaccio
         run: |
+          echo 'Test'
           npm i -g npm-cli-adduser
           npm-cli-adduser
           sleep 1
@@ -59,8 +60,10 @@ jobs:
           yarn info aws-amplify@unstable description
           npm info aws-amplify@unstable version
         working-directory: ./aws-amplify
+        shell: bash
 
       - name: Run E2E test
         run: |
           ../aws-amplify/.circleci/retry-yarn-script.sh -s 'ci:test react storage storageApp storage ${{ matrix.BROWSER }}'
         working-directory: ./aws-amplify-staging
+        shell: bash
