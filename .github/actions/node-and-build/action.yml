@@ -4,6 +4,12 @@ description: Checks out Amplify and builds the package
 runs:
   using: 'composite'
   steps:
+    - name: Create cache
+      uses: actions/cache@88522ab9f39a2ea568f7027eddc7d8d8bc9d59c8 # v3.3.1 https://github.com/actions/cache/commit/88522ab9f39a2ea568f7027eddc7d8d8bc9d59c8
+      id: cache-js-build
+      with:
+        key: aws-amplify-js-build-${{ github.sha }}
+        path: ./aws-amplify
     - name: Setup Node.js 16
       uses: actions/setup-node@64ed1c7eab4cce3362f8c340dee64e5eaeef8f7c # v3.6.0 https://github.com/actions/setup-node/commit/64ed1c7eab4cce3362f8c340dee64e5eaeef8f7c
       with:
