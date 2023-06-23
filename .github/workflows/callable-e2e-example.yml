@@ -1,5 +1,9 @@
 on:
   workflow_call:
+    inputs:
+      GH_PAT:
+        required: true
+        type: string
 
 env:
   NPM_REGISTRY: http://localhost:4873/
@@ -28,7 +32,7 @@ jobs:
         with:
           repository: stocaaro/amplify-js-samples-staging
           path: aws-amplify-staging
-          token: ${{ secrets.GH_PAT }}
+          token: ${{ inputs.GH_PAT }}
 
       - name: Prepare staging repo
         run: |
