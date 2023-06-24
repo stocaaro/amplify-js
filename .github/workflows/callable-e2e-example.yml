@@ -19,25 +19,36 @@ jobs:
       matrix:
         BROWSER: [chrome, firefox]
     steps:
+      - name: Where we at?
+        run: |
+          pwd
+          ls
       - name: Checkout repository
         uses: actions/checkout@24cb9080177205b6e8c946b17badbe402adc938f # v3.4.0 https://github.com/actions/checkout/commit/24cb9080177205b6e8c946b17badbe402adc938f
         with:
           # Minimal depth 2 so we can checkout the commit before possible merge commit.
           fetch-depth: 2
+      - name: Where we at?
+        run: |
+          pwd
+          ls
       - name: Setup node and build the repository
         uses: ./.github/actions/node-and-build
-      - name: Checkout stating repo
+      - name: Checkout staging repo
         uses: actions/checkout@24cb9080177205b6e8c946b17badbe402adc938f
         with:
           repository: stocaaro/amplify-js-samples-staging
           path: aws-amplify-staging
           token: ${{ secrets.GH_PAT }}
-
+          fetch-depth: 2
+      - name: Where we at?
+        run: |
+          pwd
+          ls
       - name: Prepare staging repo
         run: |
           yarn
         working-directory: ./aws-amplify-staging
-        shell: bash
 
       - name: Start verdaccio
         run: |
@@ -46,8 +57,8 @@ jobs:
 
       - name: Publish to verdaccio
         run: |
-          echo 'Test'
           pwd
+          ls
           npm i -g npm-cli-adduser
           npm-cli-adduser
           sleep 1
