@@ -13,7 +13,7 @@ jobs:
           fetch-depth: 2
           path: aws-amplify
       - name: Setup node and build the repository
-        uses: ./.github/actions/node-and-build
+        uses: ./aws-amplify/.github/actions/node-and-build
   test-checkout:
     runs-on: ubuntu-latest
     steps:
