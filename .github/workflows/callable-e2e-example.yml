@@ -19,62 +19,19 @@ jobs:
       matrix:
         BROWSER: [chrome, firefox]
     steps:
-      - name: Where we at?
-        run: |
-          pwd
-          ls
       - name: Checkout repository
         uses: actions/checkout@24cb9080177205b6e8c946b17badbe402adc938f # v3.4.0 https://github.com/actions/checkout/commit/24cb9080177205b6e8c946b17badbe402adc938f
         with:
           # Minimal depth 2 so we can checkout the commit before possible merge commit.
           fetch-depth: 2
           path: aws-amplify
-      - name: Where we at?
-        run: |
-          pwd
-          ls
       - name: Setup node and build the repository
         uses: ./aws-amplify/.github/actions/node-and-build
-      - name: Checkout staging repo
-        uses: actions/checkout@24cb9080177205b6e8c946b17badbe402adc938f
-        with:
-          repository: stocaaro/amplify-js-samples-staging
-          path: aws-amplify-staging
-          token: ${{ secrets.GH_PAT }}
-          fetch-depth: 2
-      - name: Where we at?
-        run: |
-          pwd
-          ls
-      - name: Prepare staging repo
-        run: |
-          yarn
-        working-directory: ./aws-amplify-staging
-
-      - name: Start verdaccio
-        run: |
-          npx verdaccio@5.25.0 &
-          sleep 15 # TODO waits until verdaccio is up and running
-
-      - name: Publish to verdaccio
-        run: |
-          pwd
-          ls
-          npm i -g npm-cli-adduser
-          npm-cli-adduser
-          sleep 1
-          yarn config set registry $NPM_REGISTRY
-          npm set registry $NPM_REGISTRY
-          git config --global user.email $NPM_EMAIL
-          git config --global user.name $NPM_USER
-          git status
-          git --no-pager diff
-          .circleci/retry-yarn-script.sh -s publish:verdaccio -n 5 -r true
-          yarn info aws-amplify@unstable description
-          npm info aws-amplify@unstable version
-        working-directory: ./aws-amplify
-        shell: bash
-
+      - name: Setup samples staging repository
+        secrets: inherit
+        uses: ./aws-amplify/.github/actions/setup-samples-staging
+      - name: Load Verdaccio with AmplifyJs
+        uses: ./aws-amplify/.github/actions/load-verdaccio-with-amplify-js
       - name: Run E2E test
         run: |
           ../aws-amplify/.circleci/retry-yarn-script.sh -s 'ci:test react storage storageApp storage ${{ matrix.BROWSER }}'

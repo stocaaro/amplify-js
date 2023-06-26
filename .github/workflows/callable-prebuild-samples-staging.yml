@@ -1,0 +1,12 @@
+name: 'Prebuild AmplifyJs'
+
+on:
+  workflow_call:
+
+jobs:
+  prebuild:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Setup samples staging
+        secrets: inherit
+        uses: ./aws-amplify/.github/actions/setup-samples-staging
