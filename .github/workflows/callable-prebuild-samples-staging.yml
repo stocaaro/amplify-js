@@ -10,7 +10,9 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Where am I?
-        run: pwd && ls
+        run: |
+          pwd; ls
+          pwd ..; ls ..
         shell: bash
       - name: Setup samples staging
         uses: ./.github/actions/setup-samples-staging
