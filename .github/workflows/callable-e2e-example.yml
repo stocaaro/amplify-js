@@ -26,11 +26,11 @@ jobs:
           fetch-depth: 2
           path: aws-amplify
       - name: Setup node and build the repository
-        uses: ./aws-amplify/.github/actions/node-and-build
+        uses: ./.github/actions/node-and-build
       - name: Setup samples staging repository
-        uses: ./aws-amplify/.github/actions/setup-samples-staging
+        uses: ./.github/actions/setup-samples-staging
       - name: Load Verdaccio with AmplifyJs
-        uses: ./aws-amplify/.github/actions/load-verdaccio-with-amplify-js
+        uses: ./.github/actions/load-verdaccio-with-amplify-js
       - name: Run E2E test
         run: |
           ../aws-amplify/.circleci/retry-yarn-script.sh -s 'ci:test react storage storageApp storage ${{ matrix.BROWSER }}'

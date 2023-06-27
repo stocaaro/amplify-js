@@ -10,4 +10,4 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Setup samples staging
-        uses: ./aws-amplify/.github/actions/setup-samples-staging
+        uses: ./.github/actions/setup-samples-staging
