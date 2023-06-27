@@ -40,5 +40,5 @@ jobs:
       - name: Run E2E test
         run: |
           ../aws-amplify/.circleci/retry-yarn-script.sh -s 'ci:test react storage storageApp storage ${{ matrix.BROWSER }}'
-        working-directory: ../aws-amplify-staging
+        working-directory: aws-amplify-staging
         shell: bash
