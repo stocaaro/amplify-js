@@ -26,9 +26,9 @@ jobs:
           fetch-depth: 2
           path: aws-amplify
       - name: Setup node and build the repository
-        uses: ./.github/actions/node-and-build
+        uses: ./aws-amplify/.github/actions/node-and-build
       - name: Setup samples staging repository
-        uses: ./.github/actions/setup-samples-staging
+        uses: ./aws-amplify/.github/actions/setup-samples-staging
         with:
           GH_PAT: ${{ secrets.GH_PAT }}
       - name: Load Verdaccio with AmplifyJs
