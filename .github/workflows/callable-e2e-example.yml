@@ -33,8 +33,12 @@ jobs:
           GH_PAT: ${{ secrets.GH_PAT }}
       - name: Load Verdaccio with AmplifyJs
         uses: ./aws-amplify/.github/actions/load-verdaccio-with-amplify-js
+      - name: Where am I?
+        run: |
+          pwd; ls
+        shell: bash
       - name: Run E2E test
         run: |
           ../aws-amplify/.circleci/retry-yarn-script.sh -s 'ci:test react storage storageApp storage ${{ matrix.BROWSER }}'
-        working-directory: ./aws-amplify-staging
+        working-directory: ../aws-amplify-staging
         shell: bash

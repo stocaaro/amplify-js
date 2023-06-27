@@ -19,8 +19,6 @@ runs:
       shell: bash
       working-directory: ./aws-amplify
       run: |
-        pwd
-        ls
         npm i -g npm-cli-adduser
         npm-cli-adduser
         sleep 1
