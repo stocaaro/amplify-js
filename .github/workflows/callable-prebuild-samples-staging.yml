@@ -9,5 +9,8 @@ jobs:
   prebuild:
     runs-on: ubuntu-latest
     steps:
+      - name: Where am I?
+        run: pwd && ls
+        shell: bash
       - name: Setup samples staging
         uses: ./.github/actions/setup-samples-staging

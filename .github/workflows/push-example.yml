@@ -16,10 +16,10 @@ jobs:
         uses: ./aws-amplify/.github/actions/node-and-build
   prebuild-samples-staging:
     secrets: inherit
-    uses: ./aws-amplify/.github/workflows/callable-prebuild-samples-staging.yml
+    uses: ./.github/workflows/callable-prebuild-samples-staging.yml
   e2e:
     needs:
       - prebuild
       - prebuild-samples-staging
     secrets: inherit
-    uses: ./aws-amplify/.github/workflows/callable-e2e-example.yml
+    uses: ./.github/workflows/callable-e2e-example.yml
