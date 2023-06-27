@@ -2,11 +2,13 @@ name: 'Prebuild AmplifyJs'
 
 on:
   workflow_call:
-
+    secrets:
+      GH_PAT:
+        required: true
 jobs:
   prebuild:
     runs-on: ubuntu-latest
     steps:
       - name: Setup samples staging
+        uses: ./aws-amplify/.github/actions/setup-samples-staging
         secrets: inherit
-        uses: ./.github/actions/setup-samples-staging
