@@ -24,13 +24,12 @@ runs:
       id: cache-build-artifacts
       with:
         path: |
-          ./aws-amplify/**/dist
-          ./aws-amplify/**/lib
-          ./aws-amplify/**/
-          ./aws-amplify/**/lib-esm/
-          ./aws-amplify/**/es/
-          ./aws-amplify/**/esm/
-          ./aws-amplify/**/cjs/
+          ./**/dist
+          ./**/lib
+          ./**/lib-esm/
+          ./**/es/
+          ./**/esm/
+          ./**/cjs/
         key: ${{ runner.os }}-build-artifacts-${{ hashFiles('**/yarn.lock') }}
         restore-keys: |
           ${{ runner.os }}-build-artifacts-
