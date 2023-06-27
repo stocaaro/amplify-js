@@ -21,4 +21,4 @@ jobs:
           pwd ..; ls ..
         shell: bash
       - name: Setup samples staging
-        uses: ./.github/actions/setup-samples-staging
+        uses: ./aws-amplify/.github/actions/setup-samples-staging
