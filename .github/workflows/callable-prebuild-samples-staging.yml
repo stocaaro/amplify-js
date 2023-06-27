@@ -9,4 +9,4 @@ jobs:
     steps:
       - name: Setup samples staging
         secrets: inherit
-        uses: ./aws-amplify/.github/actions/setup-samples-staging
+        uses: ./.github/actions/setup-samples-staging
