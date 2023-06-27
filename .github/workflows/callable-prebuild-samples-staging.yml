@@ -22,3 +22,5 @@ jobs:
         shell: bash
       - name: Setup samples staging
         uses: ./aws-amplify/.github/actions/setup-samples-staging
+        with:
+          GH_PAT: ${{ secrets.GH_PAT }}

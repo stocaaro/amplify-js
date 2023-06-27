@@ -29,6 +29,8 @@ jobs:
         uses: ./.github/actions/node-and-build
       - name: Setup samples staging repository
         uses: ./.github/actions/setup-samples-staging
+        with:
+          GH_PAT: ${{ secrets.GH_PAT }}
       - name: Load Verdaccio with AmplifyJs
         uses: ./.github/actions/load-verdaccio-with-amplify-js
       - name: Run E2E test
