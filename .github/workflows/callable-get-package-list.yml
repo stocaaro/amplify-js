@@ -21,7 +21,7 @@ jobs:
         id: cache-package-list
         with:
           path: |
-            **/package-list.json
+            ./aws-amplify/**/package-list.json
           key: ${{ runner.os }}-package-list-${{ hashFiles('**/package.json') }}
           restore-keys: |
             ${{ runner.os }}-package-list-
@@ -32,10 +32,12 @@ jobs:
       # Need the repo checked out in order to read the file
       - name: Dump Package List
         if: steps.cache-package-list.outputs.cache-hit != 'true'
+        working-directory: ./aws-amplify
         run: |
           echo "packages=$(yarn lerna ls | egrep -v "lerna|Done|yarn" | jq -R -s -c 'split("\n")[:-1]')" > package-list.json
       - name: Get Package List
         id: get_package_list
+        working-directory: ./aws-amplify
         run: |
           cat package-list.json >> $GITHUB_OUTPUT
           cat package-list.json
