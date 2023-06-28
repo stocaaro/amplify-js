@@ -21,6 +21,7 @@ runs:
           **/es/
           **/esm/
           **/cjs/
+          **/packages/core/src/Platform/version.ts
         key: ${{ runner.os }}-build-artifacts-${{ hashFiles('**/yarn.lock') }}
         restore-keys: |
           ${{ runner.os }}-build-artifacts-
