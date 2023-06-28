@@ -14,7 +14,9 @@ runs:
       id: cache-samples-staging-build
       with:
         key: aws-amplify-js-samples-staging-build-${{ github.sha }}
-        path: ./amplify-js-samples-staging
+        path: |
+          ./amplify-js-samples-staging
+          /home/runner/.cache/Cypress
     - name: Checkout staging repo
       if: steps.cache-samples-staging-build.outputs.cache-hit != 'true'
       uses: actions/checkout@24cb9080177205b6e8c946b17badbe402adc938f
