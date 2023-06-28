@@ -15,11 +15,6 @@ jobs:
           # Minimal depth 2 so we can checkout the commit before possible merge commit.
           fetch-depth: 2
           path: aws-amplify
-      - name: Where am I?
-        run: |
-          pwd; ls
-          pwd ..; ls ..
-        shell: bash
       - name: Setup samples staging
         uses: ./aws-amplify/.github/actions/setup-samples-staging
         with:
