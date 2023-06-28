@@ -25,13 +25,11 @@ runs:
         restore-keys: |
           ${{ runner.os }}-build-artifacts-
     - name: Install
-      if: steps.cache-build-artifacts.outputs.cache-hit != 'true'
       run: |
         yarn
       shell: bash
       working-directory: ./aws-amplify
     - name: Bootstrap
-      if: steps.cache-build-artifacts.outputs.cache-hit != 'true'
       run: yarn bootstrap
       shell: bash
       working-directory: ./aws-amplify
