@@ -24,6 +24,7 @@ jobs:
         with:
           # Minimal depth 2 so we can checkout the commit before possible merge commit.
           fetch-depth: 2
+          path: aws-amplify
 
       # Initializes the CodeQL tools for scanning.
       - name: Initialize CodeQL

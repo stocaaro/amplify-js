@@ -16,6 +16,7 @@ jobs:
         with:
           # Minimal depth 2 so we can checkout the commit before possible merge commit.
           fetch-depth: 2
+          path: aws-amplify
       - uses: actions/cache@v2
         id: cache-package-list
         with:
@@ -37,5 +38,6 @@ jobs:
         id: get_package_list
         run: |
           cat package-list.json >> $GITHUB_OUTPUT
+          cat package-list.json
     outputs:
       packages: ${{ steps.get_package_list.outputs.packages }}
