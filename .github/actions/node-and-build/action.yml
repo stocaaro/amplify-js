@@ -10,20 +10,11 @@ runs:
         node-version: 16
       env:
         SEGMENT_DOWNLOAD_TIMEOUT_MINS: 2
-    - name: Install
-      run: |
-        mv .yarnrc ._yarnrc
-        yarn
-      shell: bash
-      working-directory: ./aws-amplify
-    - name: Bootstrap
-      run: yarn bootstrap
-      shell: bash
-      working-directory: ./aws-amplify
     - uses: actions/cache@v2
       id: cache-build-artifacts
       with:
         path: |
+          node_modules
           ./**/dist
           ./**/lib
           ./**/lib-esm/
@@ -33,6 +24,17 @@ runs:
         key: ${{ runner.os }}-build-artifacts-${{ hashFiles('**/yarn.lock') }}
         restore-keys: |
           ${{ runner.os }}-build-artifacts-
+    - name: Install
+      if: steps.cache-build-artifacts.outputs.cache-hit != 'true'
+      run: |
+        yarn
+      shell: bash
+      working-directory: ./aws-amplify
+    - name: Bootstrap
+      if: steps.cache-build-artifacts.outputs.cache-hit != 'true'
+      run: yarn bootstrap
+      shell: bash
+      working-directory: ./aws-amplify
     - name: Build packages
       if: steps.cache-build-artifacts.outputs.cache-hit != 'true'
       run: yarn build
