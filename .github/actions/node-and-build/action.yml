@@ -10,7 +10,7 @@ runs:
         node-version: 16
       env:
         SEGMENT_DOWNLOAD_TIMEOUT_MINS: 2
-    - uses: actions/cache@v2
+    - uses: actions/cache@88522ab9f39a2ea568f7027eddc7d8d8bc9d59c8 # v3.3.1
       id: cache-build-artifacts
       with:
         path: |
