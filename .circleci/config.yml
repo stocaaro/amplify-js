@@ -132,7 +132,7 @@ commands:
         type: string
         default: ''
       browser:
-        type: string
+        type: string 
         default: ''
       amplifyjs_dir:
         # optional - dir to amplify js workspace
