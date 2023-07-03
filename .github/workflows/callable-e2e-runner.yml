@@ -60,6 +60,8 @@ jobs:
                 needs.e2e-prep.outputs.integ-utils
               )[matrix.integ-config.browser]
             )
+            ||
+            format('[{0}]', toJSON(matrix.integ-config.browser))          
           )
           ||          
           '[""]'
