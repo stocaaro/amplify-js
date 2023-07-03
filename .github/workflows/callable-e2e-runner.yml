@@ -21,15 +21,6 @@ jobs:
           echo "INTEG_UTILS=$(cat .github/integ-config/utils.yml | yq -o=json | jq -c .)" >> $GITHUB_ENV
         working-directory: ./amplify-js
 
-  # output-checker:
-  #   name: e2e output checker
-  #   needs: e2e-prep
-  #   runs-on: ubuntu-latest
-  #   steps:
-  #     - name: check outputs
-  #       run: |
-  #         echo "${{ needs.e2e-prep.outputs.integ-config }}"
-
   e2e-test-runner:
     name: e2e test runnner
     needs: e2e-prep

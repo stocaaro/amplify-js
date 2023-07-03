@@ -136,11 +136,3 @@
   sample_name: custom-auth-ssr
   spec: authenticator
   browser: minimal_browser_list
-- test_name: browser array not supported
-  framework: next
-  category: auth
-  sample_name: custom-auth-ssr
-  spec: authenticator
-  browser:
-    - chrome
-    - firefox
