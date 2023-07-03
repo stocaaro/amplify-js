@@ -63,6 +63,11 @@ jobs:
           GH_PAT: ${{ secrets.GH_PAT }}
       - name: Load Verdaccio with AmplifyJs
         uses: ./aws-amplify/.github/actions/load-verdaccio-with-amplify-js
+      - name: Yarn Install
+        working-directory: amplify-js-samples-staging/samples/react-native/storage/StorageApp
+        run: |
+          echo "Current NPM registry: " $(yarn config get registry)
+          ~/amplify-js/.circleci/retry-yarn-script.sh -s 'install --frozen-lockfile --non-interactive' -n 3
       - name: Install CocoaPods
         run: |
           ls; pwd
