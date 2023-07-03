@@ -63,12 +63,18 @@ jobs:
           GH_PAT: ${{ secrets.GH_PAT }}
       - name: Load Verdaccio with AmplifyJs
         uses: ./aws-amplify/.github/actions/load-verdaccio-with-amplify-js
+      - name: Inspect
+        run: |
+          pwd; ls
+          pwd $GITHUB_WORKSPACE; ls $GITHUB_WORKSPACE
+          pwd $GITHUB_WORKSPACE/amplify-js; ls $GITHUB_WORKSPACE/amplify-js
+
       - name: Yarn Install
         working-directory: amplify-js-samples-staging/samples/react-native/storage/StorageApp
         run: |
           echo "Current NPM registry: " $(yarn config get registry)
           ls ~/; ls ~/amplify-js/
-          ~/amplify-js/amplify-js/.circleci/retry-yarn-script.sh -s 'install --frozen-lockfile --non-interactive' -n 3
+          $GITHUB_WORKSPACE/amplify-js/.circleci/retry-yarn-script.sh -s 'install --frozen-lockfile --non-interactive' -n 3
         shell: bash
       - name: Install CocoaPods
         run: |
@@ -104,6 +110,6 @@ jobs:
         shell: bash
       - name: Detox run
         run: |
-          ~/amplify-js/amplify-js/.circleci/retry-yarn-script.sh -s 'detox test -c ios.sim.debug -u' -n 3
+          $GITHUB_WORKSPACE/amplify-js/.circleci/retry-yarn-script.sh -s 'detox test -c ios.sim.debug -u' -n 3
         working-directory: amplify-js-samples-staging/samples/react-native/storage/StorageApp
         shell: bash
