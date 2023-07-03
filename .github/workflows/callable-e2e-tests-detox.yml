@@ -65,7 +65,9 @@ jobs:
         uses: ./aws-amplify/.github/actions/load-verdaccio-with-amplify-js
       - name: Install CocoaPods
         run: |
+          ls; pwd
           cd ios
+          ls; pwd
           pod install
         working-directory: amplify-js-samples-staging/samples/react-native/storage/StorageApp
         shell: bash
