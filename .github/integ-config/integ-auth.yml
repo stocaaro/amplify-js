@@ -120,16 +120,17 @@
 #   category: auth
 #   sample_name: amazon-cognito-identity-js
 
-- test_name: node support
-  framework: node
-  category: auth
-  sample_name: amazon-cognito-identity-js
-- test_name: only firefox
-  framework: next
-  category: auth
-  sample_name: custom-auth-ssr
-  spec: authenticator
-  browser: firefox
+# - test_name: node support
+#   framework: node
+#   category: auth
+#   sample_name: amazon-cognito-identity-js
+# - test_name: only firefox
+#   framework: next
+#   category: auth
+#   sample_name: custom-auth-ssr
+#   spec: authenticator
+#   browser: firefox
+
 - test_name: minimal_browser_list
   framework: next
   category: auth

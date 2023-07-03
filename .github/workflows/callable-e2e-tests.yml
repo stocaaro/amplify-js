@@ -27,6 +27,11 @@ on:
         required: false
         type: boolean
         default: false
+      build_type:
+        required: false
+        type: boolean
+        default: false
+
 
 env:
   NPM_REGISTRY: http://localhost:4873/
@@ -57,6 +62,8 @@ jobs:
           ${{ inputs.spec }} \
           ${{ matrix.browser }} \
           ${{ inputs.amplifyjs_dir }}"
+
+          echo "${{ inputs.browser }}"
 
       - name: Checkout repository
         uses: actions/checkout@24cb9080177205b6e8c946b17badbe402adc938f # v3.4.0 https://github.com/actions/checkout/commit/24cb9080177205b6e8c946b17badbe402adc938f
