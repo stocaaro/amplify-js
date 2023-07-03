@@ -67,7 +67,8 @@ jobs:
         working-directory: amplify-js-samples-staging/samples/react-native/storage/StorageApp
         run: |
           echo "Current NPM registry: " $(yarn config get registry)
-          ~/amplify-js/.circleci/retry-yarn-script.sh -s 'install --frozen-lockfile --non-interactive' -n 3
+          ls ~/; ls ~/amplify-js/
+          ~/amplify-js/amplify-js/.circleci/retry-yarn-script.sh -s 'install --frozen-lockfile --non-interactive' -n 3
         shell: bash
       - name: Install CocoaPods
         run: |
@@ -103,6 +104,6 @@ jobs:
         shell: bash
       - name: Detox run
         run: |
-          ~/amplify-js/.circleci/retry-yarn-script.sh -s 'detox test -c ios.sim.debug -u' -n 3
+          ~/amplify-js/amplify-js/.circleci/retry-yarn-script.sh -s 'detox test -c ios.sim.debug -u' -n 3
         working-directory: amplify-js-samples-staging/samples/react-native/storage/StorageApp
         shell: bash
