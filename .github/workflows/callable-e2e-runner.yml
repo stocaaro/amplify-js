@@ -49,4 +49,5 @@ jobs:
 
   e2e-test-runner:
     name: e2e test runner
+    secrets: inherit
     uses: ./.github/workflows/callable-e2e-tests-detox.yml
