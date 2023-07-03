@@ -47,7 +47,7 @@ jobs:
       spec: ${{ matrix.integ-config.spec || '' }}
       amplifyjs_dir: ${{ matrix.integ-config.amplifyjs_dir || false }}
       browser: |
-        ${{
+        "${{
           matrix.integ-config.browser
           &&
           (
@@ -62,5 +62,5 @@ jobs:
             )
           )
           ||          
-          "[ '' ]"
-        }}
+          ['']
+        }}"
