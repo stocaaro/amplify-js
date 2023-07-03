@@ -68,6 +68,7 @@ jobs:
         run: |
           echo "Current NPM registry: " $(yarn config get registry)
           ~/amplify-js/.circleci/retry-yarn-script.sh -s 'install --frozen-lockfile --non-interactive' -n 3
+        shell: bash
       - name: Install CocoaPods
         run: |
           ls; pwd
