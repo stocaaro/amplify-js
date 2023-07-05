@@ -37,7 +37,6 @@ jobs:
       sample_name: ${{ matrix.integ-config.sample_name }}
       spec: ${{ matrix.integ-config.spec || '' }}
       amplifyjs_dir: ${{ matrix.integ-config.amplifyjs_dir || false }}
-      build_type: ${{ matrix.integ-config.build_type || '' }}
       browser: |
         ${{
           matrix.integ-config.browser
