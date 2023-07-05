@@ -1,10 +1,10 @@
 - test_name: 'integ_rn_ios_storage'
-  framework: ~/amplify-js-samples-staging/samples/react-native/storage/StorageApp
+  working_directory: ~/amplify-js-samples-staging/samples/react-native/storage/StorageApp
 - test_name: 'integ_rn_ios_storage_multipart_progress'
-  framework: ~/amplify-js-samples-staging/samples/react-native/storage/MultiPartUploadWithProgress
+  working_directory: ~/amplify-js-samples-staging/samples/react-native/storage/MultiPartUploadWithProgress
 - test_name: 'integ_rn_ios_push_notifications'
-  framework: ~/amplify-js-samples-staging/samples/react-native/push-notifications/PushNotificationApp
+  working_directory: ~/amplify-js-samples-staging/samples/react-native/push-notifications/PushNotificationApp
 - test_name: 'integ_rn_ios_datastore_sqlite_adapter'
-  framework: ~/amplify-js-samples-staging/samples/react-native/datastore/SQLiteAdapter
+  working_directory: ~/amplify-js-samples-staging/samples/react-native/datastore/SQLiteAdapter
 - test_name: 'integ_rn_ios_device_tracking'
-  framework: ~/amplify-js-samples-staging/samples/react-native/auth/deviceTracking
+  working_directory: ~/amplify-js-samples-staging/samples/react-native/auth/deviceTracking
