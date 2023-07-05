@@ -1,5 +1,10 @@
 on:
   push:
+    branches:
+      - feat/github-actions/main
+      - feat/github-actions/test-stocaaro
+      - feat/github-actions/test-ashwinkumar6
+      - feat/github-actions/test-yingku
 
 jobs:
   prebuild-ubuntu:
