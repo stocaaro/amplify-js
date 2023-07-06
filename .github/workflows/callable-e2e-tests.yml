@@ -38,6 +38,8 @@ jobs:
   e2e-test-debugger:
     name: e2e-test-debugger
     runs-on: ubuntu-latest
+    outputs:
+      sample-name: ${{env.SAMPLE_NAME}}
     steps:
       - name: check incoming config
         run: |
@@ -49,15 +51,19 @@ jobs:
           ${{ inputs.browser }} \
           ${{ inputs.amplifyjs_dir }}"
 
+          echo "SAMPLE_NAME=$(jq inputs.sample_name -c)" >> $GITHUB_ENV
+
+
   e2e-test:
     name: 'E2E: ${{ inputs.test_name }}'
+    needs: e2e-test-debugger
     runs-on: ubuntu-latest
     strategy:
       matrix:
         browser:
           - ${{ fromJson(inputs.browser) }}
         sample_name:
-          - ${{ fromJson(inputs.sample_name) }}
+          - ${{ fromJson(needs.e2e-prep.outputs.sample-name) }}
       fail-fast: false
     timeout-minutes: 35
 
