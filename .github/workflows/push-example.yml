@@ -1,10 +1,10 @@
 on:
   push:
-    branches:
-      - feat/github-actions/main
-      - feat/github-actions/test-stocaaro
-      - feat/github-actions/test-ashwinkumar6
-      - feat/github-actions/test-yingku
+    # branches:
+    #   - feat/github-actions/main
+    #   - feat/github-actions/test-stocaaro
+    #   - feat/github-actions/test-ashwinkumar6
+    #   - feat/github-actions/test-yingku
 
 # concurrency:
 #   group: push-${{ github.event.workflow_run.head_branch }} # This is to make the group name unique for a branch.
