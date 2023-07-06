@@ -59,7 +59,7 @@ jobs:
     steps:
       - name: e2e-test-debugger-test
         run: |
-          ${{ needs.e2e-prep.outputs.sample-name  }}
+          echo "${{ needs.e2e-prep.outputs.sample-name  }}"
 
   # e2e-test:
   #   name: 'E2E: ${{ inputs.test_name }}'
