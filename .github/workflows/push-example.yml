@@ -6,9 +6,9 @@ on:
       - feat/github-actions/test-ashwinkumar6
       - feat/github-actions/test-yingku
 
-concurrency:
-  group: push-${{ github.event.workflow_run.head_branch }} # This is to make the group name unique for a branch.
-  cancel-in-progress: true
+# concurrency:
+#   group: push-${{ github.event.workflow_run.head_branch }} # This is to make the group name unique for a branch.
+#   cancel-in-progress: true
 
 jobs:
   prebuild-ubuntu:
