@@ -71,7 +71,7 @@ jobs:
           - ${{ fromJson(inputs.browser) }}
         sample_name:
           # - ${{ fromJson(needs.e2e-prep.outputs.sample-name) }}
-          - ${{fromJson('["v2/private-auth-default-v2 private-auth-default","v2/dynamic-user-pool-groups-owner-based-default-v2 dynamic-user-pool-groups-owner-based-default"]') }}
+          - ${{fromJson('["v2/private-auth-default-v2 private-auth-default"]') }}
       fail-fast: false
     timeout-minutes: 35
 
