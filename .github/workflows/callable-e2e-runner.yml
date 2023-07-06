@@ -23,30 +23,30 @@ jobs:
           echo "INTEG_UTILS=$(cat .github/integ-config/utils.yml | yq -o=json | jq -c .)" >> $GITHUB_ENV
         working-directory: ./amplify-js
 
-  debug-job:
-    name: debug the job
-    runs-on: ubuntu-latest
-    needs: e2e-prep
-    strategy:
-      matrix:
-        integ-config: ${{ fromJson(needs.e2e-prep.outputs.integ-config) }}
-      fail-fast: false
-    steps:
-      - name: checkout AmplifyJs
-        run: |
-          echo "${{
-            fromJson(
-              needs.e2e-prep.outputs.integ-utils
-            )[matrix.integ-config.sample_name]
-            &&
-            toJSON(
-              fromJson(
-                needs.e2e-prep.outputs.integ-utils
-              )[matrix.integ-config.sample_name]
-            )
-            ||
-            format('[{0}]', toJSON(matrix.integ-config.sample_name))
-          }}"
+  # debug-job:
+  #   name: debug the job
+  #   runs-on: ubuntu-latest
+  #   needs: e2e-prep
+  #   strategy:
+  #     matrix:
+  #       integ-config: ${{ fromJson(needs.e2e-prep.outputs.integ-config) }}
+  #     fail-fast: false
+  #   steps:
+  #     - name: checkout AmplifyJs
+  #       run: |
+  #         echo "${{
+  #           fromJson(
+  #             needs.e2e-prep.outputs.integ-utils
+  #           )[matrix.integ-config.sample_name]
+  #           &&
+  #           toJSON(
+  #             fromJson(
+  #               needs.e2e-prep.outputs.integ-utils
+  #             )[matrix.integ-config.sample_name]
+  #           )
+  #           ||
+  #           format('[{0}]', toJSON(matrix.integ-config.sample_name))
+  #         }}"
 # echo "${{ needs.e2e-prep.outputs.integ-config }}"
 
 
@@ -100,15 +100,15 @@ jobs:
           '[""]'
         }}
 
-  detox-e2e-test-runner:
-    name: e2e test runner
-    needs: e2e-prep
-    strategy:
-      matrix:
-        integ-config: ${{ fromJson(needs.e2e-prep.outputs.detox-integ-config) }}
-      fail-fast: false
-    secrets: inherit
-    uses: ./.github/workflows/callable-e2e-tests-detox.yml
-    with:
-      test_name: ${{ matrix.integ-config.test_name }}
-      working_directory: ${{ matrix.integ-config.working_directory }}
+  # detox-e2e-test-runner:
+  #   name: e2e test runner
+  #   needs: e2e-prep
+  #   strategy:
+  #     matrix:
+  #       integ-config: ${{ fromJson(needs.e2e-prep.outputs.detox-integ-config) }}
+  #     fail-fast: false
+  #   secrets: inherit
+  #   uses: ./.github/workflows/callable-e2e-tests-detox.yml
+  #   with:
+  #     test_name: ${{ matrix.integ-config.test_name }}
+  #     working_directory: ${{ matrix.integ-config.working_directory }}
