@@ -38,7 +38,7 @@ jobs:
     uses: ./.github/workflows/callable-prebuild-samples-staging.yml
   e2e:
     needs:
-      - prebuild-macos
+      # - prebuild-macos
       - prebuild-ubuntu
       - prebuild-samples-staging
     secrets: inherit
