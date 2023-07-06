@@ -140,12 +140,12 @@
   sample_name: datastore_auth_scenarios_sample_spec_v2
   spec: ''
   browser: chrome
-# - test_name: 'DataStore Auth CLI v2 - Firefox'
-#   framework: react
-#   category: datastore
-#   sample_name: datastore_auth_scenarios_sample_spec_v2
-#   spec: ''
-#   browser: firefox
+- test_name: 'DataStore Auth CLI v2 - Firefox'
+  framework: react
+  category: datastore
+  sample_name: datastore_auth_scenarios_sample_spec_v2
+  spec: ''
+  browser: firefox
  
 # # integ_react_datastore_custom_pk_unconnected_models
 # - test_name: 'DataStore - Custom Primary Key (Connected Models)'
