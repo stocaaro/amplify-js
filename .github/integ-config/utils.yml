@@ -26,13 +26,13 @@ datastore_auth_scenarios_sample_spec:
 datastore_auth_scenarios_sample_spec_v2:
   - v2/owner-based-default-v2 owner-based-default # TODO: Add `owner-based-operations` when tests pass
   - v2/static-user-pool-groups-default-v2 static-user-pool-groups-default
-  # - v2/static-user-pool-groups-operations-v2 static-user-pool-groups-operations
-  # - v2/owner-and-group-different-models-default-v2 owner-and-group-different-models-default
-  # - v2/owner-and-group-same-model-default-v2 owner-and-group-same-model-default
-  # - v2/owner-and-group-same-model-operations-v2 owner-and-group-same-model-operations
-  # - v2/dynamic-user-pool-groups-default-v2 dynamic-user-pool-groups-default
-  # - v2/dynamic-user-pool-groups-owner-based-default-v2 dynamic-user-pool-groups-owner-based-default
-  # - v2/private-auth-default-v2 private-auth-default
+  - v2/static-user-pool-groups-operations-v2 static-user-pool-groups-operations
+  - v2/owner-and-group-different-models-default-v2 owner-and-group-different-models-default
+  - v2/owner-and-group-same-model-default-v2 owner-and-group-same-model-default
+  - v2/owner-and-group-same-model-operations-v2 owner-and-group-same-model-operations
+  - v2/dynamic-user-pool-groups-default-v2 dynamic-user-pool-groups-default
+  - v2/dynamic-user-pool-groups-owner-based-default-v2 dynamic-user-pool-groups-owner-based-default
+  - v2/private-auth-default-v2 private-auth-default
   # - v2/private-auth-iam-v2 private-auth-iam
   # - v2/public-auth-default-v2 public-auth-default
   # - v2/public-auth-iam-v2 public-auth-iam
