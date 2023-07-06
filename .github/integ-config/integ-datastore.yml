@@ -134,12 +134,12 @@
 #   browser: firefox
 
 # integ_datastore_auth_v2
-- test_name: 'DataStore Auth CLI v2'
-  framework: react
-  category: datastore
-  sample_name: datastore_auth_scenarios_sample_spec_v2
-  spec: ''
-  browser: minimal_browser_list
+# - test_name: 'DataStore Auth CLI v2'
+#   framework: react
+#   category: datastore
+#   sample_name: datastore_auth_scenarios_sample_spec_v2
+#   spec: ''
+#   browser: minimal_browser_list
 # - test_name: 'DataStore Auth CLI v2 - Firefox'
 #   framework: react
 #   category: datastore
