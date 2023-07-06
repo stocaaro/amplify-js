@@ -52,7 +52,7 @@ jobs:
           ${{ inputs.amplifyjs_dir }}"
 
           echo "SAMPLE_NAME=$(jq inputs.sample_name -c)" >> $GITHUB_ENV
-          echo jq inputs.sample_name -c
+          echo ${{jq inputs.sample_name -c}}
 
 
   e2e-test:
