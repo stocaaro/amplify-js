@@ -32,6 +32,20 @@ jobs:
         run: |
           echo "${{ needs.e2e-prep.outputs.integ-config }}"
 
+          echo ${{
+            fromJson(
+              needs.e2e-prep.outputs.integ-utils
+            )[matrix.integ-config.sample_name]
+            &&
+            toJSON(
+              fromJson(
+                needs.e2e-prep.outputs.integ-utils
+              )[matrix.integ-config.sample_name]
+            )
+            ||
+            format('[{0}]', toJSON(matrix.integ-config.sample_name))
+          }}
+
 
   e2e-test-runner:
     name: e2e test runnner
