@@ -27,11 +27,13 @@ jobs:
     name: debug the job
     runs-on: ubuntu-latest
     needs: e2e-prep
+    strategy:
+      matrix:
+        integ-config: ${{ fromJson(needs.e2e-prep.outputs.integ-config) }}
+      fail-fast: false
     steps:
       - name: checkout AmplifyJs
         run: |
-          echo "${{ needs.e2e-prep.outputs.integ-config }}"
-
           echo ${{
             fromJson(
               needs.e2e-prep.outputs.integ-utils
@@ -45,6 +47,7 @@ jobs:
             ||
             format('[{0}]', toJSON(matrix.integ-config.sample_name))
           }}
+# echo "${{ needs.e2e-prep.outputs.integ-config }}"
 
 
   e2e-test-runner:
