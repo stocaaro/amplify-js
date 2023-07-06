@@ -51,7 +51,7 @@ jobs:
           ${{ inputs.browser }} \
           ${{ inputs.amplifyjs_dir }}"
 
-          echo "SAMPLE_NAME=$(jq inputs.sample_name -c .)" >> $GITHUB_ENV
+          echo "SAMPLE_NAME=$(jq fromJSON(inputs.sample_name) -c .)" >> $GITHUB_ENV
 
   e2e-test-debugger-test:
     runs-on: ubuntu-latest
