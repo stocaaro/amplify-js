@@ -35,6 +35,20 @@ env:
   NPM_EMAIL: circleci@amplify.js
   AMPLIFY_DIR: /home/runner/work/amplify-js/amplify-js/aws-amplify
 jobs:
+  e2e-test-debugger:
+    name: e2e-test-debugger
+    runs-on: ubuntu-latest
+    steps:
+      - name: check incoming config
+        run: |
+          echo \
+          "${{ inputs.framework }} \
+          ${{ inputs.category }} \
+          ${{ inputs.sample_name }} \
+          ${{ inputs.spec }} \
+          ${{ inputs.browser }} \
+          ${{ inputs.amplifyjs_dir }}"
+
   e2e-test:
     name: 'E2E: ${{ inputs.test_name }}'
     runs-on: ubuntu-latest

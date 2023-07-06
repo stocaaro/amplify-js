@@ -28,7 +28,7 @@ datastore_auth_scenarios_sample_spec_v2:
   # - v2/static-user-pool-groups-default-v2 static-user-pool-groups-default
   # - v2/static-user-pool-groups-operations-v2 static-user-pool-groups-operations
   # - v2/owner-and-group-different-models-default-v2 owner-and-group-different-models-default
-  # - v2/owner-and-group-same-model-default-v2 owner-and-group-same-model-default
+  - v2/owner-and-group-same-model-default-v2 owner-and-group-same-model-default
   # - v2/owner-and-group-same-model-operations-v2 owner-and-group-same-model-operations
   # - v2/private-auth-iam-v2 private-auth-iam
   # - v2/public-auth-default-v2 public-auth-default
