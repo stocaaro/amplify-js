@@ -34,7 +34,7 @@ jobs:
     steps:
       - name: checkout AmplifyJs
         run: |
-          echo ${{
+          echo "${{
             fromJson(
               needs.e2e-prep.outputs.integ-utils
             )[matrix.integ-config.sample_name]
@@ -46,7 +46,7 @@ jobs:
             )
             ||
             format('[{0}]', toJSON(matrix.integ-config.sample_name))
-          }}
+          }}"
 # echo "${{ needs.e2e-prep.outputs.integ-config }}"
 
 
