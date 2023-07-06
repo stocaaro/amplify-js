@@ -71,7 +71,7 @@ jobs:
         browser:
           - ${{ fromJson(inputs.browser) }}
         sample_name:
-          - ${{fromJson('["v2/dynamic-user-pool-groups-owner-based-default-v2 dynamic-user-pool-groups-owner-based-default"]') }}
+          - ${{fromJson('["v2/dynamic-user-pool-groups-owner-based-default-v2 dynamic-user-pool-groups-owner-based"]') }}
           # - ${{ fromJson(needs.e2e-prep.outputs.sample-name) }}
           
       fail-fast: false
