@@ -57,7 +57,7 @@ jobs:
           ${{ inputs.additional_params }}"
 
           echo '${{ inputs.additional_params}}' | jq -c .
-          echo "ADDITIONAL_PARAMS=$(\'inputs.additional_params\' | jq -c .)"
+          echo "ADDITIONAL_PARAMS=$(\'${{inputs.additional_params}}\' | jq -c .)"
           echo "ADDITIONAL_PARAMS=$(inputs.additional_params | jq -c .)" >> $GITHUB_OUTPUT
     outputs:
       additional_params: ${{steps.update_config.outputs.ADDITIONAL_PARAMS}}
