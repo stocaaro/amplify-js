@@ -45,6 +45,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: check incoming config - pre
+        id: update_config 
         run: |
           echo \
           "${{ inputs.framework }} \
@@ -56,15 +57,20 @@ jobs:
           ${{ inputs.additional_params }}"
 
           echo "${{ fromJson(inputs.additional_params) }}"
+          echo "ADDITIONAL_PARAMS=$(inputs.additional_params | jq -c .)"
+          echo "ADDITIONAL_PARAMS=$(inputs.additional_params | jq -c .)" >> $GITHUB_OUTPUT
+    outputs:
+      additional_params: ${{steps.update_config.outputs.ADDITIONAL_PARAMS}}
 
   e2e-test:
     name: 'E2E: ${{ inputs.test_name }}'
     runs-on: ubuntu-latest
+    needs: e2e-test-pre
     strategy:
       matrix:
         # browser:
         #   - ${{ fromJson(inputs.browser) }}
-        additional_params: ${{ fromJson(inputs.additional_params| jq -c .) }}
+        additional_params: ${{ fromJson(needs.e2e-test-pre.outputs.additional_params) }}
         # ["v2/owner-and-group-different-models-default-v2","owner-and-group-different-models-default"]
 
       fail-fast: false
@@ -81,89 +87,89 @@ jobs:
           ${{ inputs.amplifyjs_dir }}
           ${{ matrix.additional_params }}"
 
-  e2e-test-debug:
-    name: 'E2E: ${{ inputs.test_name }}'
-    needs: e2e-test
-    runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        additional_params: ${{ fromJson('[{"sample_name":"v2/owner-and-group-different-models-default-v2asdasdasdasdsad","spec":"owner-and-group-different-models-defaultasdasdasdasdsad"}]') }}
-      fail-fast: false
-    timeout-minutes: 35
+#   e2e-test-debug:
+#     name: 'E2E: ${{ inputs.test_name }}'
+#     needs: e2e-test
+#     runs-on: ubuntu-latest
+#     strategy:
+#       matrix:
+#         additional_params: ${{ fromJson('[{"sample_name":"v2/owner-and-group-different-models-default-v2asdasdasdasdsad","spec":"owner-and-group-different-models-defaultasdasdasdasdsad"}]') }}
+#       fail-fast: false
+#     timeout-minutes: 35
 
-    steps:
-      - name: check incoming config
-        run: |
-          echo \
-          "${{ inputs.framework }} \
-          ${{ inputs.category }} \
-          ${{ inputs.sample_name }} \
-          ${{ inputs.spec }} \
-          ${{ inputs.amplifyjs_dir }}
-          ${{ matrix.additional_params }}"
+#     steps:
+#       - name: check incoming config
+#         run: |
+#           echo \
+#           "${{ inputs.framework }} \
+#           ${{ inputs.category }} \
+#           ${{ inputs.sample_name }} \
+#           ${{ inputs.spec }} \
+#           ${{ inputs.amplifyjs_dir }}
+#           ${{ matrix.additional_params }}"
 
 
-      # - name: Checkout repository
-      #   uses: actions/checkout@24cb9080177205b6e8c946b17badbe402adc938f # v3.4.0 https://github.com/actions/checkout/commit/24cb9080177205b6e8c946b17badbe402adc938f
-      #   with:
-      #     # Minimal depth 2 so we can checkout the commit before possible merge commit.
-      #     fetch-depth: 2
-      #     path: aws-amplify
-      # - name: Setup node and build the repository
-      #   uses: ./aws-amplify/.github/actions/node-and-build
-      # - name: Setup samples staging repository
-      #   uses: ./aws-amplify/.github/actions/setup-samples-staging
-      #   with:
-      #     GH_PAT: ${{ secrets.GH_PAT }}
-      # - name: Load Verdaccio with AmplifyJs
-      #   uses: ./aws-amplify/.github/actions/load-verdaccio-with-amplify-js
-      # - name: Run cypress tests for ${{ inputs.test_name }} dev
-      #   run: |
-      #     ../aws-amplify/.circleci/retry-yarn-script.sh -s \
-      #     "ci:test ${{ inputs.framework }} ${{ inputs.category }} ${{ inputs.sample_name }} ${{ matrix.additional_params.sample_name || '' }} ${{ inputs.spec }} ${{ matrix.additional_params.spec || '' }} ${{ matrix.browser }} dev ${{ inputs.amplifyjs_dir == true && env.AMPLIFY_DIR || ''}}" -n 3
-      #   working-directory: amplify-js-samples-staging
-      #   shell: bash
-      # - name: Run cypress tests for ${{ inputs.test_name }} prod
-      #   run: |
-      #     ../aws-amplify/.circleci/retry-yarn-script.sh -s \
-      #     "ci:test ${{ inputs.framework }} ${{ inputs.category }} ${{ inputs.sample_name }} ${{ matrix.additional_params.sample_name || '' }} ${{ inputs.spec }} ${{ matrix.additional_params.spec || '' }} ${{ matrix.browser }} prod ${{ inputs.amplifyjs_dir == true && env.AMPLIFY_DIR || ''}}" -n 3
-      #   working-directory: amplify-js-samples-staging
-      #   shell: bash
-# TODO CODE FROM CIRCLE CI: REPLICATE THIS
-# - name: Install ${{ inputs.test_name }} >> sample
-#   run: |
-#     echo "Current NPM registry: " $(yarn config get registry)
-#     ~/amplify-js/.circleci/retry-yarn-script.sh -s 'install' -n 3
+#       # - name: Checkout repository
+#       #   uses: actions/checkout@24cb9080177205b6e8c946b17badbe402adc938f # v3.4.0 https://github.com/actions/checkout/commit/24cb9080177205b6e8c946b17badbe402adc938f
+#       #   with:
+#       #     # Minimal depth 2 so we can checkout the commit before possible merge commit.
+#       #     fetch-depth: 2
+#       #     path: aws-amplify
+#       # - name: Setup node and build the repository
+#       #   uses: ./aws-amplify/.github/actions/node-and-build
+#       # - name: Setup samples staging repository
+#       #   uses: ./aws-amplify/.github/actions/setup-samples-staging
+#       #   with:
+#       #     GH_PAT: ${{ secrets.GH_PAT }}
+#       # - name: Load Verdaccio with AmplifyJs
+#       #   uses: ./aws-amplify/.github/actions/load-verdaccio-with-amplify-js
+#       # - name: Run cypress tests for ${{ inputs.test_name }} dev
+#       #   run: |
+#       #     ../aws-amplify/.circleci/retry-yarn-script.sh -s \
+#       #     "ci:test ${{ inputs.framework }} ${{ inputs.category }} ${{ inputs.sample_name }} ${{ matrix.additional_params.sample_name || '' }} ${{ inputs.spec }} ${{ matrix.additional_params.spec || '' }} ${{ matrix.browser }} dev ${{ inputs.amplifyjs_dir == true && env.AMPLIFY_DIR || ''}}" -n 3
+#       #   working-directory: amplify-js-samples-staging
+#       #   shell: bash
+#       # - name: Run cypress tests for ${{ inputs.test_name }} prod
+#       #   run: |
+#       #     ../aws-amplify/.circleci/retry-yarn-script.sh -s \
+#       #     "ci:test ${{ inputs.framework }} ${{ inputs.category }} ${{ inputs.sample_name }} ${{ matrix.additional_params.sample_name || '' }} ${{ inputs.spec }} ${{ matrix.additional_params.spec || '' }} ${{ matrix.browser }} prod ${{ inputs.amplifyjs_dir == true && env.AMPLIFY_DIR || ''}}" -n 3
+#       #   working-directory: amplify-js-samples-staging
+#       #   shell: bash
+# # TODO CODE FROM CIRCLE CI: REPLICATE THIS
+# # - name: Install ${{ inputs.test_name }} >> sample
+# #   run: |
+# #     echo "Current NPM registry: " $(yarn config get registry)
+# #     ~/amplify-js/.circleci/retry-yarn-script.sh -s 'install' -n 3
 
-# - name: Run cypress tests for ${{ inputs.test_name }} sample on dev
-#   run: |
-#     cd ~/amplify-js-samples-staging
-#     ~/amplify-js/.circleci/retry-yarn-script.sh -s \
-#     'ci:test ${{ inputs.framework }} \
-#     ${{ inputs.category }} \
-#     ${{ inputs.sample_name }} \
-#     ${{ inputs.spec }} \
-#     ${{ inputs.browser }} \
-#     dev \
-#     ${{ inputs.amplifyjs_dir }}' -n 3
+# # - name: Run cypress tests for ${{ inputs.test_name }} sample on dev
+# #   run: |
+# #     cd ~/amplify-js-samples-staging
+# #     ~/amplify-js/.circleci/retry-yarn-script.sh -s \
+# #     'ci:test ${{ inputs.framework }} \
+# #     ${{ inputs.category }} \
+# #     ${{ inputs.sample_name }} \
+# #     ${{ inputs.spec }} \
+# #     ${{ inputs.browser }} \
+# #     dev \
+# #     ${{ inputs.amplifyjs_dir }}' -n 3
 
-# - name: Run cypress tests for ${{ inputs.test_name }} sample on prod
-#   run: |
-#     cd ~/amplify-js-samples-staging
+# # - name: Run cypress tests for ${{ inputs.test_name }} sample on prod
+# #   run: |
+# #     cd ~/amplify-js-samples-staging
 
-#     ~/amplify-js/.circleci/retry-yarn-script.sh -s \
-#     'ci:test ${{ inputs.framework }} \
-#     ${{ inputs.category }} \
-#     ${{ inputs.sample_name }} \
-#     ${{ inputs.spec }} \
-#     ${{ inputs.browser }} \
-#     prod \
-#     ${{ inputs.amplifyjs_dir }}' -n 3
+# #     ~/amplify-js/.circleci/retry-yarn-script.sh -s \
+# #     'ci:test ${{ inputs.framework }} \
+# #     ${{ inputs.category }} \
+# #     ${{ inputs.sample_name }} \
+# #     ${{ inputs.spec }} \
+# #     ${{ inputs.browser }} \
+# #     prod \
+# #     ${{ inputs.amplifyjs_dir }}' -n 3
 
-# - uses: actions/upload-artifact@0b7f8abb1508181956e8e162db84b466c27e18ce # v3.1.2 https://github.com/actions/upload-artifact/commit/0b7f8abb1508181956e8e162db84b466c27e18ce
-#   with:
-#     name: my-artifact
-#     path: |
-#       ~/amplify-js-samples-staging/cypress/videos
-#       ~/amplify-js-samples-staging/cypress/screenshots
+# # - uses: actions/upload-artifact@0b7f8abb1508181956e8e162db84b466c27e18ce # v3.1.2 https://github.com/actions/upload-artifact/commit/0b7f8abb1508181956e8e162db84b466c27e18ce
+# #   with:
+# #     name: my-artifact
+# #     path: |
+# #       ~/amplify-js-samples-staging/cypress/videos
+# #       ~/amplify-js-samples-staging/cypress/screenshots
 
