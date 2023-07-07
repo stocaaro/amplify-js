@@ -587,7 +587,7 @@ tests:
     sample_name: [reconnection-iot]
     spec: reconnection
     # Firefox doesn't support network state management in cypress
-    browser: [chrome]
+    browser: *extended_browser_list
 
   # integ_react_api_reconnect
   - test_name: 'PubSub - Reconnection for API'
@@ -596,7 +596,7 @@ tests:
     sample_name: [reconnection-api]
     spec: reconnection
     # Firefox doesn't support network state management in cypress
-    browser: [chrome]
+    browser: *extended_browser_list
   # React
   # integ_react_storage
   - test_name: 'React Storage'
