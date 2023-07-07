@@ -40,20 +40,20 @@ env:
   AMPLIFY_DIR: /home/runner/work/amplify-js/amplify-js/aws-amplify
 jobs:
 
-  # e2e-test-pre:
-  #   name: 'E2E: ${{ inputs.test_name }}'
-  #   runs-on: ubuntu-latest
-  #   steps:
-  #     - name: check incoming config - pre
-  #       run: |
-  #         echo \
-  #         "${{ inputs.framework }} \
-  #         ${{ inputs.category }} \
-  #         ${{ inputs.sample_name }} \
-  #         ${{ inputs.spec }} \
-  #         ${{ matrix.browser }} \
-  #         ${{ inputs.amplifyjs_dir }}
-  #         ${{ inputs.additional_params }}"
+  e2e-test-pre:
+    name: 'E2E: ${{ inputs.test_name }}'
+    runs-on: ubuntu-latest
+    steps:
+      - name: check incoming config - pre
+        run: |
+          echo \
+          "${{ inputs.framework }} \
+          ${{ inputs.category }} \
+          ${{ inputs.sample_name }} \
+          ${{ inputs.spec }} \
+          ${{ matrix.browser }} \
+          ${{ inputs.amplifyjs_dir }}
+          ${{ inputs.additional_params }}"
 
   e2e-test:
     name: 'E2E: ${{ inputs.test_name }}'
@@ -62,7 +62,8 @@ jobs:
       matrix:
         # browser:
         #   - ${{ fromJson(inputs.browser) }}
-        additional_params: ["v2/owner-and-group-different-models-default-v2","owner-and-group-different-models-default"]
+        additional_params: ${{ fromJson(inputs.additional_params) }}
+        # ["v2/owner-and-group-different-models-default-v2","owner-and-group-different-models-default"]
 
       fail-fast: false
     timeout-minutes: 35

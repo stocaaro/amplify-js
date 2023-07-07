@@ -9,8 +9,8 @@ extended_browser_list: &extended_browser_list
 
 datastore_auth_scenarios: &datastore_auth_scenarios
   # TODO: Add `owner-based-operations` when tests pass
-  - sample_name: owner-based-default #39
-    spec: owner-based-default
+  # - sample_name: owner-based-default #39
+  #   spec: owner-based-default
   # - sample_name: static-user-pool-groups-default #62
   #   spec: static-user-pool-groups-default
   # - sample_name: static-user-pool-groups-operations #68
@@ -37,8 +37,8 @@ datastore_auth_scenarios: &datastore_auth_scenarios
   #   spec: owner-custom-field-default
 
   # TODO: The below test fails and ends up failing all the other tests in this group
-  # - sample_name: dynamic-user-pool-groups-owner-based-default #88
-  #   spec: dynamic-user-pool-groups-owner-based-default
+  - sample_name: dynamic-user-pool-groups-owner-based-default #88
+    spec: dynamic-user-pool-groups-owner-based-default
 
 datastore_auth_scenarios_v2: &datastore_auth_scenarios_v2
   - sample_name: v2/owner-based-default-v2 #44
