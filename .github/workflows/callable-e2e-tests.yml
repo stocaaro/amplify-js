@@ -71,6 +71,10 @@ jobs:
           GH_PAT: ${{ secrets.GH_PAT }}
       - name: Load Verdaccio with AmplifyJs
         uses: ./aws-amplify/.github/actions/load-verdaccio-with-amplify-js
+
+      - name: Install playwright
+        run: npx playwright install 
+
       - name: Run cypress tests for ${{ inputs.test_name }} dev
         run: |
           ../aws-amplify/.circleci/retry-yarn-script.sh -s \
