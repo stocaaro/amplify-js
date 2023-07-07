@@ -84,7 +84,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        additional_params: [{"sample_name":"v2/owner-and-group-different-models-default-v2","spec":"owner-and-group-different-models-default"}]
+        additional_params: ${{ fromJson('[{"sample_name":"v2/owner-and-group-different-models-default-v2asdasdasdasdsad","spec":"owner-and-group-different-models-defaultasdasdasdasdsad"}]') }}
       fail-fast: false
     timeout-minutes: 35
 
