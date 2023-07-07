@@ -56,7 +56,7 @@ jobs:
           ${{ inputs.amplifyjs_dir }}
           ${{ inputs.additional_params }}"
 
-          echo "${{ inputs.additional_params}}" | jq -c .
+          echo ${{ inputs.additional_params}} | jq -c .
           echo "ADDITIONAL_PARAMS=$(inputs.additional_params | jq -c .)"
           echo "ADDITIONAL_PARAMS=$(inputs.additional_params | jq -c .)" >> $GITHUB_OUTPUT
     outputs:
