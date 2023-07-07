@@ -27,6 +27,10 @@ on:
         required: false
         type: boolean
         default: false
+      additional_params:
+        required: false
+        type: string
+        default: ''
 
 env:
   NPM_REGISTRY: http://localhost:4873/
@@ -35,6 +39,22 @@ env:
   NPM_EMAIL: circleci@amplify.js
   AMPLIFY_DIR: /home/runner/work/amplify-js/amplify-js/aws-amplify
 jobs:
+
+  e2e-test-pre:
+    name: 'E2E: ${{ inputs.test_name }}'
+    runs-on: ubuntu-latest
+    steps:
+      - name: check incoming config - pre
+        run: |
+          echo \
+          "${{ inputs.framework }} \
+          ${{ inputs.category }} \
+          ${{ inputs.sample_name }} \
+          ${{ inputs.spec }} \
+          ${{ matrix.browser }} \
+          ${{ inputs.amplifyjs_dir }}
+          ${{ inputs.additional_params }}"
+
   e2e-test:
     name: 'E2E: ${{ inputs.test_name }}'
     runs-on: ubuntu-latest
@@ -42,8 +62,7 @@ jobs:
       matrix:
         browser:
           - ${{ fromJson(inputs.browser) }}
-        sample_name:
-          - ${{ fromJson(inputs.sample_name) }}
+        additional_params: ${{ fromJson(inputs.additional_params) }}
       fail-fast: false
     timeout-minutes: 35
 
@@ -53,10 +72,12 @@ jobs:
           echo \
           "${{ inputs.framework }} \
           ${{ inputs.category }} \
-          ${{ matrix.sample_name }} \
+          ${{ inputs.sample_name }} \
           ${{ inputs.spec }} \
           ${{ matrix.browser }} \
-          ${{ inputs.amplifyjs_dir }}"
+          ${{ inputs.amplifyjs_dir }}
+          ${{ inputs.additional_params }}"
+
       - name: Checkout repository
         uses: actions/checkout@24cb9080177205b6e8c946b17badbe402adc938f # v3.4.0 https://github.com/actions/checkout/commit/24cb9080177205b6e8c946b17badbe402adc938f
         with:
@@ -74,13 +95,13 @@ jobs:
       - name: Run cypress tests for ${{ inputs.test_name }} dev
         run: |
           ../aws-amplify/.circleci/retry-yarn-script.sh -s \
-          "ci:test ${{ inputs.framework }} ${{ inputs.category }} ${{ matrix.sample_name }} ${{ inputs.spec }} ${{ matrix.browser }} dev ${{ inputs.amplifyjs_dir == true && env.AMPLIFY_DIR || ''}}" -n 3
+          "ci:test ${{ inputs.framework }} ${{ inputs.category }} ${{ inputs.sample_name }} ${{ matrix.additional_params.sample_name || '' }} ${{ inputs.spec }} ${{ matrix.additional_params.spec || '' }} ${{ matrix.browser }} dev ${{ inputs.amplifyjs_dir == true && env.AMPLIFY_DIR || ''}}" -n 3
         working-directory: amplify-js-samples-staging
         shell: bash
       - name: Run cypress tests for ${{ inputs.test_name }} prod
         run: |
           ../aws-amplify/.circleci/retry-yarn-script.sh -s \
-          "ci:test ${{ inputs.framework }} ${{ inputs.category }} ${{ matrix.sample_name }} ${{ inputs.spec }} ${{ matrix.browser }} prod ${{ inputs.amplifyjs_dir == true && env.AMPLIFY_DIR || ''}}" -n 3
+          "ci:test ${{ inputs.framework }} ${{ inputs.category }} ${{ inputs.sample_name }} ${{ matrix.additional_params.sample_name || '' }} ${{ inputs.spec }} ${{ matrix.additional_params.spec || '' }} ${{ matrix.browser }} prod ${{ inputs.amplifyjs_dir == true && env.AMPLIFY_DIR || ''}}" -n 3
         working-directory: amplify-js-samples-staging
         shell: bash
 # TODO CODE FROM CIRCLE CI: REPLICATE THIS
