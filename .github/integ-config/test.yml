@@ -1,0 +1,29 @@
+minimal_browser_list: &minimal_browser_list
+  - chrome
+  - firefox
+
+datastore_auth_scenarios: &datastore_auth_scenarios
+  # TODO: Add `owner-based-operations` when tests pass
+  - sample_name: owner-based-default #39
+    spec: owner-based-default
+
+datastore_auth_scenarios_v2: &datastore_auth_scenarios_v2
+  - sample_name: v2/owner-based-default-v2 #44
+    spec: owner-based-default
+
+tests:
+  # React
+  # integ_react_graphql_api
+  - test_name: 'React GraphQL API'
+    framework: react
+    category: api
+    sample_name: [graphql]
+    spec: graphql
+    browser: *minimal_browser_list
+
+  # integ_datastore_auth
+  - test_name: 'DataStore Auth - Chrome'
+    framework: react
+    category: datastore
+    browser: [chrome]
+    additional_params: *datastore_auth_scenarios

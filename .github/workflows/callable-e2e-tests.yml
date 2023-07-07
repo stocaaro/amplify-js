@@ -40,29 +40,30 @@ env:
   AMPLIFY_DIR: /home/runner/work/amplify-js/amplify-js/aws-amplify
 jobs:
 
-  e2e-test-pre:
-    name: 'E2E: ${{ inputs.test_name }}'
-    runs-on: ubuntu-latest
-    steps:
-      - name: check incoming config - pre
-        run: |
-          echo \
-          "${{ inputs.framework }} \
-          ${{ inputs.category }} \
-          ${{ inputs.sample_name }} \
-          ${{ inputs.spec }} \
-          ${{ matrix.browser }} \
-          ${{ inputs.amplifyjs_dir }}
-          ${{ inputs.additional_params }}"
+  # e2e-test-pre:
+  #   name: 'E2E: ${{ inputs.test_name }}'
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #     - name: check incoming config - pre
+  #       run: |
+  #         echo \
+  #         "${{ inputs.framework }} \
+  #         ${{ inputs.category }} \
+  #         ${{ inputs.sample_name }} \
+  #         ${{ inputs.spec }} \
+  #         ${{ matrix.browser }} \
+  #         ${{ inputs.amplifyjs_dir }}
+  #         ${{ inputs.additional_params }}"
 
   e2e-test:
     name: 'E2E: ${{ inputs.test_name }}'
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        browser:
-          - ${{ fromJson(inputs.browser) }}
-        additional_params: ${{ fromJson(inputs.additional_params) }}
+        # browser:
+        #   - ${{ fromJson(inputs.browser) }}
+        additional_params: ["v2/owner-and-group-different-models-default-v2","owner-and-group-different-models-default"]
+
       fail-fast: false
     timeout-minutes: 35
 
@@ -74,36 +75,57 @@ jobs:
           ${{ inputs.category }} \
           ${{ inputs.sample_name }} \
           ${{ inputs.spec }} \
-          ${{ matrix.browser }} \
           ${{ inputs.amplifyjs_dir }}
-          ${{ inputs.additional_params }}"
+          ${{ matrix.additional_params }}"
 
-      - name: Checkout repository
-        uses: actions/checkout@24cb9080177205b6e8c946b17badbe402adc938f # v3.4.0 https://github.com/actions/checkout/commit/24cb9080177205b6e8c946b17badbe402adc938f
-        with:
-          # Minimal depth 2 so we can checkout the commit before possible merge commit.
-          fetch-depth: 2
-          path: aws-amplify
-      - name: Setup node and build the repository
-        uses: ./aws-amplify/.github/actions/node-and-build
-      - name: Setup samples staging repository
-        uses: ./aws-amplify/.github/actions/setup-samples-staging
-        with:
-          GH_PAT: ${{ secrets.GH_PAT }}
-      - name: Load Verdaccio with AmplifyJs
-        uses: ./aws-amplify/.github/actions/load-verdaccio-with-amplify-js
-      - name: Run cypress tests for ${{ inputs.test_name }} dev
+  e2e-test-debug:
+    name: 'E2E: ${{ inputs.test_name }}'
+    needs: e2e-test
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        additional_params: [{"sample_name":"v2/owner-and-group-different-models-default-v2","spec":"owner-and-group-different-models-default"}]
+      fail-fast: false
+    timeout-minutes: 35
+
+    steps:
+      - name: check incoming config
         run: |
-          ../aws-amplify/.circleci/retry-yarn-script.sh -s \
-          "ci:test ${{ inputs.framework }} ${{ inputs.category }} ${{ inputs.sample_name }} ${{ matrix.additional_params.sample_name || '' }} ${{ inputs.spec }} ${{ matrix.additional_params.spec || '' }} ${{ matrix.browser }} dev ${{ inputs.amplifyjs_dir == true && env.AMPLIFY_DIR || ''}}" -n 3
-        working-directory: amplify-js-samples-staging
-        shell: bash
-      - name: Run cypress tests for ${{ inputs.test_name }} prod
-        run: |
-          ../aws-amplify/.circleci/retry-yarn-script.sh -s \
-          "ci:test ${{ inputs.framework }} ${{ inputs.category }} ${{ inputs.sample_name }} ${{ matrix.additional_params.sample_name || '' }} ${{ inputs.spec }} ${{ matrix.additional_params.spec || '' }} ${{ matrix.browser }} prod ${{ inputs.amplifyjs_dir == true && env.AMPLIFY_DIR || ''}}" -n 3
-        working-directory: amplify-js-samples-staging
-        shell: bash
+          echo \
+          "${{ inputs.framework }} \
+          ${{ inputs.category }} \
+          ${{ inputs.sample_name }} \
+          ${{ inputs.spec }} \
+          ${{ inputs.amplifyjs_dir }}
+          ${{ matrix.additional_params }}"
+
+
+      # - name: Checkout repository
+      #   uses: actions/checkout@24cb9080177205b6e8c946b17badbe402adc938f # v3.4.0 https://github.com/actions/checkout/commit/24cb9080177205b6e8c946b17badbe402adc938f
+      #   with:
+      #     # Minimal depth 2 so we can checkout the commit before possible merge commit.
+      #     fetch-depth: 2
+      #     path: aws-amplify
+      # - name: Setup node and build the repository
+      #   uses: ./aws-amplify/.github/actions/node-and-build
+      # - name: Setup samples staging repository
+      #   uses: ./aws-amplify/.github/actions/setup-samples-staging
+      #   with:
+      #     GH_PAT: ${{ secrets.GH_PAT }}
+      # - name: Load Verdaccio with AmplifyJs
+      #   uses: ./aws-amplify/.github/actions/load-verdaccio-with-amplify-js
+      # - name: Run cypress tests for ${{ inputs.test_name }} dev
+      #   run: |
+      #     ../aws-amplify/.circleci/retry-yarn-script.sh -s \
+      #     "ci:test ${{ inputs.framework }} ${{ inputs.category }} ${{ inputs.sample_name }} ${{ matrix.additional_params.sample_name || '' }} ${{ inputs.spec }} ${{ matrix.additional_params.spec || '' }} ${{ matrix.browser }} dev ${{ inputs.amplifyjs_dir == true && env.AMPLIFY_DIR || ''}}" -n 3
+      #   working-directory: amplify-js-samples-staging
+      #   shell: bash
+      # - name: Run cypress tests for ${{ inputs.test_name }} prod
+      #   run: |
+      #     ../aws-amplify/.circleci/retry-yarn-script.sh -s \
+      #     "ci:test ${{ inputs.framework }} ${{ inputs.category }} ${{ inputs.sample_name }} ${{ matrix.additional_params.sample_name || '' }} ${{ inputs.spec }} ${{ matrix.additional_params.spec || '' }} ${{ matrix.browser }} prod ${{ inputs.amplifyjs_dir == true && env.AMPLIFY_DIR || ''}}" -n 3
+      #   working-directory: amplify-js-samples-staging
+      #   shell: bash
 # TODO CODE FROM CIRCLE CI: REPLICATE THIS
 # - name: Install ${{ inputs.test_name }} >> sample
 #   run: |
