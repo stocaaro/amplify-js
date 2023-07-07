@@ -48,6 +48,12 @@ jobs:
           - ${{ fromJson(inputs.sample_name) }}
       fail-fast: false
     timeout-minutes: 35
+    env:
+      NPM_REGISTRY: http://localhost:4873/
+      NPM_USER: circleci
+      NPM_PASS: circleci
+      NPM_EMAIL: circleci@amplify.js
+      AMPLIFY_DIR: /home/runner/work/amplify-js/amplify-js/aws-amplify
 
     steps:
       - name: check incoming config
@@ -71,11 +77,9 @@ jobs:
         uses: ./aws-amplify/.github/actions/setup-samples-staging
         with:
           GH_PAT: ${{ secrets.GH_PAT }}
-      # - name: Load Verdaccio with AmplifyJs
-      #   uses: ./aws-amplify/.github/actions/load-verdaccio-with-amplify-js
 
-      # - name: Install playwright
-      #   run: npx playwright install 
+      - name: Load Verdaccio with AmplifyJs
+        uses: ./aws-amplify/.github/actions/load-verdaccio-with-amplify-js
 
       - name: Run cypress tests for ${{ inputs.test_name }} dev
         run: |
