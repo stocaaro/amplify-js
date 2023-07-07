@@ -64,7 +64,7 @@ jobs:
       matrix:
         # browser:
         #   - ${{ fromJson(inputs.browser) }}
-        additional_params: ${{ fromJson(inputs.additional_params) }}
+        additional_params: ${{ fromJson(inputs.additional_params| jq -c .) }}
         # ["v2/owner-and-group-different-models-default-v2","owner-and-group-different-models-default"]
 
       fail-fast: false
