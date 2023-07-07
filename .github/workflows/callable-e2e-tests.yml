@@ -55,6 +55,8 @@ jobs:
           ${{ inputs.amplifyjs_dir }}
           ${{ inputs.additional_params }}"
 
+          echo ${{ fromJson(inputs.additional_params) }}
+
   e2e-test:
     name: 'E2E: ${{ inputs.test_name }}'
     runs-on: ubuntu-latest
@@ -85,7 +87,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        additional_params: ${{ fromJson('[{"sample_name":"v2/owner-and-group-different-models-default-v2asdasdasdasdsad","spec":"owner-and-group-different-models-defaultasdasdasdasdsad"}]') }}
+        additional_params: ${{ fromJson('') }}
       fail-fast: false
     timeout-minutes: 35
 
