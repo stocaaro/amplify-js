@@ -71,11 +71,11 @@ jobs:
         uses: ./aws-amplify/.github/actions/setup-samples-staging
         with:
           GH_PAT: ${{ secrets.GH_PAT }}
-      - name: Load Verdaccio with AmplifyJs
-        uses: ./aws-amplify/.github/actions/load-verdaccio-with-amplify-js
+      # - name: Load Verdaccio with AmplifyJs
+      #   uses: ./aws-amplify/.github/actions/load-verdaccio-with-amplify-js
 
-      - name: Install playwright
-        run: npx playwright install 
+      # - name: Install playwright
+      #   run: npx playwright install 
 
       - name: Run cypress tests for ${{ inputs.test_name }} dev
         run: |
