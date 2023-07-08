@@ -7,7 +7,7 @@ runs:
     - name: Start verdaccio
       run: |
         lsb_release -a
-        sudo apt-get install netcat
+        apt install netcat -y
         npx verdaccio@5.25.0 &
         while ! nc -z localhost 4873; do
           echo "Verdaccio not running yet"
