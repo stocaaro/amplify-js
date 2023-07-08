@@ -6,7 +6,7 @@ runs:
   steps:
     - name: Start verdaccio
       run: |
-        apt install -y netcat
+        apt-get -y install netcat
         npx verdaccio@5.25.0 &
         while ! nc -z localhost 4873; do
           echo "Verdaccio not running yet"
