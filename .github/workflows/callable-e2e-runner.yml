@@ -31,6 +31,7 @@ jobs:
       - name: check result
         run: |
           echo '${{ needs.e2e-prep.outputs.integ-config }}'
+
   e2e-test-runner:
     name: e2e test runnner
     needs: e2e-prep
@@ -48,14 +49,6 @@ jobs:
       amplifyjs_dir: ${{ matrix.integ-config.amplifyjs_dir || false }}
       sample_name: ${{ toJSON(matrix.integ-config.sample_name) || '[""]' }}
       browser: ${{ toJSON(matrix.integ-config.browser) || '[""]' }}
-
-  # e2e-test-runner:
-  #   name: e2e test runnner
-  #   needs: e2e-prep
-  #   runs-on: ubuntu-latest
-  #   container:
-  #     image: mcr.microsoft.com/playwright:v1.34.2-focal
-
 
   # detox-e2e-test-runner:
   #   name: e2e test runner
