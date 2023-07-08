@@ -48,7 +48,6 @@ jobs:
           - ${{ fromJson(inputs.sample_name) }}
       fail-fast: false
     timeout-minutes: 35
-    env:
     steps:
       - name: check incoming config
         run: |
