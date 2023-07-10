@@ -33,13 +33,13 @@ jobs:
   #       uses: ./aws-amplify/.github/actions/node-and-build
   #       with:
   #         is-prebuild: true
-  prebuild-samples-staging:
-    secrets: inherit
-    uses: ./.github/workflows/callable-prebuild-samples-staging.yml
+  # prebuild-samples-staging:
+  #   secrets: inherit
+  #   uses: ./.github/workflows/callable-prebuild-samples-staging.yml
   e2e:
     needs:
-      # - prebuild-macos
-      - prebuild-ubuntu
-      - prebuild-samples-staging
+      - prebuild-macos
+      # - prebuild-ubuntu
+      # - prebuild-samples-staging
     secrets: inherit
     uses: ./.github/workflows/callable-e2e-runner.yml
