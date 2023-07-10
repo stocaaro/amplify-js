@@ -29,7 +29,7 @@ on:
         default: false
 
 env:
-  NPM_REGISTRY: 'http://localhost:4873/'
+  NPM_REGISTRY: http://localhost:4873/
   NPM_USER: circleci
   NPM_PASS: circleci
   NPM_EMAIL: circleci@amplify.js
@@ -40,7 +40,8 @@ jobs:
     name: 'E2E: ${{ inputs.test_name }}'
     runs-on: ubuntu-latest
     container:
-      image: mcr.microsoft.com/playwright:v1.34.2-focal
+      # image: mcr.microsoft.com/playwright:v1.34.2-focal
+      image: cypress/included:12.4.1
     strategy:
       matrix:
         browser:

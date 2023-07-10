@@ -363,13 +363,13 @@ tests:
   #   spec: multi-auth-one-rule
   #   browser: *minimal_browser_list
 
-  # # integ_react_datastore_multi_auth_one_rule_v2
-  # - test_name: 'React DataStore Multi-Auth - One Rule CLI v2'
-  #   framework: react
-  #   category: datastore
-  #   sample_name: [v2/multi-auth-v2]
-  #   spec: multi-auth-one-rule
-  #   browser: *minimal_browser_list
+  # integ_react_datastore_multi_auth_one_rule_v2
+  - test_name: 'React DataStore Multi-Auth - One Rule CLI v2'
+    framework: react
+    category: datastore
+    sample_name: [v2/multi-auth-v2]
+    spec: multi-auth-one-rule
+    browser: *minimal_browser_list
 
   # # integ_react_datastore_multi_auth_two_rules
   # - test_name: 'React DataStore Multi-Auth - Two Rules'
@@ -498,12 +498,12 @@ tests:
   #   browser: *extended_browser_list
 
   # integ_react_datastore_background_process_manager_webkit
-  - test_name: 'DataStore - Background Process Manager'
-    framework: react
-    category: datastore
-    sample_name: [v2/background-process-manager]
-    spec: background-process-manager
-    browser: [webkit]
+  # - test_name: 'DataStore - Background Process Manager'
+  #   framework: react
+  #   category: datastore
+  #   sample_name: [v2/background-process-manager]
+  #   spec: background-process-manager
+  #   browser: [webkit]
 
   # # integ_react_datastore_related_models
   # - test_name: 'DataStore - Related Models'
