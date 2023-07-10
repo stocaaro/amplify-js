@@ -61,6 +61,11 @@ jobs:
           ${{ inputs.spec }} \
           ${{ matrix.browser }} \
           ${{ inputs.amplifyjs_dir }}"
+
+          echo "CYPRESS_GOOGLE_CLIENTID ${{ secrets.CYPRESS_GOOGLE_CLIENTID }}"
+          echo "CYPRESS_GOOGLE_CLIENT_SECRET ${{ secrets.CYPRESS_GOOGLE_CLIENT_SECRET }}"
+          echo "CYPRESS_GOOGLE_REFRESH_TOKEN ${{ secrets.CYPRESS_GOOGLE_REFRESH_TOKEN }}"
+
       - name: Checkout repository
         uses: actions/checkout@24cb9080177205b6e8c946b17badbe402adc938f # v3.4.0 https://github.com/actions/checkout/commit/24cb9080177205b6e8c946b17badbe402adc938f
         with:
