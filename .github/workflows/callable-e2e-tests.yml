@@ -84,7 +84,7 @@ jobs:
       - name: Start verdaccio
         working-directory: ./aws-amplify
         run: |
-          export NPM_REGISTRY="http://$${{jobs.e2e-test.container}}:4873/"
+          export NPM_REGISTRY="http://$HOSTNAME:4873/"
           echo $NPM_REGISTRY
           cat /etc/os-release
           apt update
@@ -102,7 +102,7 @@ jobs:
         shell: bash
         working-directory: ./aws-amplify
         run: |
-          export NPM_REGISTRY="http://$${{jobs.e2e-test.container}}:4873/"
+          export NPM_REGISTRY="http://$HOSTNAME:4873/"
           echo $NPM_REGISTRY
           npm i -g npm-cli-adduser
           npm-cli-adduser
