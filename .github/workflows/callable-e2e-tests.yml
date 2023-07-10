@@ -93,10 +93,6 @@ jobs:
           done
           # Run your commands after verdaccio is up and running
           echo "Verdaccio is up and running, proceeding with the script..."
-
-          npm i -g npm-cli-adduser
-          npm-cli-adduser
-          sleep 1
         shell: bash
 
       - name: Publish to verdaccio
@@ -110,6 +106,9 @@ jobs:
         shell: bash
         working-directory: ./aws-amplify
         run: |
+          npm i -g npm-cli-adduser
+          npm-cli-adduser
+          sleep 5
           yarn config set registry $NPM_REGISTRY
           npm set registry $NPM_REGISTRY
           git config --global user.email $NPM_EMAIL
