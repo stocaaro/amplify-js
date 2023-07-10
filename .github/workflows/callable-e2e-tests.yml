@@ -40,7 +40,7 @@ jobs:
     name: 'E2E: ${{ inputs.test_name }}'
     runs-on: ubuntu-latest
     container:
-      image: ""
+      image: ''
     strategy:
       matrix:
         browser:
