@@ -75,13 +75,13 @@ jobs:
         env:
           SEGMENT_DOWNLOAD_TIMEOUT_MINS: 2
       - name: Start verdaccio
+        working-directory: ./aws-amplify
         env:
           NPM_REGISTRY: http://127.0.0.1:4873/
           NPM_USER: circleci
           NPM_PASS: circleci
           NPM_EMAIL: circleci@amplify.js
           AMPLIFY_DIR: /home/runner/work/amplify-js/amplify-js/aws-amplify
-
         run: |
           cat /etc/os-release
           apt update
@@ -91,9 +91,12 @@ jobs:
             echo "Verdaccio not running yet"
             sleep 1
           done
-
           # Run your commands after verdaccio is up and running
           echo "Verdaccio is up and running, proceeding with the script..."
+
+          npm i -g npm-cli-adduser
+          npm-cli-adduser
+          sleep 1
         shell: bash
 
       - name: Publish to verdaccio
@@ -107,10 +110,6 @@ jobs:
         shell: bash
         working-directory: ./aws-amplify
         run: |
-          cat /etc/os-release
-          npm i -g npm-cli-adduser
-          npm-cli-adduser
-          sleep 1
           yarn config set registry $NPM_REGISTRY
           npm set registry $NPM_REGISTRY
           git config --global user.email $NPM_EMAIL
