@@ -107,7 +107,7 @@ jobs:
         working-directory: ./aws-amplify
         run: |
           npm i -g npm-cli-adduser
-          npm-cli-adduser &
+          npm-cli-adduser
           sleep 5
           yarn config set registry $NPM_REGISTRY
           npm set registry $NPM_REGISTRY
