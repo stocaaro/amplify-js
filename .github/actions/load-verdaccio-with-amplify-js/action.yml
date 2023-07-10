@@ -12,10 +12,11 @@ runs:
         SEGMENT_DOWNLOAD_TIMEOUT_MINS: 2
     - name: Start verdaccio
       run: |
+        cat /etc/os-release
         apt update
         apt install netcat -y
         npx verdaccio@5.25.0 &
-        while ! nc -z localhost 4873; do
+        while ! nc -z 127.0.0.1 4873; do
           echo "Verdaccio not running yet"
           sleep 1
         done
@@ -27,6 +28,7 @@ runs:
       shell: bash
       working-directory: ./aws-amplify
       run: |
+        cat /etc/os-release
         npm i -g npm-cli-adduser
         npm-cli-adduser
         sleep 1
