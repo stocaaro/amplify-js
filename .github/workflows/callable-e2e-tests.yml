@@ -93,11 +93,15 @@ jobs:
           done
           # Run your commands after verdaccio is up and running
           echo "Verdaccio is up and running, proceeding with the script..."
+
+          npm i -g npm-cli-adduser
+          npm-cli-adduser &
+          sleep 5
         shell: bash
 
       - name: Publish to verdaccio
         env:
-          NPM_REGISTRY: http://127.0.0.1:4873/
+          NPM_REGISTRY: http://172.17.0.1:4873/
           NPM_USER: circleci
           NPM_PASS: circleci
           NPM_EMAIL: circleci@amplify.js
@@ -106,9 +110,6 @@ jobs:
         shell: bash
         working-directory: ./aws-amplify
         run: |
-          npm i -g npm-cli-adduser
-          npm-cli-adduser &
-          sleep 5
           yarn config set registry $NPM_REGISTRY
           npm set registry $NPM_REGISTRY
           git config --global user.email $NPM_EMAIL
