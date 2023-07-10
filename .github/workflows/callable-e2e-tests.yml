@@ -42,12 +42,6 @@ jobs:
           - ${{ fromJson(inputs.sample_name) }}
       fail-fast: false
     timeout-minutes: 35
-    env:
-      NPM_REGISTRY: 'http://${{jobs.e2e-test.container}}:4873/'
-      NPM_USER: circleci
-      NPM_PASS: circleci
-      NPM_EMAIL: circleci@amplify.js
-      AMPLIFY_DIR: /home/runner/work/amplify-js/amplify-js/aws-amplify
     steps:
       - name: check incoming config
         run: |
@@ -74,13 +68,19 @@ jobs:
       # - name: Load Verdaccio with AmplifyJs
       #   uses: ./aws-amplify/.github/actions/load-verdaccio-with-amplify-js
 
-      - name: Setup Node.js 16
+      - name: Setup Node.js 16      
         uses: actions/setup-node@64ed1c7eab4cce3362f8c340dee64e5eaeef8f7c # v3.6.0 https://github.com/actions/setup-node/commit/64ed1c7eab4cce3362f8c340dee64e5eaeef8f7c
         with:
           node-version: 16
         env:
           SEGMENT_DOWNLOAD_TIMEOUT_MINS: 2
       - name: Start verdaccio
+        env:
+          NPM_REGISTRY: 'http://${{jobs.e2e-test.container}}:4873/'
+          NPM_USER: circleci
+          NPM_PASS: circleci
+          NPM_EMAIL: circleci@amplify.js
+          AMPLIFY_DIR: /home/runner/work/amplify-js/amplify-js/aws-amplify
         working-directory: ./aws-amplify
         run: |
           cat /etc/os-release
@@ -96,6 +96,12 @@ jobs:
         shell: bash
 
       - name: Publish to verdaccio
+        env:
+          NPM_REGISTRY: 'http://${{jobs.e2e-test.container}}:4873/'
+          NPM_USER: circleci
+          NPM_PASS: circleci
+          NPM_EMAIL: circleci@amplify.js
+          AMPLIFY_DIR: /home/runner/work/amplify-js/amplify-js/aws-amplify
         shell: bash
         working-directory: ./aws-amplify
         run: |
@@ -114,12 +120,24 @@ jobs:
           npm info aws-amplify@unstable version
 
       - name: Run cypress tests for ${{ inputs.test_name }} dev
+        env:
+          NPM_REGISTRY: 'http://${{jobs.e2e-test.container}}:4873/'
+          NPM_USER: circleci
+          NPM_PASS: circleci
+          NPM_EMAIL: circleci@amplify.js
+          AMPLIFY_DIR: /home/runner/work/amplify-js/amplify-js/aws-amplify
         run: |
           ../aws-amplify/.circleci/retry-yarn-script.sh -s \
           "ci:test ${{ inputs.framework }} ${{ inputs.category }} ${{ matrix.sample_name }} ${{ inputs.spec }} ${{ matrix.browser }} dev ${{ inputs.amplifyjs_dir == true && env.AMPLIFY_DIR || ''}}" -n 3
         working-directory: amplify-js-samples-staging
         shell: bash
       - name: Run cypress tests for ${{ inputs.test_name }} prod
+        env:
+          NPM_REGISTRY: 'http://${{jobs.e2e-test.container}}:4873/'
+          NPM_USER: circleci
+          NPM_PASS: circleci
+          NPM_EMAIL: circleci@amplify.js
+          AMPLIFY_DIR: /home/runner/work/amplify-js/amplify-js/aws-amplify
         run: |
           ../aws-amplify/.circleci/retry-yarn-script.sh -s \
           "ci:test ${{ inputs.framework }} ${{ inputs.category }} ${{ matrix.sample_name }} ${{ inputs.spec }} ${{ matrix.browser }} prod ${{ inputs.amplifyjs_dir == true && env.AMPLIFY_DIR || ''}}" -n 3
