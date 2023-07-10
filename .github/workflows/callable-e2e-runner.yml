@@ -36,8 +36,6 @@ jobs:
     name: e2e test runnner
     needs: e2e-prep
     secrets: inherit
-    container:
-          image: mcr.microsoft.com/playwright:v1.34.2-focal
     strategy:
       matrix:
         integ-config: ${{ fromJson(needs.e2e-prep.outputs.integ-config) }}
