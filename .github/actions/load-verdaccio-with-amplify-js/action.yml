@@ -16,18 +16,15 @@ runs:
         apt update
         apt install netcat -y
         npx verdaccio@5.25.0 &
-        while ! nc -z 127.0.0.1 4873; do
+        while ! nc -z 0.0.0.0 4873; do
           echo "Verdaccio not running yet"
           sleep 1
         done
 
         # Run your commands after verdaccio is up and running
         echo "Verdaccio is up and running, proceeding with the script..."
-      shell: bash
-    - name: Publish to verdaccio
-      shell: bash
-      working-directory: ./aws-amplify
-      run: |
+
+        cd aws-amplify
         cat /etc/os-release
         npm i -g npm-cli-adduser
         npm-cli-adduser
@@ -41,3 +38,9 @@ runs:
         .circleci/retry-yarn-script.sh -s publish:verdaccio -n 1 -r true
         yarn info aws-amplify@unstable description
         npm info aws-amplify@unstable version
+
+      shell: bash
+    # - name: Publish to verdaccio
+    #   shell: bash
+    #   working-directory: ./aws-amplify
+    #   run: |
