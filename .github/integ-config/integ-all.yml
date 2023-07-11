@@ -318,12 +318,14 @@ tests:
   #   sample_name: [auth-ssr]
   #   spec: auth-ssr
   #   browser: *minimal_browser_list
-  # - test_name: 'Authenticator and RSC page'
-  #   framework: next
-  #   category: auth
-  #   sample_name: [auth-rsc]
-  #   spec: auth-rsc
-  #   browser: *minimal_browser_list
+  - test_name: 'Authenticator and RSC page'
+    framework: next
+    category: auth
+    sample_name: [auth-rsc]
+    spec: auth-rsc
+    browser: *minimal_browser_list
+    timeout_minutes: 30
+    retry_count: 10
   # - test_name: 'NextJS Auth Custom Implementation with SSR'
   #   framework: next
   #   category: auth
@@ -530,12 +532,14 @@ tests:
   #   browser: *minimal_browser_list
 
   # # integ_react_datastore_docs_examples
-  # - test_name: 'DataStore - Docs Examples'
-  #   framework: react
-  #   category: datastore
-  #   sample_name: [v2/amplify-docs-examples]
-  #   spec: amplify-docs-examples
-  #   browser: *minimal_browser_list
+  - test_name: 'DataStore - Docs Examples'
+    framework: react
+    category: datastore
+    sample_name: [v2/amplify-docs-examples]
+    spec: amplify-docs-examples
+    browser: *minimal_browser_list
+    timeout_minutes: 30
+    retry_count: 10
 
   # # integ_react_datastore_websocket_disruption
   # - test_name: 'DataStore - WebSocket Disruption'
@@ -554,8 +558,8 @@ tests:
     browser: *minimal_browser_list
     spec: vanilla-js-basic-crud
     amplifyjs_dir: true
-    timeout_minutes: 45
-    retry_count: 8
+    timeout_minutes: 30
+    retry_count: 10
 
   # # Next
   # # integ_next_datastore_owner_auth
