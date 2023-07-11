@@ -554,8 +554,8 @@ tests:
     browser: *minimal_browser_list
     spec: vanilla-js-basic-crud
     amplifyjs_dir: true
-    # timeout_minutes: 45
-    # retry_count: 8
+    timeout_minutes: 45
+    retry_count: 8
 
   # # Next
   # # integ_next_datastore_owner_auth
