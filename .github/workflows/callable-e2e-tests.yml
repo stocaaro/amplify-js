@@ -69,8 +69,8 @@ jobs:
           ${{ inputs.spec }} \
           ${{ matrix.browser }} \
           ${{ inputs.amplifyjs_dir }} \
-          ${{ inputs.timeout_minutes }} \
-          ${{ inputs.retry_count }}"
+          ${{ inputs.retry_count }} \
+          ${{ inputs.timeout_minutes }}"
       - name: Checkout repository
         uses: actions/checkout@24cb9080177205b6e8c946b17badbe402adc938f # v3.4.0 https://github.com/actions/checkout/commit/24cb9080177205b6e8c946b17badbe402adc938f
         with:

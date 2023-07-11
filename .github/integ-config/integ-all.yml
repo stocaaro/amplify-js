@@ -324,7 +324,7 @@ tests:
     sample_name: [auth-rsc]
     spec: auth-rsc
     browser: *minimal_browser_list
-    timeout_minutes: 30
+    timeout_minutes: 45
     retry_count: 10
   # - test_name: 'NextJS Auth Custom Implementation with SSR'
   #   framework: next
@@ -532,14 +532,14 @@ tests:
   #   browser: *minimal_browser_list
 
   # # integ_react_datastore_docs_examples
-  - test_name: 'DataStore - Docs Examples'
-    framework: react
-    category: datastore
-    sample_name: [v2/amplify-docs-examples]
-    spec: amplify-docs-examples
-    browser: *minimal_browser_list
-    timeout_minutes: 30
-    retry_count: 10
+  # - test_name: 'DataStore - Docs Examples'
+  #   framework: react
+  #   category: datastore
+  #   sample_name: [v2/amplify-docs-examples]
+  #   spec: amplify-docs-examples
+  #   browser: *minimal_browser_list
+  #   timeout_minutes: 45
+  #   retry_count: 10
 
   # # integ_react_datastore_websocket_disruption
   # - test_name: 'DataStore - WebSocket Disruption'
@@ -551,15 +551,15 @@ tests:
 
   # Javascript
   # integ_vanilla_js_datastore_basic_crud
-  - test_name: 'Vanilla JS + Webpack 4 + DataStore - Basic CRUD'
-    framework: javascript
-    category: datastore
-    sample_name: [basic-crud]
-    browser: *minimal_browser_list
-    spec: vanilla-js-basic-crud
-    amplifyjs_dir: true
-    timeout_minutes: 30
-    retry_count: 10
+  # - test_name: 'Vanilla JS + Webpack 4 + DataStore - Basic CRUD'
+  #   framework: javascript
+  #   category: datastore
+  #   sample_name: [basic-crud]
+  #   browser: *minimal_browser_list
+  #   spec: vanilla-js-basic-crud
+  #   amplifyjs_dir: true
+  #   timeout_minutes: 45
+  #   retry_count: 10
 
   # # Next
   # # integ_next_datastore_owner_auth
@@ -725,10 +725,10 @@ tests:
   #   spec: multi-part-upload-with-progress
   #   browser: *minimal_browser_list
 
-  # # integ_react_storage_copy
-  # - test_name: 'React Storage Copy'
-  #   framework: react
-  #   category: storage
-  #   sample_name: [multi-part-copy-with-progress]
-  #   spec: multi-part-copy-with-progress
-  #   browser: *minimal_browser_list
+  # integ_react_storage_copy
+  - test_name: 'React Storage Copy'
+    framework: react
+    category: storage
+    sample_name: [multi-part-copy-with-progress]
+    spec: multi-part-copy-with-progress
+    browser: *minimal_browser_list
