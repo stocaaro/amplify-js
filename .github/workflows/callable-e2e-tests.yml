@@ -86,13 +86,29 @@ jobs:
       - name: Run cypress tests for ${{ inputs.test_name }} dev
         run: |
           ../aws-amplify/.circleci/retry-yarn-script.sh -s \
-          "ci:test ${{ inputs.framework }} ${{ inputs.category }} ${{ matrix.sample_name }} ${{ inputs.spec }} ${{ matrix.browser }} dev ${{ inputs.amplifyjs_dir == true && env.AMPLIFY_DIR || ''}}" -n ${{ inputs.retry_count }}
+          "ci:test \
+          ${{ inputs.framework }} \
+          ${{ inputs.category }} \
+          ${{ matrix.sample_name }} \
+          ${{ inputs.spec }} \
+          ${{ matrix.browser }} \
+          dev \
+          ${{ inputs.amplifyjs_dir == true && env.AMPLIFY_DIR || ''}}" \
+          -n ${{ inputs.retry_count }}
         working-directory: amplify-js-samples-staging
         shell: bash
       - name: Run cypress tests for ${{ inputs.test_name }} prod
         run: |
           ../aws-amplify/.circleci/retry-yarn-script.sh -s \
-          "ci:test ${{ inputs.framework }} ${{ inputs.category }} ${{ matrix.sample_name }} ${{ inputs.spec }} ${{ matrix.browser }} prod ${{ inputs.amplifyjs_dir == true && env.AMPLIFY_DIR || ''}}" -n ${{ inputs.retry_count }}
+          "ci:test \
+          ${{ inputs.framework }} \
+          ${{ inputs.category }} \
+          ${{ matrix.sample_name }} \
+          ${{ inputs.spec }} \
+          ${{ matrix.browser }} \
+          prod \
+          ${{ inputs.amplifyjs_dir == true && env.AMPLIFY_DIR || ''}}" \
+          -n ${{ inputs.retry_count }}
         working-directory: amplify-js-samples-staging
         shell: bash
       - name: upload artifact
