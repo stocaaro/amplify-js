@@ -78,7 +78,7 @@ jobs:
 
       - name: update any files in stages sample repo
         run: |
-          sed -i "26s|^.*$|	defaultCommandTimeout: 99999,|" /home/runner/work/amplify-js/amplify-js/amplify-js-samples-staging/cypress.config.js
+          sed -i "26s|^.*$|	defaultCommandTimeout: 30000,|" /home/runner/work/amplify-js/amplify-js/amplify-js-samples-staging/cypress.config.js
           sed -i "5s|^.*$|const SYNC_WAIT = 5_000;|" /home/runner/work/amplify-js/amplify-js/amplify-js-samples-staging/cypress/integration/datastore/vanilla-js-basic-crud.spec.js
 
       - name: Run cypress tests for ${{ inputs.test_name }} dev
