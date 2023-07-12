@@ -12,5 +12,3 @@ jobs:
       - e2e
     secrets: inherit
     uses: stocaaro/amplify-js/.github/workflows/callable-release.yml@main
-    with:
-      tag: unstable
