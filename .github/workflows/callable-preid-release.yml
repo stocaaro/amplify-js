@@ -8,7 +8,7 @@ on:
         type: string
 
 jobs:
-  prebuild:
+  release-to-preid:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository

@@ -1,3 +1,5 @@
+name: 'Push - release from release to latest'
+
 on:
   push:
     branches:

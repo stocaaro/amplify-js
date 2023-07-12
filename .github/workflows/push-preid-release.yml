@@ -1,3 +1,5 @@
+name: 'Push - release for feature preid'
+
 on:
   push:
     branches:
