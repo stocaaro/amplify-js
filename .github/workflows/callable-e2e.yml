@@ -5,11 +5,11 @@ on:
 
 jobs:
   prebuild-ubuntu:
-    uses: stocaaro/amplify-js/.github/workflows/callable-prebuild-samples-staging.yml@main
+    uses: stocaaro/amplify-js/.github/workflows/callable-prebuild-amplify-js.yml@main
     with:
       runs_on: ubuntu-latest
   prebuild-macos:
-    uses: stocaaro/amplify-js/.github/workflows/callable-prebuild-samples-staging.yml@main
+    uses: stocaaro/amplify-js/.github/workflows/callable-prebuild-amplify-js.yml@main
     with:
       runs_on: macos-latest
   prebuild-samples-staging:
