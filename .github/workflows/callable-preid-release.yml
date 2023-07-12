@@ -19,7 +19,8 @@ jobs:
           path: amplify-js
       - name: Setup node and build the repository
         uses: stocaaro/amplify-js/.github/actions/node-and-build@main
-      - name:
-        working-directory: ./amplify-js
-        # TODO replace this with the actual release command
-        run: echo "Run command to release to ${{ inputs.preid }}"
+      - name: NPM Publish
+        uses: stocaaro/amplify-js/.github/callable-npm-publish@main
+        with:
+          target: preid
+          preid: ${{ inputs.preid }}
