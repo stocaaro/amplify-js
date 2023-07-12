@@ -1,15 +1,14 @@
-name: 'Unit Tests'
+name: 'Release to preid'
 
 on:
   workflow_call:
     inputs:
-      package:
+      preid:
         required: true
         type: string
 
 jobs:
-  unit_test:
-    name: Unit Tests - ${{ inputs.package }}
+  prebuild:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
@@ -20,6 +19,7 @@ jobs:
           path: amplify-js
       - name: Setup node and build the repository
         uses: stocaaro/amplify-js/.github/actions/node-and-build@main
-      - name: Run tests
+      - name:
         working-directory: ./amplify-js
-        run: npx lerna exec --scope ${{ inputs.package }} yarn test
+        # TODO replace this with the actual release command
+        run: echo "Run command to release to ${{ inputs.preid }}"
