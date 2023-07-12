@@ -8,6 +8,6 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: NPM Publish
-        uses: stocaaro/amplify-js/.github/callable-npm-publish@main
+        uses: stocaaro/amplify-js/.github/workflows/callable-npm-publish@main
         with:
           target: release

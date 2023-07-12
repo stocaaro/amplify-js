@@ -20,7 +20,7 @@ jobs:
       - name: Setup node and build the repository
         uses: stocaaro/amplify-js/.github/actions/node-and-build@main
       - name: NPM Publish
-        uses: stocaaro/amplify-js/.github/callable-npm-publish@main
+        uses: stocaaro/amplify-js/.github/workflows/callable-npm-publish@main
         with:
           target: preid
           preid: ${{ inputs.preid }}
