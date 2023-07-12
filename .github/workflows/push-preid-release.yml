@@ -24,7 +24,6 @@ jobs:
 
   preid-release:
     needs:
-      - e2e
       - parse-preid
     secrets: inherit
     uses: stocaaro/amplify-js/.github/workflows/callable-preid-release.yml@main
