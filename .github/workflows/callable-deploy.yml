@@ -2,12 +2,16 @@ name: 'Publish package to npm and create release on github'
 
 on:
   workflow_call:
+    inputs:
+      branch:
+        required: true
+        type: string
 
+# TODO: configure these env variables
 env:
   GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
   GITHUB_EMAIL: test@email.com
   GITHUB_USER: test-user
-  BRANCH: release
   BASH_ENV: .env
 
 jobs:
@@ -33,4 +37,4 @@ jobs:
           git config --global user.name $GITHUB_USER
           git status
           git --no-pager diff
-          yarn publish:$BRANCH
+          yarn publish:${{ inputs.branch }}
