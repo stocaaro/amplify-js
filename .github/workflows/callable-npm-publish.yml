@@ -28,9 +28,9 @@ jobs:
         with:
           # Minimal depth 2 so we can checkout the commit before possible merge commit.
           fetch-depth: 2
-          path: aws-amplify
+          path: amplify-js
       - name: Setup node and build the repository
-        uses: ./aws-amplify/.github/actions/node-and-build
+        uses: stocaaro/amplify-js/.github/actions/node-and-build@main
       ###
       # TODO Remove this to enable real NPM interactions.
       # <remove>
