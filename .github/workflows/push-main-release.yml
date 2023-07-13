@@ -8,11 +8,11 @@ on:
 jobs:
   e2e:
     secrets: inherit
-    uses: stocaaro/amplify-js/.github/workflows/callable-e2e@main
+    uses: stocaaro/amplify-js/.github/workflows/callable-e2e.yml@main
   unstable-release:
     needs:
       - e2e
     secrets: inherit
-    uses: stocaaro/amplify-js/.github/workflows/callable-preid-release@main
+    uses: stocaaro/amplify-js/.github/workflows/callable-preid-release.yml@main
     with:
       preid: unstable

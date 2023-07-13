@@ -8,9 +8,9 @@ on:
 jobs:
   e2e:
     secrets: inherit
-    uses: stocaaro/amplify-js/.github/workflows/callable-e2e@main
+    uses: stocaaro/amplify-js/.github/workflows/callable-e2e.yml@main
   release:
     needs:
       - e2e
     secrets: inherit
-    uses: stocaaro/amplify-js/.github/workflows/callable-release@main
+    uses: stocaaro/amplify-js/.github/workflows/callable-release.yml@main
