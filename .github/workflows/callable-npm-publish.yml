@@ -16,6 +16,11 @@ env:
   GITHUB_EMAIL: test@email.com
   GITHUB_USER: test-user
   BASH_ENV: .env
+  # TODO verdaccio stuff we won't need in prod
+  NPM_REGISTRY: http://localhost:4873/
+  NPM_USER: circleci
+  NPM_PASS: circleci
+  NPM_EMAIL: circleci@amplify.js
 
 jobs:
   deploy:
