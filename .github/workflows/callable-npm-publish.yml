@@ -43,7 +43,6 @@ jobs:
           echo "export PREID_HASH_SUFFIX=$(echo ${{ github.sha }} | cut -c -7 | sed 's/^/\./')" >> "$BASH_ENV"
           echo "export PREID_PREFIX=${{ inputs.preid || '' }}" >> "$BASH_ENV"
           source "$BASH_ENV"
-          npm whoami
           git config --global user.email $GITHUB_EMAIL
           git config --global user.name $GITHUB_USER
           git status
