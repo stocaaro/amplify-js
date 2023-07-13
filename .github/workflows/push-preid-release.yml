@@ -16,9 +16,8 @@ jobs:
     env:
       BRANCH: ${{ github.ref_name }}
     steps:
-      - run: echo $BRANCH
       - id: output_preid
-        run: echo "::set-output name=preid::${BRANCH##*/}"
+        run: echo "preid=$(echo $BRANCH | cut -d \/ -f 2)" >> $GITHUB_OUTPUT
     outputs:
       preid: ${{ steps.output_preid.outputs.packages }}
 
