@@ -42,7 +42,10 @@ jobs:
       - name: Load Verdaccio with AmplifyJs
         uses: stocaaro/amplify-js/.github/actions/load-verdaccio-with-amplify-js@main
       ### </remove>
-      - run: |
+
+      - name: Run npm publish
+        working-directory: ./amplify-js
+        run: |
           echo "//registry.npmjs.org/:_authToken=${{ secrets.NPM_TOKEN }}" >> ~/.npmrc
           touch $BASH_ENV
           echo "export PREID_HASH_SUFFIX=$(echo ${{ github.sha }} | cut -c -7 | sed 's/^/\./')" >> "$BASH_ENV"
