@@ -1,3 +1,5 @@
+name: 'Push - release from main to unstable'
+
 on:
   push:
     branches:

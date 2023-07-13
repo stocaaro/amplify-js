@@ -4,19 +4,7 @@ on:
   workflow_call:
 
 jobs:
-  prebuild:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@24cb9080177205b6e8c946b17badbe402adc938f # v3.4.0 https://github.com/actions/checkout/commit/24cb9080177205b6e8c946b17badbe402adc938f
-        with:
-          # Minimal depth 2 so we can checkout the commit before possible merge commit.
-          fetch-depth: 2
-          path: amplify-js
-      - name: Setup node and build the repository
-        uses: stocaaro/amplify-js/.github/actions/node-and-build@main
-      - name:
-        working-directory: ./amplify-js
-        # TODO replace this with the actual release command
-        run: echo "Run command to release to latest"
-  # TODO After release we need to commit to release and merge back to main, both without triggering more automation
+  release-latest:
+    uses: stocaaro/amplify-js/.github/workflows/callable-npm-publish.yml@main
+    with:
+      target: release
