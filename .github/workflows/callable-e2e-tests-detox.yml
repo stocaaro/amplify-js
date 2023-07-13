@@ -25,9 +25,6 @@ jobs:
     timeout-minutes: ${{ inputs.timeout_minutes }}
 
     steps:
-      - name: check incoming config
-        run: |
-          echo "${{ inputs.test_name }} ${{ inputs.working_directory }} ${{ inputs.timeout_minutes }}"
       - name: Checkout repository
         uses: actions/checkout@24cb9080177205b6e8c946b17badbe402adc938f # v3.4.0 https://github.com/actions/checkout/commit/24cb9080177205b6e8c946b17badbe402adc938f
         with:
