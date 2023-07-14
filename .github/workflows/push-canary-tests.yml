@@ -1,7 +1,7 @@
 on:
   push:
     branches:
-      - feat/01-canary-testing
+      - 01-canary-testing
 
 jobs:
   e2e:
