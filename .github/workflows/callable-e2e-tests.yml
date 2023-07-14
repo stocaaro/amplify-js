@@ -39,18 +39,18 @@ env:
   NPM_EMAIL: circleci@amplify.js
   AMPLIFY_DIR: /home/runner/work/amplify-js/amplify-js/aws-amplify
 jobs:
-  mock-job:
-    name: mock the job
-    runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        additional_params: ${{ fromJson(inputs.additional_params) }}
-    steps:
-      - name: check result
-        run: |
-          echo '${{ matrix.additional_params }}'
-          echo '${{ matrix.additional_params.sample_name }}'
-          echo '${{ matrix.additional_params.spec }}'
+  # mock-job:
+  #   name: mock the job
+  #   runs-on: ubuntu-latest
+  #   strategy:
+  #     matrix:
+  #       additional_params: ${{ fromJson(inputs.additional_params) }}
+  #   steps:
+  #     - name: check result
+  #       run: |
+  #         echo '${{ matrix.additional_params }}'
+  #         echo '${{ matrix.additional_params.sample_name }}'
+  #         echo '${{ matrix.additional_params.spec }}'
 
   e2e-test:
     name: 'E2E: ${{ inputs.test_name }}'
