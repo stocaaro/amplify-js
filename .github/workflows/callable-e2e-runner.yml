@@ -31,24 +31,40 @@ jobs:
       - name: check result
         run: |
           echo '${{ needs.e2e-prep.outputs.integ-config }}'
-  e2e-test-runner:
-    name: e2e test runnner
-    needs: e2e-prep
-    secrets: inherit
+          echo '${{ needs.e2e-prep.outputs.integ-config.additional_params }}'
+
+  mock-job:
+    name: mock the job
+    runs-on: ubuntu-latest
     strategy:
       matrix:
-        integ-config: ${{ fromJson(needs.e2e-prep.outputs.integ-config) }}
+        additional_params: ${{ fromJson(needs.e2e-prep.outputs.integ-config.additional_params) }}
       fail-fast: false
-    uses: ./.github/workflows/callable-e2e-tests.yml
-    with:
-      test_name: ${{ matrix.integ-config.test_name }}
-      framework: ${{ matrix.integ-config.framework }}
-      category: ${{ matrix.integ-config.category }}
-      spec: ${{ matrix.integ-config.spec || '' }}
-      amplifyjs_dir: ${{ matrix.integ-config.amplifyjs_dir || false }}
-      sample_name: ${{ matrix.integ-config.sample_name || '' }}
-      browser: ${{ toJSON(matrix.integ-config.browser) || '[""]' }}
-      additional_params: ${{ toJSON(matrix.integ-config.additional_params) || '[""]' }}
+    timeout-minutes: 35
+    steps:
+      - name: check result
+        run: |
+          echo '${{ matrix.additional_params.sample_name }}'
+          echo '${{ matrix.additional_params.spec }}'
+
+  # e2e-test-runner:
+  #   name: e2e test runnner
+  #   needs: e2e-prep
+  #   secrets: inherit
+  #   strategy:
+  #     matrix:
+  #       integ-config: ${{ fromJson(needs.e2e-prep.outputs.integ-config) }}
+  #     fail-fast: false
+  #   uses: ./.github/workflows/callable-e2e-tests.yml
+  #   with:
+  #     test_name: ${{ matrix.integ-config.test_name }}
+  #     framework: ${{ matrix.integ-config.framework }}
+  #     category: ${{ matrix.integ-config.category }}
+  #     spec: ${{ matrix.integ-config.spec || '' }}
+  #     amplifyjs_dir: ${{ matrix.integ-config.amplifyjs_dir || false }}
+  #     sample_name: ${{ matrix.integ-config.sample_name || '' }}
+  #     browser: ${{ toJSON(matrix.integ-config.browser) || '[""]' }}
+  #     additional_params: ${{ toJSON(matrix.integ-config.additional_params) || '[""]' }}
 
   # detox-e2e-test-runner:
   #   name: e2e test runner
