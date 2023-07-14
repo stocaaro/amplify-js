@@ -72,8 +72,11 @@ jobs:
           ${{ inputs.sample_name }} \
           ${{ inputs.spec }} \
           ${{ matrix.browser }} \
-          ${{ inputs.amplifyjs_dir }}
-          ${{ inputs.additional_params }}"
+          ${{ inputs.amplifyjs_dir }}"
+
+          echo '${{ matrix.additional_params }}'
+          echo '${{ matrix.additional_params.sample_name }}'
+          echo '${{ matrix.additional_params.spec }}'
 
       # - name: Checkout repository
       #   uses: actions/checkout@24cb9080177205b6e8c946b17badbe402adc938f # v3.4.0 https://github.com/actions/checkout/commit/24cb9080177205b6e8c946b17badbe402adc938f
