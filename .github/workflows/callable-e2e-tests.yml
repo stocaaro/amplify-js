@@ -59,19 +59,9 @@ jobs:
       matrix:
         # browser: ${{ fromJson(inputs.browser) }}
         additional_params:
-          [
-            {
-              'sample_name': 'owner-custom-field-default',
-              'spec': 'owner-custom-field-default',
-            },
-          ]
+          [{ 'sample_name': 'public-auth-iam', 'spec': 'public-auth-iam' }]
         another_additional_params:
-          [
-            {
-              'sample_name': 'owner-custom-field-default',
-              'spec': 'owner-custom-field-default',
-            },
-          ]
+          [{ 'sample_name': 'public-auth-iam', 'spec': 'public-auth-iam' }]
         # another_additional_params: ${{ fromJson(inputs.additional_params) }}
       fail-fast: false
     timeout-minutes: 35
