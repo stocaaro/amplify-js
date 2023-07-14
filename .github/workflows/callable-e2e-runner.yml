@@ -35,6 +35,7 @@ jobs:
 
   mock-job:
     name: mock the job
+    needs: e2e-prep
     runs-on: ubuntu-latest
     strategy:
       matrix:
