@@ -41,7 +41,6 @@ env:
 jobs:
   mock-job:
     name: mock the job
-    needs: debug-job
     runs-on: ubuntu-latest
     strategy:
       matrix:
