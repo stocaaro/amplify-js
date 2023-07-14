@@ -28,7 +28,7 @@ jobs:
     secrets: inherit
     strategy:
       matrix:
-        integ-config: ${{ fromJson(needs.e2e-prep.outputs.integ-config) }}
+        integ-config:${{ fromJson(needs.e2e-prep.outputs.integ-config) }}
       fail-fast: false
     uses: stocaaro/amplify-js/.github/workflows/callable-e2e-tests.yml@main
     with:
@@ -47,7 +47,7 @@ jobs:
     needs: e2e-prep
     strategy:
       matrix:
-        integ-config: ${{ fromJson(needs.e2e-prep.outputs.detox-integ-config) }}
+        integ-config:${{ fromJson(needs.e2e-prep.outputs.detox-integ-config) }}
       fail-fast: false
     secrets: inherit
     uses: stocaaro/amplify-js/.github/workflows/callable-e2e-tests-detox.yml@main
