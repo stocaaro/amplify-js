@@ -33,8 +33,8 @@ datastore_auth_scenarios: &datastore_auth_scenarios
   #   spec: public-auth-iam
   # - sample_name: owner-custom-claim-default #52
   #   spec: owner-custom-claim-default
-  # - sample_name: owner-custom-field-default #52
-  #   spec: owner-custom-field-default
+  - sample_name: owner-custom-field-default #52
+    spec: owner-custom-field-default
   # TODO: The below test fails and ends up failing all the other tests in this group
   - sample_name: dynamic-user-pool-groups-owner-based-default #88
     spec: dynamic-user-pool-groups-owner-based-default
