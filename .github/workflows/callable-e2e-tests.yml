@@ -48,7 +48,7 @@ jobs:
     steps:
       - name: check result
         run: |
-          echo '${{ matrix.additional_params }}'
+          echo '${{ toJson(matrix.additional_params) }}'
           echo '${{ matrix.additional_params.sample_name }}'
           echo '${{ matrix.additional_params.spec }}'
 
