@@ -593,6 +593,7 @@ tests:
     category: datastore
     sample_name: [v2/basic-crud]
     spec: vite-basic-crud
+    browser: *minimal_browser_list
 
   # Rollup
   # integ_rollup_datastore_basic_crud
@@ -601,6 +602,7 @@ tests:
     category: datastore
     sample_name: [rollup-basic-crud]
     spec: rollup-basic-crud
+    browser: *minimal_browser_list
 
   # React
   # integ_react_geo
