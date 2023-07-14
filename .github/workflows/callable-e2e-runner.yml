@@ -31,7 +31,7 @@ jobs:
       - name: check result
         run: |
           echo '${{ needs.e2e-prep.outputs.integ-config }}'
-          echo '${{ needs.e2e-prep.outputs.integ-config.additional_params }}'
+          echo '${{ toJSON(fromJson(needs.e2e-prep.outputs.integ-config).additional_params)) }}'
 
   mock-job:
     name: mock the job
@@ -39,7 +39,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        additional_params: ${{ fromJson(needs.e2e-prep.outputs.integ-config.additional_params) }}
+        additional_params: ${{ toJSON(fromJson(needs.e2e-prep.outputs.integ-config).additional_params) }}
       fail-fast: false
     timeout-minutes: 35
     steps:
