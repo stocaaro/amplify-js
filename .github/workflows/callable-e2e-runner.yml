@@ -27,20 +27,9 @@ jobs:
     name: debug the job
     needs: e2e-prep
     runs-on: ubuntu-latest
-    steps:
-      - name: check result
-        run: |
-          echo '${{ needs.e2e-prep.outputs.integ-config }}'
-
-  mock-job:
-    name: mock the job
-    needs: e2e-prep
-    runs-on: ubuntu-latest
     strategy:
       matrix:
         integ-config: ${{ fromJson(needs.e2e-prep.outputs.integ-config) }}
-      fail-fast: false
-    timeout-minutes: 35
     steps:
       - name: check result
         run: |
@@ -48,6 +37,22 @@ jobs:
           echo '${{ matrix.integ-config.additional_params }}'
           echo '${{ matrix.integ-config.additional_params[0].sample_name }}'
           echo '${{ matrix.integ-config.additional_params[0].spec }}'
+    outputs:
+      additional_params: ${{ toJSON(matrix.integ-config.additional_params) || '[""]' }}
+
+  mock-job:
+    name: mock the job
+    needs: debug-job
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        additional_params: ${{ fromJson(needs.debug-job.outputs.additional_params) }}
+    steps:
+      - name: check result
+        run: |
+          echo '${{ matrix.additional_params }}'
+          echo '${{ matrix.additional_params.sample_name }}'
+          echo '${{ matrix.additional_params.spec }}'
 
   # e2e-test-runner:
   #   name: e2e test runnner
