@@ -58,14 +58,28 @@ jobs:
     strategy:
       matrix:
         # browser: ${{ fromJson(inputs.browser) }}
-        additional_params: ${{ fromJson(inputs.additional_params) }}
-        another_additional_params: ${{ fromJson(inputs.additional_params) }}
+        additional_params:
+          [
+            {
+              'sample_name': 'owner-custom-field-default',
+              'spec': 'owner-custom-field-default',
+            },
+          ]
+        another_additional_params:
+          [
+            {
+              'sample_name': 'owner-custom-field-default',
+              'spec': 'owner-custom-field-default',
+            },
+          ]
+        # another_additional_params: ${{ fromJson(inputs.additional_params) }}
       fail-fast: false
     timeout-minutes: 35
 
     steps:
       - name: check incoming config
         run: |
+          "[{'sample_name': 'owner-custom-field-default','spec': 'owner-custom-field-default'}]"
           echo \
           "${{ inputs.framework }} \
           ${{ inputs.category }} \
