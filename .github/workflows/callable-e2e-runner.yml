@@ -44,6 +44,8 @@ jobs:
     steps:
       - name: check result
         run: |
+          echo '${{ matrix.integ-config }}'
+          echo '${{ matrix.integ-config.additional_params }}'
           echo '${{ matrix.integ-config.additional_params.sample_name }}'
           echo '${{ matrix.integ-config.additional_params.spec }}'
 
