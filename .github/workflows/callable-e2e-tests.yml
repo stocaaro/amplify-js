@@ -57,9 +57,9 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        browser: ${{ fromJson(inputs.browser) }}
-        another-browser: ${{ fromJson(inputs.browser) }}
-        # additional_params: ${{ fromJson(inputs.additional_params) }}
+        # browser: ${{ fromJson(inputs.browser) }}
+        additional_params: ${{ fromJson(inputs.additional_params) }}
+        another_additional_params: ${{ fromJson(inputs.additional_params) }}
       fail-fast: false
     timeout-minutes: 35
 
