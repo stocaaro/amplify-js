@@ -46,8 +46,8 @@ jobs:
         run: |
           echo '${{ matrix.integ-config }}'
           echo '${{ matrix.integ-config.additional_params }}'
-          echo '${{ matrix.integ-config.additional_params.sample_name }}'
-          echo '${{ matrix.integ-config.additional_params.spec }}'
+          echo '${{ matrix.integ-config.additional_params[0].sample_name }}'
+          echo '${{ matrix.integ-config.additional_params[1].spec }}'
 
   # e2e-test-runner:
   #   name: e2e test runnner
