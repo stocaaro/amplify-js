@@ -22,9 +22,9 @@ jobs:
         with:
           is-prebuild: true
   get-package-list:
-    uses: ./amplify-js/.github/workflows/callable-get-package-list.yml
+    uses: ./.github/workflows/callable-get-package-list.yml
   codeql:
-    uses: ./amplify-js/.github/workflows/callable-codeql.yml
+    uses: ./.github/workflows/callable-codeql.yml
   unit-tests:
     needs:
       - prebuild
@@ -33,9 +33,9 @@ jobs:
       matrix:
         package: ${{ fromJSON(needs.get-package-list.outputs.packages) }}
       fail-fast: false
-    uses: ./amplify-js/.github/workflows/callable-unit-tests.yml
+    uses: ./.github/workflows/callable-unit-tests.yml
     with:
       package: ${{ matrix.package }}
   bundle-size-tests:
     needs: prebuild
-    uses: ./amplify-js/.github/workflows/callable-bundle-size-tests.yml
+    uses: ./.github/workflows/callable-bundle-size-tests.yml

@@ -9,7 +9,7 @@ on:
 
 jobs:
   release-to-preid:
-    uses: ./amplify-js/.github/workflows/callable-npm-publish.yml
+    uses: ./.github/workflows/callable-npm-publish.yml
     with:
       target: preid
       preid: ${{ inputs.preid }}

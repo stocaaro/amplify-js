@@ -5,6 +5,6 @@ on:
 
 jobs:
   release-latest:
-    uses: ./amplify-js/.github/workflows/callable-npm-publish.yml
+    uses: ./.github/workflows/callable-npm-publish.yml
     with:
       target: release
