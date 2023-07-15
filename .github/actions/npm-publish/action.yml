@@ -18,14 +18,18 @@ inputs:
     description: The bash_env filename to use to construct and execute PREID content from
     required: false
     default: .env
+  npm_token:
+    description: The npm token the gives the job github permissions
+    required: true
 
 runs:
   using: 'composite'
   steps:
     - name: Run npm publish
       working-directory: ./amplify-js
+      shell: bash
       run: |
-        echo "//registry.npmjs.org/:_authToken=${{ secrets.NPM_TOKEN }}" >> ~/.npmrc
+        echo "//registry.npmjs.org/:_authToken=${{ inputs.npm_token }}" >> ~/.npmrc
         touch {{ inputs.bash_env }}
         echo "export PREID_HASH_SUFFIX=$(echo ${{ github.sha }} | cut -c -7 | sed 's/^/\./')" >> "{{ inputs.bash_env }}"
         echo "export PREID_PREFIX=${{ inputs.preid || '' }}" >> "{{ inputs.bash_env }}"

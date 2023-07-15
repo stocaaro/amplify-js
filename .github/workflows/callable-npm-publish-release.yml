@@ -5,7 +5,6 @@ on:
 
 # TODO: configure these env variables
 env:
-  GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
   # TODO verdaccio stuff we won't need in prod
   NPM_REGISTRY: http://localhost:4873/
   NPM_USER: circleci
@@ -38,6 +37,7 @@ jobs:
           github_email: test@email.com
           github_name: test-user
           target: release
+          gh_token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: 'Update roll-back infrastructure'
         run: |
