@@ -39,10 +39,10 @@ runs:
         echo "export PREID_PREFIX=${{ inputs.preid || '' }}" >> "{{ inputs.bash_env }}"
         echo "e"
         source "{{ inputs.bash_env }}"
-        echo "f"
-        git config --global user.email {{ inputs.github_email }}
+        echo ""
+        git config --global user.email ${{ inputs.github_email }}
         echo "g"
-        git config --global user.name {{ inputs.github_name }}
+        git config --global user.name ${{ inputs.github_name }}
         echo "h"
         git status
         git --no-pager diff
