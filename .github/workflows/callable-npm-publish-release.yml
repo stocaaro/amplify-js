@@ -37,7 +37,7 @@ jobs:
           github_email: test@email.com
           github_name: test-user
           target: release
-          gh_token: ${{ secrets.GITHUB_TOKEN }}
+          npm_token: ${{ secrets.NPM_TOKEN }}
 
       - name: 'Update roll-back infrastructure'
         run: |

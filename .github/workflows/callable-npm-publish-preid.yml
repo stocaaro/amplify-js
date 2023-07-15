@@ -43,4 +43,4 @@ jobs:
           github_name: test-user
           target: preid
           preid: ${{ inputs.preid }}
-          gh_token: ${{ secrets.GITHUB_TOKEN }}
+          npm_token: ${{ secrets.NPM_TOKEN }}
