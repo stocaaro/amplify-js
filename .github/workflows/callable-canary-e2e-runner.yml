@@ -21,7 +21,7 @@ jobs:
       canary-config: ${{steps.load_config.outputs.CANARY_CONFIG}}
 
   canary-e2e-test-runner:
-    name: canary e2e test runnner
+    name: canary e2e test runner
     needs: e2e-prep
     secrets: inherit
     strategy:
