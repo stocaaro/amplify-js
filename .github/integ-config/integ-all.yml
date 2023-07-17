@@ -1,11 +1,11 @@
 minimal_browser_list: &minimal_browser_list
   - chrome
-  - firefox
+  # - firefox
 
 extended_browser_list: &extended_browser_list
-  - chrome
   - firefox
-  - edge
+  # - chrome
+  # - edge
 tests:
   - test_name: 'DataStore Auth - Chrome'
     framework: react

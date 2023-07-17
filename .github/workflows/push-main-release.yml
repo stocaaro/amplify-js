@@ -6,12 +6,12 @@ on:
       - main
 
 jobs:
-  # e2e:
-  #   secrets: inherit
-  #   uses: ./.github/workflows/callable-e2e.yml
+  e2e:
+    secrets: inherit
+    uses: ./.github/workflows/callable-e2e.yml
   unstable-release:
-    # needs:
-    #   - e2e
+    needs:
+      - e2e
     secrets: inherit
     uses: ./.github/workflows/callable-npm-publish-preid.yml
     with:

@@ -29,21 +29,13 @@ runs:
       working-directory: ./amplify-js
       shell: bash
       run: |
-        echo "a"
         echo "//registry.npmjs.org/:_authToken=${{ inputs.npm_token }}" >> ~/.npmrc
-        echo "b"
         touch {{ inputs.bash_env }}
-        echo "c"
         echo "export PREID_HASH_SUFFIX=$(echo ${{ github.sha }} | cut -c -7 | sed 's/^/\./')" >> "{{ inputs.bash_env }}"
-        echo "d"
         echo "export PREID_PREFIX=${{ inputs.preid || '' }}" >> "{{ inputs.bash_env }}"
-        echo "e"
         source "{{ inputs.bash_env }}"
-        echo ""
         git config --global user.email ${{ inputs.github_email }}
-        echo "g"
         git config --global user.name ${{ inputs.github_name }}
-        echo "h"
         git status
         git --no-pager diff
         yarn publish:${{ inputs.target }}
