@@ -9,7 +9,7 @@ jobs:
     with:
       runs_on: ubuntu-latest
   prebuild-macos:
-    uses: ./.github/workflows/callable-prebuild-amplify-js.yml@
+    uses: ./.github/workflows/callable-prebuild-amplify-js.yml
     with:
       runs_on: macos-latest
   prebuild-samples-staging:
