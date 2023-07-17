@@ -3,6 +3,10 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## 3.3.4 (2023-07-17)
+
+**Note:** Version bump only for package @aws-amplify/api-rest
+
 ## [3.3.3](https://github.com/aws-amplify/amplify-js/compare/@aws-amplify/api-rest@3.3.2...@aws-amplify/api-rest@3.3.3) (2023-07-13)
 
 **Note:** Version bump only for package @aws-amplify/api-rest
