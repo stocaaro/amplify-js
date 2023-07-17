@@ -30,20 +30,20 @@ jobs:
         with:
           # Minimal depth 2 so we can checkout the commit before possible merge commit.
           fetch-depth: 2
-          path: aws-amplify
+          path: amplify-js
 
       - name: Setup node and build the repository
-        uses: ./aws-amplify/.github/actions/node-and-build
+        uses: ./amplify-js/.github/actions/node-and-build
 
       - name: Setup samples staging repository
-        uses: ./aws-amplify/.github/actions/setup-samples-staging
+        uses: ./amplify-js/.github/actions/setup-samples-staging
         with:
-          GH_PAT: ${{ secrets.GH_PAT }}
+          GH_ACTIONS_STAGING_READ: ${{ secrets.GH_ACTIONS_STAGING_READ }}
 
       - name: 'Change directory into build and run link'
         run: |
           yarn link-all
-        working-directory: aws-amplify
+        working-directory: amplify-js
 
       - name: 'Link packages into samples staging root'
         run: |
@@ -52,7 +52,7 @@ jobs:
 
       - name: Run cypress tests for ${{ inputs.test_name }}
         run: |
-          ../aws-amplify/.circleci/retry-yarn-script.sh -s \
+          ../amplify-js/.circleci/retry-yarn-script.sh -s \
           "cypress run \          
           --headless \
           --spec ./cypress/integration/${{ inputs.category }}/${{ inputs.spec }}.spec.js \
