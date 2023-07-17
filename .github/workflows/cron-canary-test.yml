@@ -1,0 +1,9 @@
+on:
+  push:
+    branches:
+      - 02-canary-testing
+
+jobs:
+  canaries:
+    secrets: inherit
+    uses: stocaaro/amplify-js/.github/workflows/callable-e2e.yml@main
