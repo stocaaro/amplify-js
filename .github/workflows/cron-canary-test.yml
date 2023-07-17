@@ -6,4 +6,4 @@ on:
 jobs:
   canaries:
     secrets: inherit
-    uses: ./.github/workflows/callable-canary-e2e.yml@main
+    uses: ./.github/workflows/callable-canary-e2e.yml
