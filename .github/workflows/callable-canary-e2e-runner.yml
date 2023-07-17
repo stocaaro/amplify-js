@@ -28,7 +28,7 @@ jobs:
       matrix:
         canary-config: ${{ fromJson(needs.e2e-prep.outputs.canary-config) }}
       fail-fast: false
-    uses: stocaaro/amplify-js/.github/workflows/callable-e2e-tests.yml@main
+    uses: ./.github/workflows/callable-canary-e2e-tests.yml
     with:
       test_name: ${{ matrix.canary-config.test_name }}
       framework: ${{ matrix.canary-config.framework }}
