@@ -63,4 +63,3 @@ jobs:
           git push origin release
           git push -f origin required-release
           git push --force-with-lease origin release:main
-          echo "it worked!"
