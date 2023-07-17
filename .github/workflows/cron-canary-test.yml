@@ -6,4 +6,4 @@ on:
 jobs:
   canaries:
     secrets: inherit
-    uses: stocaaro/amplify-js/.github/workflows/callable-e2e.yml@main
+    uses: stocaaro/amplify-js/.github/workflows/callable-canary-e2e.yml@main

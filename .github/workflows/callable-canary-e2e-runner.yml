@@ -30,13 +30,13 @@ jobs:
       fail-fast: false
     uses: stocaaro/amplify-js/.github/workflows/callable-e2e-tests.yml@main
     with:
-      test_name: ${{ matrix.integ-config.test_name }}
-      framework: ${{ matrix.integ-config.framework }}
-      category: ${{ matrix.integ-config.category }}
-      spec: ${{ matrix.integ-config.spec || '' }}
-      amplifyjs_dir: ${{ matrix.integ-config.amplifyjs_dir || false }}
-      sample_name: ${{ toJSON(matrix.integ-config.sample_name) || '[""]' }}
-      browser: ${{ toJSON(matrix.integ-config.browser) || '[""]' }}
-      timeout_minutes: ${{ matrix.integ-config.timeout_minutes || 35 }}
-      retry_count: ${{ matrix.integ-config.retry_count || 3 }}
+      test_name: ${{ matrix.canary-config.test_name }}
+      framework: ${{ matrix.canary-config.framework }}
+      category: ${{ matrix.canary-config.category }}
+      spec: ${{ matrix.canary-config.spec || '' }}
+      amplifyjs_dir: ${{ matrix.canary-config.amplifyjs_dir || false }}
+      sample_name: ${{ toJSON(matrix.canary-config.sample_name) || '[""]' }}
+      browser: ${{ toJSON(matrix.canary-config.browser) || '[""]' }}
+      timeout_minutes: ${{ matrix.canary-config.timeout_minutes || 35 }}
+      retry_count: ${{ matrix.canary-config.retry_count || 3 }}
 

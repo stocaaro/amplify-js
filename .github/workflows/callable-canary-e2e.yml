@@ -21,7 +21,7 @@ jobs:
       - prebuild-ubuntu
       - prebuild-samples-staging
     secrets: inherit
-    uses: stocaaro/amplify-js/.github/workflows/callable-e2e-runner.yml@main
+    uses: stocaaro/amplify-js/.github/workflows/callable-canary-e2e-runner.yml@main
   get-package-list:
     uses: stocaaro/amplify-js/.github/workflows/callable-get-package-list.yml@main
   unit-tests:
