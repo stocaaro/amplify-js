@@ -81,7 +81,10 @@ jobs:
           cp samples/${{ inputs.framework }}/${{ inputs.category }}/${{ matrix.sample_name }}/package.json "$tmpfile" &&
           jq --arg new_ver "$new_aws_amplify_ver" '(.dependencies | select(.Name == "aws-amplify")).Value |= $new_ver' package.json "$tmpfile" > samples/${{ inputs.framework }}/${{ inputs.category }}/${{ matrix.sample_name }}/package.json && rm -f -- "$tmpfile"
         working-directory: amplify-js-samples-staging
-
+      
+      - name: Where am I?
+        run: pwd
+        working-directory: amplify-js-samples-staging
 
       - name: Print the package.json
         run: jq '.' samples/${{ inputs.framework }}/${{ inputs.category }}/${{ matrix.sample_name }}/package.json 
