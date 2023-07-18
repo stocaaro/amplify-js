@@ -83,7 +83,7 @@ jobs:
         run: |
           tmpfile=$(mktemp)
           cp samples/${{ inputs.framework }}/${{ inputs.category }}/${{ matrix.sample_name }}/package.json "$tmpfile" &&
-          jq (.dependencies{} | select(.Name == "aws-amplify")).Value |= "latest" samples/${{ inputs.framework }}/${{ inputs.category }}/${{ matrix.sample_name }}/package.json "$tmpfile" > samples/${{ inputs.framework }}/${{ inputs.category }}/${{ matrix.sample_name }}/package.json && rm -f -- "$tmpfile"
+          jq '.dependencies |= with_entries(select(.key | startswith("aws-amplify")).value = "latest")' samples/${{ inputs.framework }}/${{ inputs.category }}/${{ matrix.sample_name }}/package.json "$tmpfile" > samples/${{ inputs.framework }}/${{ inputs.category }}/${{ matrix.sample_name }}/package.json && rm -f -- "$tmpfile"
         working-directory: amplify-js-samples-staging
 
       - name: Print the package.json after modification
