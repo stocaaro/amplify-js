@@ -3,7 +3,7 @@ name: 'Prebuild AmplifyJs'
 on:
   workflow_call:
     secrets:
-      GH_PAT:
+      GH_ACTIONS_STAGING_READ:
         required: true
 jobs:
   prebuild:

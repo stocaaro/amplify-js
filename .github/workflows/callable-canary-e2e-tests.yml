@@ -74,7 +74,7 @@ jobs:
         uses: ./amplify-js/.github/actions/setup-samples-staging
         with:
           GH_ACTIONS_STAGING_READ: ${{ secrets.GH_ACTIONS_STAGING_READ }}
-      - name: Modify json to run against aws-amplify latest #add path to package json cd/..../
+      - name: Modify package.json to run against aws-amplify latest 
         run: |
           tmpfile=$(mktemp)
           new_aws_amplify_ver='latest'
