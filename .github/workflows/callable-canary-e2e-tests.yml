@@ -80,6 +80,7 @@ jobs:
           new_aws_amplify_ver='latest'
           cp cd/samples/${{ inputs.framework }}/${{ inputs.category }}/${{ matrix.sample_name }}/package.json "$tmpfile" &&
           jq --arg new_ver "$new_aws_amplify_ver" '(.dependencies | select(.Name == "aws-amplify")).Value |= $new_ver' file.json "$tmpfile" > cd/samples/${{ inputs.framework }}/${{ inputs.category }}/${{ matrix.sample_name }}/package.json && rm -f -- "$tmpfile"
+        working-directory: amplify-js-samples-staging
       - name: Run cypress tests for ${{ inputs.test_name }} dev
         run: |
           ../amplify-js/.circleci/retry-yarn-script.sh -s \
