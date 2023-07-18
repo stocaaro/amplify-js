@@ -63,13 +63,23 @@ jobs:
         with:
           # Minimal depth 2 so we can checkout the commit before possible merge commit.
           fetch-depth: 2
-          path: amplify-js
-      - name: Setup node and build the repository
-        uses: ./amplify-js/.github/actions/node-and-build
+          path: amplify-js          
+      - name: Setup Node.js 16
+        uses: actions/setup-node@64ed1c7eab4cce3362f8c340dee64e5eaeef8f7c # v3.6.0 https://github.com/actions/setup-node/commit/64ed1c7eab4cce3362f8c340dee64e5eaeef8f7c
+        with:
+          node-version: 16
+        env:
+          SEGMENT_DOWNLOAD_TIMEOUT_MINS: 2
       - name: Setup samples staging repository
         uses: ./amplify-js/.github/actions/setup-samples-staging
         with:
           GH_ACTIONS_STAGING_READ: ${{ secrets.GH_ACTIONS_STAGING_READ }}
+      - name: Modify json to run against aws-amplify latest #add path to package json cd/..../
+        run: |
+          tmpfile=$(mktemp)
+          new_aws_amplify_ver='latest'
+          cp cd/samples/${{ inputs.framework }}/${{ inputs.category }}/${{ matrix.sample_name }}/package.json "$tmpfile" &&
+          jq --arg new_ver "$new_aws_amplify_ver" '(.dependencies | select(.Name == "aws-amplify")).Value |= $new_ver' file.json "$tmpfile" > cd/samples/${{ inputs.framework }}/${{ inputs.category }}/${{ matrix.sample_name }}/package.json && rm -f -- "$tmpfile"
       - name: Run cypress tests for ${{ inputs.test_name }} dev
         run: |
           ../amplify-js/.circleci/retry-yarn-script.sh -s \
