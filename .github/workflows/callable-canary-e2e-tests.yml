@@ -79,7 +79,7 @@ jobs:
           tmpfile=$(mktemp)
           new_aws_amplify_ver='latest'
           cp samples/${{ inputs.framework }}/${{ inputs.category }}/${{ matrix.sample_name }}/package.json "$tmpfile" &&
-          jq --arg new_ver "$new_aws_amplify_ver" '(.dependencies | select(.Name == "aws-amplify")).Value |= $new_ver' file.json "$tmpfile" > samples/${{ inputs.framework }}/${{ inputs.category }}/${{ matrix.sample_name }}/package.json && rm -f -- "$tmpfile"
+          jq --arg new_ver "$new_aws_amplify_ver" '(.dependencies | select(.Name == "aws-amplify")).Value |= $new_ver' package.json "$tmpfile" > samples/${{ inputs.framework }}/${{ inputs.category }}/${{ matrix.sample_name }}/package.json && rm -f -- "$tmpfile"
         working-directory: amplify-js-samples-staging
       - name: Run cypress tests for ${{ inputs.test_name }} dev
         run: |
@@ -109,7 +109,7 @@ jobs:
           -n ${{ inputs.retry_count }}
         working-directory: amplify-js-samples-staging
         shell: bash
-      - name: upload artifact
+      - name: Upload artifact
         uses: actions/upload-artifact@0b7f8abb1508181956e8e162db84b466c27e18ce # v3.1.2 https://github.com/actions/upload-artifact/commit/0b7f8abb1508181956e8e162db84b466c27e18ce
         if: always()
         with:
