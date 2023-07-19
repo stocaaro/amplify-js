@@ -25,7 +25,6 @@ runs:
         token: ${{ inputs.GH_ACTIONS_STAGING_READ }}
         fetch-depth: 2
     - name: Install
-      if: steps.cache-samples-staging-build.outputs.cache-hit != 'true'
       run: |
         yarn
       shell: bash

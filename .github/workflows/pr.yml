@@ -37,3 +37,11 @@ jobs:
   bundle-size-tests:
     needs: prebuild
     uses: ./.github/workflows/callable-bundle-size-tests.yml
+  all-tests-pass:
+    needs:
+      - unit-tests
+      - bundle-size-tests
+    runs-on: ubuntu-latest
+    steps:
+      - name: All tests passed
+        run: 'echo "All tests passed'
