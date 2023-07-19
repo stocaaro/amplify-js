@@ -32,7 +32,7 @@ jobs:
       matrix:
         integ-config: ${{ fromJson(needs.e2e-prep.outputs.integ-config) }}
       fail-fast: false
-    uses: ./.github/workflows/callable-e2e-tests.yml
+    uses: ./.github/workflows/callable-e2e-test.yml
     with:
       test_name: ${{ matrix.integ-config.test_name }}
       framework: ${{ matrix.integ-config.framework }}
@@ -52,7 +52,7 @@ jobs:
       matrix:
         integ-config: ${{ fromJson(needs.e2e-prep.outputs.integ-config-headless) }}
       fail-fast: false
-    uses: ./.github/workflows/callable-e2e-tests-headless.yml
+    uses: ./.github/workflows/callable-e2e-test-headless.yml
     with:
       test_name: ${{ matrix.integ-config.test_name }}
       category: ${{ matrix.integ-config.category }}
@@ -68,7 +68,7 @@ jobs:
         integ-config: ${{ fromJson(needs.e2e-prep.outputs.detox-integ-config) }}
       fail-fast: false
     secrets: inherit
-    uses: ./.github/workflows/callable-e2e-tests-detox.yml
+    uses: ./.github/workflows/callable-e2e-test-detox.yml
     with:
       test_name: ${{ matrix.integ-config.test_name }}
       working_directory: ${{ matrix.integ-config.working_directory }}

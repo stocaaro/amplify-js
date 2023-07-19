@@ -1,4 +1,4 @@
-name: E2E Tests - Detox
+name: E2E Test - Detox
 
 on:
   workflow_call:
