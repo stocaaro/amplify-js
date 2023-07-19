@@ -23,8 +23,6 @@ jobs:
           is-prebuild: true
   get-package-list:
     uses: ./.github/workflows/callable-get-package-list.yml
-  codeql:
-    uses: ./.github/workflows/callable-codeql.yml
   unit-tests:
     needs:
       - prebuild
