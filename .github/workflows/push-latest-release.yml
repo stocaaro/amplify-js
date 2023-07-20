@@ -1,5 +1,10 @@
 name: Push - release from release to latest
 
+concurrency:
+  # group name unique for push to push-main-release, push-latest-release, push-preid-release, push-integ-test
+  group: push-release-${{ github.event.sender.login }}
+  cancel-in-progress: true
+
 on:
   push:
     branches:
