@@ -1,18 +1,26 @@
 name: Push - release from main to unstable
 
+concurrency:
+  # make the group name unique for a push to push-main-release, push-latest-release, push-preid-release, push-integ-test
+  group: push-release-${{ github.event.sender.login }}
+  cancel-in-progress: true
+
 on:
   push:
     branches:
-      - main
+      - test-ashwinkumar6-main
 
 jobs:
   e2e:
     secrets: inherit
     uses: ./.github/workflows/callable-release-verification.yml
-  unstable-release:
-    needs:
-      - e2e
-    secrets: inherit
-    uses: ./.github/workflows/callable-npm-publish-preid.yml
-    with:
-      preid: unstable
+  # e2e:
+  #   secrets: inherit
+  #   uses: ./.github/workflows/callable-release-verification.yml
+  # unstable-release:
+  #   needs:
+  #     - e2e
+  #   secrets: inherit
+  #   uses: ./.github/workflows/callable-npm-publish-preid.yml
+  #   with:
+  #     preid: unstable
