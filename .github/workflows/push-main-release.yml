@@ -8,7 +8,7 @@ concurrency:
 on:
   push:
     branches:
-      - test-ashwinkumar6-main
+      - feat/github-actions/test-ashwinkumar6-main
 
 jobs:
   e2e:
