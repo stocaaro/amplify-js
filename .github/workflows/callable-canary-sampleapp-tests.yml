@@ -10,13 +10,11 @@ jobs:
 
     strategy:
       matrix:
-        languages: ['react', 'javascript'] #missing Next, Vue, Angular because run differently
+        languages: ['react'] #missing Javascript, Next, Vue, Angular because all run differently
 
     steps: 
       - name: Create application
         run: npx create-${{ matrix.languages }}-app ${{ matrix.languages }}-amplified
-      - name: Change directory #do I need this?
-        run: cd ${{ matrix.languages }}-amplified
       - name: Run application
         run: npm start
         working-directory: ${{ matrix.languages }}-amplified
