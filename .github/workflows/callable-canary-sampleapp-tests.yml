@@ -10,21 +10,14 @@ jobs:
 
     strategy:
       matrix:
-        languages: ['react'] #missing Vue because it's run differently
+        languages: ['angular', 'next', 'react', 'javascript'] #missing Vue because it's run differently
 
     steps: 
       - name: Create application
         run: npx create-${{ matrix.languages }}-app ${{ matrix.languages }}-amplified
       - name: Change directory
         run: cd ${{ matrix.languages }}-amplified
-      - name: Where am I?
-        run: pwd
-        working-directory: react-amplified
-      - name: What are my files?
-        run: ls
-        working-directory: react-amplified
-
       - name: Run application
         run: npm start
-        working-directory: react-amplified
+        working-directory: ${{ matrix.languages }}-amplified
 
