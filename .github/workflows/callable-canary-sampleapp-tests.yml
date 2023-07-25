@@ -17,6 +17,7 @@ jobs:
         run: npx create-${{ matrix.languages }}-app ${{ matrix.languages }}-amplified
       - name: Change directory
         run: cd ${{ matrix.languages }}-amplified
+        working-directory: amplify-js
 
       - name: Where am I?
         run: pwd
