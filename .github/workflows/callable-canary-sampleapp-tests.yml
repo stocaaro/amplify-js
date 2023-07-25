@@ -18,6 +18,8 @@ jobs:
       - name: Change directory
         run: cd ${{ matrix.languages }}-amplified
 
+      - name: Where am I?
+        run: pwd
       - name: What are my files?
         run: ls
 
