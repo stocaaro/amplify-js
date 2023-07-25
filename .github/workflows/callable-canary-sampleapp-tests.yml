@@ -1,0 +1,22 @@
+name: 'Canary Sample App Tests'
+
+on:
+  workflow_call:
+
+jobs:
+  build_apps:
+    name: Build Sample App Tests
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        languages: ['angular', 'next', 'react', 'javascript'] #missing Vue because it's run differently
+
+    steps: 
+      - name: Create application
+        run: npx create-${{ matrix.languages }}-app ${{ matrix.languages }}-amplified
+      - name: Change directory
+        run: cd ${{ matrix.languages }}-amplified
+      - name: Run application
+        run: npm start
+
