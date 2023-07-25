@@ -10,7 +10,7 @@ jobs:
 
     strategy:
       matrix:
-        languages: ['angular', 'next', 'react', 'javascript'] #missing Vue because it's run differently
+        languages: ['next', 'react', 'javascript'] #missing Vue, Angular because run differently
 
     steps: 
       - name: Create application
