@@ -3,7 +3,7 @@ name: Push - release from main to unstable
 on:
   push:
     branches:
-      - main
+      - feat/github-actions/test-stocaaro
 
 jobs:
   e2e:
@@ -16,4 +16,3 @@ jobs:
     uses: ./.github/workflows/callable-npm-publish-preid.yml
     with:
       preid: unstable
-      allow-protected-preid: true
