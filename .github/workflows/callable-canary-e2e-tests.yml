@@ -87,7 +87,7 @@ jobs:
       - name: Setup samples staging repository
         uses: ./amplify-js/.github/actions/setup-samples-staging
         with:
-          GH_ACTIONS_STAGING_READ: ${{ secrets.GH_ACTIONS_STAGING_READ }}
+          GH_TOKEN_STAGING_READ: ${{ secrets.GH_TOKEN_STAGING_READ }}
 
       # - name: Print the package.json before modification
       #   run: jq '.' samples/${{ inputs.framework }}/${{ inputs.category }}/${{ matrix.sample_name }}/package.json 
