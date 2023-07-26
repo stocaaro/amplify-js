@@ -13,8 +13,18 @@ jobs:
         languages: ['react'] #missing Javascript, Next, Vue, Angular because all run differently
 
     steps: 
+      - name: Setup samples staging repository
+        uses: ./amplify-js/.github/actions/setup-samples-staging
+        with:
+          GH_TOKEN_STAGING_READ: ${{ secrets.GH_TOKEN_STAGING_READ }}
+
+        #React
       - name: Create application
         run: npx create-${{ matrix.languages }}-app ${{ matrix.languages }}-amplified
+      - name: Copy App.js from Samples Staging Repo
+        run: |
+          cp samples/${{ inputs.framework }}/auth/credentials-auth/src/App.js ${{ matrix.languages }}-amplified/App.js
+        working-directory: amplify-js-samples-staging
       - name: Run application
         run: npm start
         working-directory: ${{ matrix.languages }}-amplified
