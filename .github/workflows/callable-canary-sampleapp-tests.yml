@@ -8,6 +8,10 @@ jobs:
     name: Build Sample App Tests
     runs-on: ubuntu-latest
 
+    strategy:
+      matrix:
+        BROWSER: [chrome]
+
     steps: 
       - name: Checkout repository
         uses: actions/checkout@24cb9080177205b6e8c946b17badbe402adc938f # v3.4.0 https://github.com/actions/checkout/commit/24cb9080177205b6e8c946b17badbe402adc938f
@@ -23,60 +27,69 @@ jobs:
         #React
       - name: Create react application
         run: npx create-react-app react-amplified
-      - name: Copy App.js from Samples Staging Repo
+      - name: Remove existing src folder
+        run: rm -rf src
+        working-directory: react-amplified
+      - name: Copy src from Samples Staging Repo
         run: |
-          cp ./amplify-js-samples-staging/samples/react/auth/credentials-auth/src/App.js ./react-amplified/App.js
-      - name: Run application
-        run: npm start
+          cp -R ./amplify-js-samples-staging/samples/react/auth/credentials-auth/src ./react-amplified
+      - name: Install yarn
+        run: yarn
+        working-directory: react-amplified
+      - name: Install amplify
+        run: npm install amplify
+        working-directory: react-amplified
+      - name: Start application and run test
+        run: yarn ci:test react auth credentials-auth credentials-auth ${{ matrix.BROWSER }}
         working-directory: react-amplified
 
-        #Angular
-      - name: Install angular CLI
-        run: npm install - g @angular/cli
-      - name: Create angular application
-        run: npx -p @angular/cli ng new angular-app
+    #     #Angular
+    #   - name: Install angular CLI
+    #     run: npm install - g @angular/cli
+    #   - name: Create angular application
+    #     run: npx -p @angular/cli ng new angular-app
 
-          #Talk with Francisco about this
-      #- name: Copy App.js from Samples Staging Repo
-      #  run: |
-      #    cp ./amplify-js-samples-staging/samples/react/auth/credentials-auth/src/App.js ./react-amplified/App.js
+    #       #Talk with Francisco about this
+    #   #- name: Copy App.js from Samples Staging Repo
+    #   #  run: |
+    #   #    cp ./amplify-js-samples-staging/samples/react/auth/credentials-auth/src/App.js ./react-amplified/App.js
 
-      - name: Run application
-        run: ng serve
-        working-directory: angular-app
+    #   - name: Run application
+    #     run: ng serve
+    #     working-directory: angular-app
 
-        #Next
-      - name: Create next application
-        run: npx create-next-app next-amplified --no-app
+    #     #Next
+    #   - name: Create next application
+    #     run: npx create-next-app next-amplified --no-app
 
-        #Talk with Francisco about this
-     # - name: Copy App.js from Samples Staging Repo
-     #   run: |
-     #     cp ./amplify-js-samples-staging/samples/react/auth/credentials-auth/src/App.js ./react-amplified/App.js
+    #     #Talk with Francisco about this
+    #  # - name: Copy App.js from Samples Staging Repo
+    #  #   run: |
+    #  #     cp ./amplify-js-samples-staging/samples/react/auth/credentials-auth/src/App.js ./react-amplified/App.js
 
-      - name: Run application
-        run: npm run dev
-        working-directory: next-amplified 
+    #   - name: Run application
+    #     run: npm run dev
+    #     working-directory: next-amplified 
 
-        #Vue
-      - name: Create vue application
-        run: npm init vue@3
-      - name: Copy App.vue from Samples Staging Repo
-        run: |
-          cp ./amplify-js-samples-staging/samples/vue/interactions/chatbot-component-vue3/src/App.vue ./vue-amplified/App.vue
-      - name: Run application
-        run: npm run dev
-        working-directory: vue-amplified
+    #     #Vue
+    #   - name: Create vue application
+    #     run: npm init vue@3
+    #   - name: Copy App.vue from Samples Staging Repo
+    #     run: |
+    #       cp ./amplify-js-samples-staging/samples/vue/interactions/chatbot-component-vue3/src/App.vue ./vue-amplified/App.vue
+    #   - name: Run application
+    #     run: npm run dev
+    #     working-directory: vue-amplified
 
-        #Javascript
-      - name: Create javascript application
-        run: |
-          mkdir -p amplify-js-app/src && cd amplify-js-app
-          touch index.html src/app.js webpack.config.js
-      - name: Copy App.js from Samples Staging Repo
-        run: |
-          cp ./amplify-js-samples-staging/samples/javascript/datastore/basic-crud/src/app.js ./vue-amplified/app.js
-      - name: Run application
-        run: npm start
-        working-directory: amplify-js-app
+    #     #Javascript
+    #   - name: Create javascript application
+    #     run: |
+    #       mkdir -p amplify-js-app/src && cd amplify-js-app
+    #       touch index.html src/app.js webpack.config.js
+    #   - name: Copy App.js from Samples Staging Repo
+    #     run: |
+    #       cp ./amplify-js-samples-staging/samples/javascript/datastore/basic-crud/src/app.js ./vue-amplified/app.js
+    #   - name: Run application
+    #     run: npm start
+    #     working-directory: amplify-js-app
 
