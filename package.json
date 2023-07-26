@@ -13,7 +13,6 @@
 		"cypress": "lerna run cypress",
 		"cypress:open": "lerna run cypress:open",
 		"coverage": "codecov || exit 0",
-		"ci:test": "node scripts/test.js",
 		"docs": "typedoc packages/**/src --name amplify-js --hideGenerator --excludePrivate --ignoreCompilerErrors --mode file --out docs/api --theme docs/amplify-theme/typedoc/ --readme README.md",
 		"build": "lerna run build --stream && yarn test:duplicates",
 		"build:watch": "concurrently 'lerna run build:cjs:watch --parallel' 'lerna run build:esm:watch --parallel' --raw",

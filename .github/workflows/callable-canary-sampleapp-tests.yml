@@ -30,7 +30,7 @@ jobs:
       - name: Remove existing src folder
         run: rm -rf src
         working-directory: react-amplified
-      - name: Copy src from Samples Staging Repo
+      - name: Copy src from samples staging repo
         run: |
           cp -R ./amplify-js-samples-staging/samples/react/auth/credentials-auth/src ./react-amplified
       - name: Install yarn
@@ -40,7 +40,7 @@ jobs:
         run: npm install amplify
         working-directory: react-amplified
       - name: Start application and run test
-        run: yarn ci:test react auth credentials-auth credentials-auth ${{ matrix.BROWSER }}
+        run: yarn node scripts/test.js" react auth credentials-auth credentials-auth ${{ matrix.BROWSER }}
         working-directory: react-amplified
 
     #     #Angular
@@ -48,8 +48,7 @@ jobs:
     #     run: npm install - g @angular/cli
     #   - name: Create angular application
     #     run: npx -p @angular/cli ng new angular-app
-
-    #       #Talk with Francisco about this
+          
     #   #- name: Copy App.js from Samples Staging Repo
     #   #  run: |
     #   #    cp ./amplify-js-samples-staging/samples/react/auth/credentials-auth/src/App.js ./react-amplified/App.js
@@ -62,7 +61,6 @@ jobs:
     #   - name: Create next application
     #     run: npx create-next-app next-amplified --no-app
 
-    #     #Talk with Francisco about this
     #  # - name: Copy App.js from Samples Staging Repo
     #  #   run: |
     #  #     cp ./amplify-js-samples-staging/samples/react/auth/credentials-auth/src/App.js ./react-amplified/App.js
