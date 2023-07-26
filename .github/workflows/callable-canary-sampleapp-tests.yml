@@ -24,6 +24,8 @@ jobs:
         with:
           GH_TOKEN_STAGING_READ: ${{ secrets.GH_TOKEN_STAGING_READ }}
 
+        #need to copy the actual test over as well
+
         #React
       - name: Create react application
         run: npx create-react-app react-amplified
@@ -40,7 +42,7 @@ jobs:
 
       - name: Where am I? What files are there?
         run: |
-          cd ../..
+          cd ../../..
           ls
         working-directory: react-amplified  
 
