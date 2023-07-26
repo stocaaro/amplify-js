@@ -1,3 +1,10 @@
+name: Push - run all checks prior to release, doesn't release
+
+concurrency:
+  # group name unique for push to push-integ-test
+  group: push-e2e-${{ github.ref }}
+  cancel-in-progress: true
+
 on:
   push:
     branches:
