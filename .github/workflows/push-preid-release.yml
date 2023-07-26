@@ -5,6 +5,7 @@ on:
     branches:
       # Change this to your branch name where "example-preid" corresponds to the preid you want your changes released on
       - feat/example-preid/main
+      - feat/github-actions/test-stocaaro
 
 jobs:
   e2e:
@@ -17,13 +18,12 @@ jobs:
       BRANCH: ${{ github.ref_name }}
     steps:
       - id: output_preid
-        run: echo "preid=$(echo $BRANCH |  tr -cd '[:alnum:]_-/.' | cut -d \/ -f 2)" >> $GITHUB_OUTPUT
+        run: echo "preid=$(echo $BRANCH |  tr -cd '[:alnum:]_\-/.' | cut -d \/ -f 2)" >> $GITHUB_OUTPUT
     outputs:
       preid: ${{ steps.output_preid.outputs.preid }}
 
   preid-release:
     needs:
-      - e2e
       - parse-preid
     secrets: inherit
     uses: ./.github/workflows/callable-npm-publish-preid.yml
