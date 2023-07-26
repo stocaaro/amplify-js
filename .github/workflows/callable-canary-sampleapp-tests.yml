@@ -40,7 +40,7 @@ jobs:
         run: npm install amplify
         working-directory: react-amplified
       - name: Start application and run test
-        run: yarn node scripts/test.js" react auth credentials-auth credentials-auth ${{ matrix.BROWSER }}
+        run: yarn node scripts/test.js react auth credentials-auth credentials-auth ${{ matrix.BROWSER }}
         working-directory: react-amplified
 
     #     #Angular
