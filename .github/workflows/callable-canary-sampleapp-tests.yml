@@ -33,7 +33,6 @@ jobs:
       - name: Copy src from samples staging repo
         run: |
           cp -R ./amplify-js-samples-staging/samples/react/auth/credentials-auth/src ./react-amplified
-        working-directory: react-amplified
       - name: Install amplify
         run: npm install amplify
         working-directory: react-amplified
