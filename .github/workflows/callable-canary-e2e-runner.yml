@@ -19,7 +19,6 @@ jobs:
         working-directory: ./amplify-js
     outputs:
       canary-config: ${{steps.load_config.outputs.CANARY_CONFIG}}
-
   canary-e2e-test-runner:
     name: canary e2e test runner
     needs: e2e-prep
