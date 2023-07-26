@@ -3,24 +3,10 @@ name: 'Canary Sample App Tests'
 on:
   workflow_call:
 
-env:
-  NPM_REGISTRY: http://localhost:4873/
-  NPM_USER: circleci
-  NPM_PASS: circleci
-  NPM_EMAIL: circleci@amplify.js
-  AMPLIFY_DIR: /home/runner/work/amplify-js/amplify-js/amplify-js
-  CYPRESS_GOOGLE_CLIENTID: ${{ secrets.CYPRESS_GOOGLE_CLIENTID }}
-  CYPRESS_GOOGLE_CLIENT_SECRET: ${{ secrets.CYPRESS_GOOGLE_CLIENT_SECRET }}
-  CYPRESS_GOOGLE_REFRESH_TOKEN: ${{ secrets.CYPRESS_GOOGLE_REFRESH_TOKEN }}
-
 jobs:
   build_apps:
     name: Build Sample App Tests
     runs-on: ubuntu-latest
-
-    strategy:
-      matrix:
-        languages: ['react'] #missing Javascript, Next, Vue, Angular because all run differently
 
     steps: 
       - name: Checkout repository
@@ -36,12 +22,11 @@ jobs:
 
         #React
       - name: Create application
-        run: npx create-${{ matrix.languages }}-app ${{ matrix.languages }}-amplified
+        run: npx create-react-app react-amplified
       - name: Copy App.js from Samples Staging Repo
         run: |
-          cp samples/${{ inputs.framework }}/auth/credentials-auth/src/App.js ${{ matrix.languages }}-amplified/App.js
-        working-directory: amplify-js-samples-staging
+          cp ./amplify-js-samples-staging/samples/react/auth/credentials-auth/src/App.js ./react-amplified/App.js
       - name: Run application
         run: npm start
-        working-directory: ${{ matrix.languages }}-amplified
+        working-directory: react-amplified
 
