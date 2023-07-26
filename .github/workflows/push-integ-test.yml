@@ -2,7 +2,7 @@ name: Push - run all checks prior to release, doesn't release
 
 concurrency:
   # group name unique for push to push-main-release, push-latest-release, push-preid-release, push-integ-test
-  group: push-release-${{ github.event.sender.login }}
+  group: push-e2e-${{ github.event.sender.login }}
   cancel-in-progress: true
 
 on:
@@ -20,7 +20,7 @@ jobs:
     steps:
       - name: check 'github.event.sender.login' value
         run: |
-          echo "${{ github.event.sender.login }}"
+          echo $GITHUB_HEAD_REF
 
   # e2e:
   #   secrets: inherit
