@@ -15,20 +15,37 @@ runs:
       with:
         key: aws-amplify-js-samples-staging-build-${{ github.sha }}
         path: |
-          ./amplify-js-samples-staging
+          ./amplify-js-samples-staging/node_modules
           /home/runner/.cache/Cypress
+      env:
+        SEGMENT_DOWNLOAD_TIMEOUT_MINS: 2
     - name: Checkout staging repo
-      if: steps.cache-samples-staging-build.outputs.cache-hit != 'true'
-      uses: actions/checkout@24cb9080177205b6e8c946b17badbe402adc938f
+      uses: actions/checkout@24cb9080177205b6e8c946b17badbe402adc938f # v3.4.0 https://github.com/actions/checkout/commit/24cb9080177205b6e8c946b17badbe402adc938f
       with:
-        repository: stocaaro/amplify-js-samples-staging
+        repository: ${{ github.repository_owner }}/amplify-js-samples-staging
         path: amplify-js-samples-staging
         token: ${{ inputs.GH_TOKEN_STAGING_READ }}
-        fetch-depth: 2
+
+    # We test on the staging branch that corresponds to the amplify-js branch
+    #   when it exists and test on the default branch `main` otherwise
+    - name: Staging repo branch selection
+      shell: bash
+      working-directory: ./amplify-js-samples-staging
+      env:
+        BRANCH: ${{ github.ref_name }}
+      run: |
+        if git ls-remote --exit-code --heads origin $BRANCH >/dev/null 2>&1; then
+            # Branch exists, checkout and echo success message
+            git fetch origin $BRANCH
+            git checkout $BRANCH
+            echo "Checked out branch: $BRANCH"
+        else
+            # Branch doesn't exist, echo error message
+            echo "Branch '$BRANCH' does not exist"
+        fi
+
     - name: Install
-      if: steps.cache-samples-staging-build.outputs.cache-hit != 'true'
       run: |
         yarn
       shell: bash
       working-directory: ./amplify-js-samples-staging
-
