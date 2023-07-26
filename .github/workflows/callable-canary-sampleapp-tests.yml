@@ -39,15 +39,8 @@ jobs:
       - name: Install amplify
         run: npm install amplify
         working-directory: react-amplified
-
-      - name: Where am I? What files are there?
-        run: |
-          cd ../../../../..
-          ls
-        working-directory: react-amplified  
-
       - name: Start application and run test
-        run: node ../../scripts/test.js react auth credentials-auth credentials-auth ${{ matrix.BROWSER }}
+        run: node ./amplify-js/scripts/test.js react auth credentials-auth credentials-auth ${{ matrix.BROWSER }}
         working-directory: react-amplified
 
     #     #Angular
