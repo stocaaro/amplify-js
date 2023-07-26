@@ -40,10 +40,10 @@ jobs:
 
       - name: Where am I? What files are there?
         run: |
-          ../../
+          ../..
           ls
         working-directory: react-amplified  
-        
+
       - name: Start application and run test
         run: node ../../scripts/test.js react auth credentials-auth credentials-auth ${{ matrix.BROWSER }}
         working-directory: react-amplified
