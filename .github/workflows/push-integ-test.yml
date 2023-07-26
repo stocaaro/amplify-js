@@ -1,4 +1,4 @@
-name: Push - run all checks prior to release, doesn't release
+name: Push - run release verifications
 
 concurrency:
   # group name unique for push to push-integ-test
