@@ -42,7 +42,7 @@ jobs:
 
       - name: Where am I? What files are there?
         run: |
-          cd ../../..
+          cd ../../../..
           ls
         working-directory: react-amplified  
 
