@@ -21,7 +21,7 @@ jobs:
           GH_TOKEN_STAGING_READ: ${{ secrets.GH_TOKEN_STAGING_READ }}
 
         #React
-      - name: Create application
+      - name: Create react application
         run: npx create-react-app react-amplified
       - name: Copy App.js from Samples Staging Repo
         run: |
@@ -29,4 +29,54 @@ jobs:
       - name: Run application
         run: npm start
         working-directory: react-amplified
+
+        #Angular
+      - name: Install angular CLI
+        run: npm install - g @angular/cli
+      - name: Create angular application
+        run: npx -p @angular/cli ng new angular-app
+
+          #Talk with Francisco about this
+      #- name: Copy App.js from Samples Staging Repo
+      #  run: |
+      #    cp ./amplify-js-samples-staging/samples/react/auth/credentials-auth/src/App.js ./react-amplified/App.js
+
+      - name: Run application
+        run: ng serve
+        working-directory: angular-app
+
+        #Next
+      - name: Create next application
+        run: npx create-next-app next-amplified --no-app
+
+        #Talk with Francisco about this
+     # - name: Copy App.js from Samples Staging Repo
+     #   run: |
+     #     cp ./amplify-js-samples-staging/samples/react/auth/credentials-auth/src/App.js ./react-amplified/App.js
+
+      - name: Run application
+        run: npm run dev
+        working-directory: next-amplified 
+
+        #Vue
+      - name: Create vue application
+        run: npm init vue@3
+      - name: Copy App.vue from Samples Staging Repo
+        run: |
+          cp ./amplify-js-samples-staging/samples/vue/interactions/chatbot-component-vue3/src/App.vue ./vue-amplified/App.vue
+      - name: Run application
+        run: npm run dev
+        working-directory: vue-amplified
+
+        #Javascript
+      - name: Create javascript application
+        run: |
+          mkdir -p amplify-js-app/src && cd amplify-js-app
+          touch index.html src/app.js webpack.config.js
+      - name: Copy App.js from Samples Staging Repo
+        run: |
+          cp ./amplify-js-samples-staging/samples/javascript/datastore/basic-crud/src/app.js ./vue-amplified/app.js
+      - name: Run application
+        run: npm start
+        working-directory: amplify-js-app
 
