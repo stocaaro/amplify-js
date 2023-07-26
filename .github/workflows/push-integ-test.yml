@@ -20,7 +20,7 @@ jobs:
     steps:
       - name: check 'github.event.sender.login' value
         run: |
-          echo $GITHUB_HEAD_REF
+          echo '$GITHUB_HEAD_REF'
 
   # e2e:
   #   secrets: inherit
