@@ -32,12 +32,13 @@ jobs:
         working-directory: react-amplified
       - name: Copy src from samples staging repo
         run: |
-          cp -R ./amplify-js-samples-staging/samples/react/auth/credentials-auth/src ./react-amplified
+          cp -R ./samples/react/auth/credentials-auth/src ../react-amplified
+        working-directory: amplify-js-samples-staging
       - name: Install amplify
         run: npm install amplify
         working-directory: react-amplified
       - name: Start application and run test
-        run: node ../scripts/test.js react auth credentials-auth credentials-auth ${{ matrix.BROWSER }}
+        run: node ../../scripts/test.js react auth credentials-auth credentials-auth ${{ matrix.BROWSER }}
         working-directory: react-amplified
 
     #     #Angular
