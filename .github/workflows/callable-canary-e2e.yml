@@ -36,6 +36,7 @@ jobs:
     with:
       package: ${{ matrix.package }}
   sample-app-tests:
+    secrets: inherit
     uses: ./.github/workflows/callable-canary-sampleapp-tests.yml
   bundle-size-tests:
     needs: prebuild-ubuntu
