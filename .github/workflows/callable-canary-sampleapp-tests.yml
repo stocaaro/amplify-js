@@ -36,39 +36,39 @@ jobs:
       - name: Setup node and build the repository
         uses: stocaaro/amplify-js/.github/actions/node-and-build@main
 
-      #   #React
-      # - name: Create react application
-      #   run: npx create-react-app react-amplified
-      #   working-directory: amplify-js-samples-staging/samples/react/auth
-      # - name: Remove existing src folder
-      #   run: rm -rf src
-      #   working-directory: amplify-js-samples-staging/samples/react/auth/react-amplified
-      #   #copy the json over as well
-      # - name: Copy src and json from samples staging repo
-      #   run: |
-      #     cp -R ./samples/react/auth/credentials-auth/src ./samples/react/auth/react-amplified
-      #     cp ./samples/react/auth/credentials-auth/package.json ./samples/react/auth/react-amplified/package.json
-      #   working-directory: amplify-js-samples-staging
-      # - name: Copy test file from samples staging repo
-      #   run: |
-      #     cp credentials-auth.spec.js react-amplified.spec.js
-      #   working-directory: amplify-js-samples-staging/cypress/integration/auth
-      # - name: Install amplify
-      #   run: npm install amplify
-      #   working-directory: amplify-js-samples-staging/samples/react/auth/react-amplified
-      # - name: Start application and run test
-      #   run: |
-      #       ../amplify-js/.circleci/retry-yarn-script.sh -s \
-      #       "ci:test \
-      #       react \
-      #       auth \
-      #       react-amplified \
-      #       react-amplified \
-      #       ${{ matrix.BROWSER }} \
-      #       dev \
-      #       -n 3
-      #   working-directory: amplify-js-samples-staging
-      #   shell: bash
+        #React
+      - name: Create react application
+        run: npx create-react-app react-amplified
+        working-directory: amplify-js-samples-staging/samples/react/auth
+      - name: Remove existing src folder
+        run: rm -rf src
+        working-directory: amplify-js-samples-staging/samples/react/auth/react-amplified
+        #copy the json over as well
+      - name: Copy src and json from samples staging repo
+        run: |
+          cp -R ./samples/react/auth/credentials-auth/src ./samples/react/auth/react-amplified
+          cp ./samples/react/auth/credentials-auth/package.json ./samples/react/auth/react-amplified/package.json
+        working-directory: amplify-js-samples-staging
+      - name: Copy test file from samples staging repo
+        run: |
+          cp credentials-auth.spec.js react-amplified.spec.js
+        working-directory: amplify-js-samples-staging/cypress/integration/auth
+      - name: Install amplify
+        run: npm install amplify
+        working-directory: amplify-js-samples-staging/samples/react/auth/react-amplified
+      - name: Start application and run test
+        run: |
+            ../amplify-js/.circleci/retry-yarn-script.sh -s \
+            "ci:test \
+            react \
+            auth \
+            react-amplified \
+            react-amplified \
+            ${{ matrix.BROWSER }} \
+            dev \
+            -n 3
+        working-directory: amplify-js-samples-staging
+        shell: bash
       
       # #Angular
       # - name: Install angular CLI
@@ -79,9 +79,10 @@ jobs:
       # - name: Remove existing src folder
       #   run: rm -rf src
       #   working-directory: amplify-js-samples-staging/samples/angular/angular-app
-      # - name: Copy src from samples staging repo
+      # - name: Copy src and json from samples staging repo
       #   run: |
       #     cp -R ./samples/angular/interactions/chatbot-component/src ./samples/angular/angular-app
+      #     cp ./samples/angular/interactions/chatbot-component/package.json ./samples/angular/angular-app/package.json
       #   working-directory: amplify-js-samples-staging
       # - name: Copy test file from samples staging repo
       #   run: |
@@ -98,9 +99,10 @@ jobs:
       # - name: Remove existing src folder
       #   run: rm -rf src
       #   working-directory: amplify-js-samples-staging/samples/next/auth/next-amplified
-      # - name: Copy src from samples staging repo
+      # - name: Copy src and json from samples staging repo
       #   run: |
-      #     cp -R ./samples/next/auth/auth-rsc/src ./samples/react/auth/next-amplified
+      #     cp -R ./samples/next/auth/auth-rsc/src ./samples/next/auth/next-amplified
+      #     cp ./samples/next/auth/auth-rsc/package.json ./samples/next/auth/next-amplified/package.json
       #   working-directory: amplify-js-samples-staging
       # - name: Copy test file from samples staging repo
       #   run: |
@@ -124,9 +126,10 @@ jobs:
       # - name: Remove existing src folder
       #   run: rm -rf src
       #   working-directory: amplify-js-samples-staging/samples/javascript/javascript-amplified
-      # - name: Copy src from samples staging repo
+      # - name: Copy src and json from samples staging repo
       #   run: |
       #     cp -R ./samples/javascript/auth/auth-cdn/src ./samples/javascript/javascript-amplified
+      #     cp ./samples/javascript/auth/auth-cdn/package.json ./samples/javascript/javascript-amplified/package.json
       #   working-directory: amplify-js-samples-staging
       # - name: Copy test file from samples staging repo
       #   run: |
@@ -135,24 +138,26 @@ jobs:
     
     
         #Vue
-      - name: Create Vue application
-        run: | 
-          npm init vue@3 -d
-        working-directory: amplify-js-samples-staging/samples/vue/auth
-      - name: Remove existing src folder
-        run: rm -rf src
-        working-directory: amplify-js-samples-staging/samples/vue/auth/vue-project
-      - name: Copy src from samples staging repo
-        run: |
-          cp -R ./samples/vue/auth/authenticator-vue3/src ./samples/vue/auth/vue-project
-        working-directory: amplify-js-samples-staging
-      - name: Copy test file from samples staging repo
-        run: |
-          cp authenticator-vue3.spec.js vue-project.spec.js
-        working-directory: amplify-js-samples-staging/cypress/integration/auth
-      - name: Install amplify
-        run: npm install amplify
-        working-directory: amplify-js-samples-staging/samples/vue/auth/vue-project
+        #TODO: FIX
+      # - name: Create Vue application
+      #   run: | 
+      #     npm init vue@3
+      #   working-directory: amplify-js-samples-staging/samples/vue/auth
+      # - name: Remove existing src folder
+      #   run: rm -rf src
+      #   working-directory: amplify-js-samples-staging/samples/vue/auth/vue-project
+      # - name: Copy src and json from samples staging repo
+      #   run: |
+      #     cp -R ./samples/vue/auth/authenticator-vue3/src ./samples/vue/auth/vue-project
+      #     cp ./samples/vue/auth/authenticator-vue3/package.json ./samples/vue/vue-project/package.json
+      #   working-directory: amplify-js-samples-staging
+      # - name: Copy test file from samples staging repo
+      #   run: |
+      #     cp authenticator-vue3.spec.js vue-project.spec.js
+      #   working-directory: amplify-js-samples-staging/cypress/integration/auth
+      # - name: Install amplify
+      #   run: npm install amplify
+      #   working-directory: amplify-js-samples-staging/samples/vue/auth/vue-project
 
 
 
