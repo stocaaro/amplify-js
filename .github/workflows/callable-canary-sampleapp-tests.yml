@@ -89,7 +89,9 @@ jobs:
           cp chatbot-component.spec.js angular-app.spec.js
         working-directory: amplify-js-samples-staging/cypress/integration/interactions
       - name: Install amplify
-        run: npm install amplify
+        run: |
+          npm install -g npm@latest
+          npm install aws-amplify -legacy-peer-deps
         working-directory: amplify-js-samples-staging/samples/angular/angular-app
       - name: Start application and run test
         run: |
@@ -122,7 +124,9 @@ jobs:
           cp auth-rsc.spec.js next-amplified.spec.js
         working-directory: amplify-js-samples-staging/cypress/integration/auth
       - name: Install amplify
-        run: npm install amplify
+        run: |
+          npm install -g npm@latest
+          npm install aws-amplify -legacy-peer-deps
         working-directory: amplify-js-samples-staging/samples/next/auth/next-amplified
       - name: Start application and run test
         run: |
@@ -197,6 +201,19 @@ jobs:
       # - name: Install amplify
       #   run: npm install amplify
       #   working-directory: amplify-js-samples-staging/samples/vue/auth/vue-project
+      # - name: Start application and run test
+      #   run: |
+      #       ../amplify-js/.circleci/retry-yarn-script.sh -s \
+      #       "ci:test \
+      #       vue \
+      #       auth \
+      #       vue-project \
+      #       vue-project \
+      #       ${{ matrix.BROWSER }} \
+      #       dev" \
+      #       -n 3
+      #   working-directory: amplify-js-samples-staging
+      #   shell: bash
 
 
 
