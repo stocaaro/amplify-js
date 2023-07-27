@@ -40,15 +40,15 @@ jobs:
         working-directory: amplify-js-samples-staging/samples/react/auth
       - name: Remove existing src folder
         run: rm -rf src
-        working-directory: react-amplified
+        working-directory: amplify-js-samples-staging/samples/react/auth/react-amplified
       - name: Copy src from samples staging repo
         run: |
-          cp -R ./samples/react/auth/credentials-auth/src ../react-amplified
+          cp -R ./samples/react/auth/credentials-auth/src ./samples/react/auth/react-amplified
         working-directory: amplify-js-samples-staging
       - name: Copy test file from samples staging repo
         run: |
-          cp ./cypress/integration/auth/credentials-auth.spec.js react-amplified.spec.js
-        working-directory: amplify-js-samples-staging
+          cp credentials-auth.spec.js react-amplified.spec.js
+        working-directory: amplify-js-samples-staging/cypress/integration/auth
       - name: Install amplify
         run: npm install amplify
         working-directory: react-amplified
