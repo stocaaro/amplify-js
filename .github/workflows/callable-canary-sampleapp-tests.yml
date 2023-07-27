@@ -136,29 +136,21 @@ jobs:
       - name: Create Vue application
         run: | 
           npm init vue@3
-          printf vue-amplified
-          printf No
-          printf No
-          printf No
-          printf No
-          printf No
-          printf No
-          printf No
         working-directory: amplify-js-samples-staging/samples/vue/auth
-      # - name: Remove existing src folder
-      #   run: rm -rf src
-      #   working-directory: amplify-js-samples-staging/samples/javascript/javascript-amplified
-      # - name: Copy src from samples staging repo
-      #   run: |
-      #     cp -R ./samples/javascript/auth/auth-cdn/src ./samples/javascript/javascript-amplified
-      #   working-directory: amplify-js-samples-staging
-      # - name: Copy test file from samples staging repo
-      #   run: |
-      #     cp auth-cdn.spec.js javascript-amplified.spec.js
-      #   working-directory: amplify-js-samples-staging/cypress/integration/auth
-      # - name: Install amplify
-      #   run: npm install amplify
-      #   working-directory: amplify-js-samples-staging/samples/javascript/javascript-amplified
+      - name: Remove existing src folder
+        run: rm -rf src
+        working-directory: amplify-js-samples-staging/samples/vue/auth/vue-project
+      - name: Copy src from samples staging repo
+        run: |
+          cp -R ./samples/vue/auth/authenticator-vue3/src ./samples/vue/auth/vue-project
+        working-directory: amplify-js-samples-staging
+      - name: Copy test file from samples staging repo
+        run: |
+          cp authenticator-vue3.spec.js vue-project.spec.js
+        working-directory: amplify-js-samples-staging/cypress/integration/auth
+      - name: Install amplify
+        run: npm install amplify
+        working-directory: amplify-js-samples-staging/samples/vue/auth/vue-project
 
 
     #     #Vue
