@@ -100,6 +100,12 @@ jobs:
       - name: What are my files?
         run: ls
         working-directory: amplify-js-samples-staging/samples/angular/interactions/angular-app
+      - name: What is my path?
+        run: pwd
+        working-directory: amplify-js-samples-staging/samples/angular/interactions/angular-app
+      - name: Does this directory still exist?
+        run: ls
+        working-directory: amplify-js-samples-staging/samples/angular/angular-app
         
       - name: Start application and run test
         run: |
