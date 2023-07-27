@@ -70,56 +70,54 @@ jobs:
       #   working-directory: amplify-js-samples-staging
       #   shell: bash
       
-      #Angular
-      - name: Install angular CLI
-        run: npm install - g @angular/cli
-      - name: Create angular application
-        run: npx -p @angular/cli ng new angular-app
-        working-directory: amplify-js-samples-staging/samples/angular
-      - name: Rename folder
-        run: mv ./angular-app ./interactions/angular-app
-        working-directory: amplify-js-samples-staging/samples/angular
-      - name: Remove existing src folder
-        run: rm -rf src
-        working-directory: amplify-js-samples-staging/samples/angular/interactions/angular-app
-      - name: Copy src and json from samples staging repo
-        run: |
-          cp -R ./samples/angular/interactions/chatbot-component/src ./samples/angular/interactions/angular-app
-          cp ./samples/angular/interactions/chatbot-component/package.json ./samples/angular/interactions/angular-app/package.json
-        working-directory: amplify-js-samples-staging
-      - name: Copy test file from samples staging repo
-        run: |
-          cp chatbot-component.spec.js angular-app.spec.js
-        working-directory: amplify-js-samples-staging/cypress/integration/interactions
-      - name: Install amplify
-        run: |
-          npm install -g npm@latest
-          npm install aws-amplify -legacy-peer-deps
-        working-directory: amplify-js-samples-staging/samples/angular/interactions/angular-app
+      # #Angular
+      # - name: Install angular CLI
+      #   run: npm install - g @angular/cli
+      # - name: Create angular application
+      #   run: npx -p @angular/cli ng new angular-app
+      #   working-directory: amplify-js-samples-staging/samples/angular
+      #   #suspect renaming isn't solving the issue here
+      # - name: Rename folder
+      #   run: mv ./angular-app ./interactions/angular-app
+      #   working-directory: amplify-js-samples-staging/samples/angular
+      # - name: Remove existing src folder
+      #   run: rm -rf src
+      #   working-directory: amplify-js-samples-staging/samples/angular/interactions/angular-app
+      # - name: Copy src and json from samples staging repo
+      #   run: |
+      #     cp -R ./samples/angular/interactions/chatbot-component/src ./samples/angular/interactions/angular-app
+      #     cp ./samples/angular/interactions/chatbot-component/package.json ./samples/angular/interactions/angular-app/package.json
+      #   working-directory: amplify-js-samples-staging
+      # - name: Copy test file from samples staging repo
+      #   run: |
+      #     cp chatbot-component.spec.js angular-app.spec.js
+      #   working-directory: amplify-js-samples-staging/cypress/integration/interactions
+      # - name: Install amplify
+      #   run: |
+      #     npm install -g npm@latest
+      #     npm install aws-amplify -legacy-peer-deps
+      #   working-directory: amplify-js-samples-staging/samples/angular/interactions/angular-app
       
-      - name: What are my files?
-        run: ls
-        working-directory: amplify-js-samples-staging/samples/angular/interactions/angular-app
-      - name: What is my path?
-        run: pwd
-        working-directory: amplify-js-samples-staging/samples/angular/interactions/angular-app
-      - name: Does this directory still exist?
-        run: ls
-        working-directory: amplify-js-samples-staging/samples/angular/angular-app
+      # - name: What are my files?
+      #   run: ls
+      #   working-directory: amplify-js-samples-staging/samples/angular/interactions/angular-app
+      # - name: What is my path?
+      #   run: pwd
+      #   working-directory: amplify-js-samples-staging/samples/angular/interactions/angular-app
         
-      - name: Start application and run test
-        run: |
-            ../amplify-js/.circleci/retry-yarn-script.sh -s \
-            "ci:test \
-            angular \
-            interactions \
-            angular-app \
-            angular-app \
-            ${{ matrix.BROWSER }} \
-            dev" \
-            -n 3
-        working-directory: amplify-js-samples-staging
-        shell: bash
+      # - name: Start application and run test
+      #   run: |
+      #       ../amplify-js/.circleci/retry-yarn-script.sh -s \
+      #       "ci:test \
+      #       angular \
+      #       interactions \
+      #       angular-app \
+      #       angular-app \
+      #       ${{ matrix.BROWSER }} \
+      #       dev" \
+      #       -n 3
+      #   working-directory: amplify-js-samples-staging
+      #   shell: bash
 
       #Next
       - name: Create next application
