@@ -29,7 +29,9 @@ jobs:
         run: yarn
         working-directory: amplify-js-samples-staging
       - name: Prepare samples
-        run: yarn
+        run: |
+          yarn
+          npm i
         working-directory: amplify-js
 
         #React
