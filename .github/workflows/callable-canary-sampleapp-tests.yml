@@ -3,6 +3,16 @@ name: 'Canary Sample App Tests'
 on:
   workflow_call:
 
+env:      
+  NPM_REGISTRY: http://localhost:4873/
+  NPM_USER: circleci
+  NPM_PASS: circleci
+  NPM_EMAIL: circleci@amplify.js
+  AMPLIFY_DIR: /home/runner/work/amplify-js/amplify-js/amplify-js
+  CYPRESS_GOOGLE_CLIENTID: ${{ secrets.CYPRESS_GOOGLE_CLIENTID }}
+  CYPRESS_GOOGLE_CLIENT_SECRET: ${{ secrets.CYPRESS_GOOGLE_CLIENT_SECRET }}
+  CYPRESS_GOOGLE_REFRESH_TOKEN: ${{ secrets.CYPRESS_GOOGLE_REFRESH_TOKEN }}
+
 jobs:
   build_apps:
     name: Build Sample App Tests
@@ -24,19 +34,10 @@ jobs:
         with:
           GH_TOKEN_STAGING_READ: ${{ secrets.GH_TOKEN_STAGING_READ }}
 
-        #fix concurrently problem?
-      - name: Prepare samples staging 
-        run: yarn
-        working-directory: amplify-js-samples-staging
-      - name: Prepare samples
-        run: |
-          yarn
-          npm i --save --legacy-peer-deps
-        working-directory: amplify-js
-
         #React
       - name: Create react application
         run: npx create-react-app react-amplified
+        working-directory: amplify-js-samples-staging/samples/react/auth
       - name: Remove existing src folder
         run: rm -rf src
         working-directory: react-amplified
@@ -44,14 +45,26 @@ jobs:
         run: |
           cp -R ./samples/react/auth/credentials-auth/src ../react-amplified
         working-directory: amplify-js-samples-staging
+      - name: Copy test file from samples staging repo
+        run: |
+          cp ./cypress/integration/auth/credentials-auth.spec.js react-amplified.spec.js
+        working-directory: amplify-js-samples-staging
       - name: Install amplify
         run: npm install amplify
         working-directory: react-amplified
-        #need to copy the actual test over as well and run that somehow
-        #concurrently?
-      - name: Start application and run test
-        run: node ../amplify-js/scripts/test.js react auth credentials-auth credentials-auth ${{ matrix.BROWSER }}
-        working-directory: react-amplified
+      # - name: Start application and run test
+      #   run: ../amplify-js/.circleci/retry-yarn-script.sh -s \
+      #       "ci:test \
+      #       react
+      #       auth
+      #       credentials-auth
+      #       credentials-auth
+      #       ${{ matrix.BROWSER }} \
+      #       dev \
+      #       ${{ inputs.amplifyjs_dir == true && env.AMPLIFY_DIR || ''}}" \
+      #       -n ${{ inputs.retry_count }}
+      #   working-directory: amplify-js-samples-staging
+      #   shell: bash
 
     #     #Angular
     #   - name: Install angular CLI
