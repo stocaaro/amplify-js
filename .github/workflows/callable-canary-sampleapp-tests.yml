@@ -77,7 +77,7 @@ jobs:
         run: npx -p @angular/cli ng new angular-app
         working-directory: amplify-js-samples-staging/samples/angular
       - name: Rename folder
-        run: ren angular-app interactions/angular-app
+        run: mv ./angular-app ./interactions/angular-app
         working-directory: amplify-js-samples-staging/samples/angular
       - name: Remove existing src folder
         run: rm -rf src
