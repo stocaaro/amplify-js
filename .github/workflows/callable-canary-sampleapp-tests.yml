@@ -137,9 +137,7 @@ jobs:
         #Vue
       - name: Create Vue application
         run: | 
-          npm install --legacy-peer-deps
-          npm install -g @vue/cli --legacy-peer-deps
-          vue create vue-project
+          npm init vue@3 -d
         working-directory: amplify-js-samples-staging/samples/vue/auth
       - name: Remove existing src folder
         run: rm -rf src
