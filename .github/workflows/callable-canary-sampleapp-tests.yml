@@ -87,19 +87,45 @@ jobs:
         run: npm install amplify
         working-directory: amplify-js-samples-staging/samples/angular/angular-app
 
-
-
-    #     #Next
-    #   - name: Create next application
-    #     run: npx create-next-app next-amplified --no-app
-
-    #  # - name: Copy App.js from Samples Staging Repo
-    #  #   run: |
-    #  #     cp ./amplify-js-samples-staging/samples/react/auth/credentials-auth/src/App.js ./react-amplified/App.js
-
-    #   - name: Run application
-    #     run: npm run dev
-    #     working-directory: next-amplified 
+      #Next
+      - name: Create next application
+        run: npx create-next-app next-amplified --no-app
+        working-directory: amplify-js-samples-staging/samples/next/auth
+      - name: Remove existing src folder
+        run: rm -rf src
+        working-directory: amplify-js-samples-staging/samples/next/auth/next-amplified
+      - name: Copy src from samples staging repo
+        run: |
+          cp -R ./samples/next/auth/auth-rsc/src ./samples/react/auth/next-amplified
+        working-directory: amplify-js-samples-staging
+      - name: Copy test file from samples staging repo
+        run: |
+          cp auth-rsc.spec.js next-amplified.spec.js
+        working-directory: amplify-js-samples-staging/cypress/integration/auth
+      - name: Install amplify
+        run: npm install amplify
+        working-directory: amplify-js-samples-staging/samples/next/auth/next-amplified
+      
+        #Javascript
+      - name: Create javascript application
+        run: |
+          mkdir -p javascript-amplified/src && cd javascript-amplified
+          touch index.html src/app.js webpack.config.js
+        working-directory: amplify-js-samples-staging/samples/javascript
+      - name: Remove existing src folder
+        run: rm -rf src
+        working-directory: amplify-js-samples-staging/samples/javascript/javascript-amplified
+      - name: Copy src from samples staging repo
+        run: |
+          cp -R ./samples/javascript/auth/auth-cdn/src ./samples/javascript/javascript-amplified
+        working-directory: amplify-js-samples-staging
+      - name: Copy test file from samples staging repo
+        run: |
+          cp auth-cdn.spec.js javascript-amplified.spec.js
+        working-directory: amplify-js-samples-staging/cypress/integration/auth
+      - name: Install amplify
+        run: npm install amplify
+        working-directory: amplify-js-samples-staging/samples/javascript/javascript-amplified
 
     #     #Vue
     #   - name: Create vue application
@@ -111,15 +137,4 @@ jobs:
     #     run: npm run dev
     #     working-directory: vue-amplified
 
-    #     #Javascript
-    #   - name: Create javascript application
-    #     run: |
-    #       mkdir -p amplify-js-app/src && cd amplify-js-app
-    #       touch index.html src/app.js webpack.config.js
-    #   - name: Copy App.js from Samples Staging Repo
-    #     run: |
-    #       cp ./amplify-js-samples-staging/samples/javascript/datastore/basic-crud/src/app.js ./vue-amplified/app.js
-    #   - name: Run application
-    #     run: npm start
-    #     working-directory: amplify-js-app
 
