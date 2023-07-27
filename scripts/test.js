@@ -1,6 +1,6 @@
 const concurrently = require('concurrently');
 const fs = require('fs-extra');
-const { logError } = require('./common.js');
+const { logError } = require('common.js');
 const {
 	generateUmdAritfactsFixtures,
 } = require('./generate-umd-artifacts-fixtures');
