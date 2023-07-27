@@ -65,7 +65,7 @@ jobs:
             react-amplified \
             react-amplified \
             ${{ matrix.BROWSER }} \
-            dev \
+            dev" \
             -n 3
         working-directory: amplify-js-samples-staging
         shell: bash
