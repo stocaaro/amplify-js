@@ -136,6 +136,8 @@ jobs:
       - name: Create Vue application
         run: | 
           npm init vue@3
+          read 'Project name:'
+          echo vue-amplified
         working-directory: amplify-js-samples-staging/samples/vue/auth
       - name: Remove existing src folder
         run: rm -rf src
