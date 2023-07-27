@@ -23,9 +23,14 @@ jobs:
         uses: ./amplify-js/.github/actions/setup-samples-staging
         with:
           GH_TOKEN_STAGING_READ: ${{ secrets.GH_TOKEN_STAGING_READ }}
+
+        #fix concurrently problem?
       - name: Prepare samples staging 
         run: yarn
         working-directory: amplify-js-samples-staging
+      - name: Prepare samples
+        run: yarn
+        working-directory: amplify-js
 
         #React
       - name: Create react application
