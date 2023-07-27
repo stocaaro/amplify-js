@@ -51,7 +51,7 @@ jobs:
         working-directory: amplify-js-samples-staging/cypress/integration/auth
       - name: Install amplify
         run: npm install amplify
-        working-directory: react-amplified
+        working-directory: amplify-js-samples-staging/samples/react/auth/react-amplified
       # - name: Start application and run test
       #   run: ../amplify-js/.circleci/retry-yarn-script.sh -s \
       #       "ci:test \
