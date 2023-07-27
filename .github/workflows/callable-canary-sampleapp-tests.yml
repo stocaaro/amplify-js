@@ -43,6 +43,7 @@ jobs:
       # - name: Remove existing src folder
       #   run: rm -rf src
       #   working-directory: amplify-js-samples-staging/samples/react/auth/react-amplified
+      #   #copy the json over as well
       # - name: Copy src from samples staging repo
       #   run: |
       #     cp -R ./samples/react/auth/credentials-auth/src ./samples/react/auth/react-amplified
@@ -54,19 +55,19 @@ jobs:
       # - name: Install amplify
       #   run: npm install amplify
       #   working-directory: amplify-js-samples-staging/samples/react/auth/react-amplified
-      # # - name: Start application and run test
-      # #   run: ../amplify-js/.circleci/retry-yarn-script.sh -s \
-      # #       "ci:test \
-      # #       react
-      # #       auth
-      # #       credentials-auth
-      # #       credentials-auth
-      # #       ${{ matrix.BROWSER }} \
-      # #       dev \
-      # #       ${{ inputs.amplifyjs_dir == true && env.AMPLIFY_DIR || ''}}" \
-      # #       -n ${{ inputs.retry_count }}
-      # #   working-directory: amplify-js-samples-staging
-      # #   shell: bash
+      # - name: Start application and run test
+      #   run: |
+      #       ../amplify-js/.circleci/retry-yarn-script.sh -s \
+      #       "ci:test \
+      #       react \
+      #       auth \
+      #       react-amplified \
+      #       react-amplified \
+      #       ${{ matrix.BROWSER }} \
+      #       dev \
+      #       -n 3
+      #   working-directory: amplify-js-samples-staging
+      #   shell: bash
       
       # #Angular
       # - name: Install angular CLI
@@ -135,7 +136,9 @@ jobs:
         #Vue
       - name: Create Vue application
         run: | 
+          npm install
           npm install -g @vue/cli --force
+          vue create vue-project
         working-directory: amplify-js-samples-staging/samples/vue/auth
       - name: Remove existing src folder
         run: rm -rf src
