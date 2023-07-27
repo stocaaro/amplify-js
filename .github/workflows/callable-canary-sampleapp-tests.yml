@@ -33,6 +33,8 @@ jobs:
         uses: ./amplify-js/.github/actions/setup-samples-staging
         with:
           GH_TOKEN_STAGING_READ: ${{ secrets.GH_TOKEN_STAGING_READ }}
+      - name: Setup node and build the repository
+        uses: stocaaro/amplify-js/.github/actions/node-and-build@main
 
         #React
       - name: Create react application
@@ -125,7 +127,7 @@ jobs:
         working-directory: amplify-js-samples-staging/cypress/integration/auth
       - name: Install dependencies
         run: |
-          npm install aws-amplify --legacy-peer-deps
+          npm install aws-amplify --force
           npm install webpack webpack-cli webpack-dev-server copy-webpack-plugin --save-dev
         working-directory: amplify-js-samples-staging/samples/javascript/javascript-amplified
     
