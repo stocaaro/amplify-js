@@ -74,7 +74,10 @@ jobs:
       - name: Install angular CLI
         run: npm install - g @angular/cli
       - name: Create angular application
-        run: npx -p @angular/cli ng new interactions/angular-app
+        run: npx -p @angular/cli ng new angular-app
+        working-directory: amplify-js-samples-staging/samples/angular
+      - name: Rename folder
+        run: ren angular-app interactions/angular-app
         working-directory: amplify-js-samples-staging/samples/angular
       - name: Remove existing src folder
         run: rm -rf src
@@ -199,7 +202,9 @@ jobs:
       #     cp authenticator-vue3.spec.js vue-project.spec.js
       #   working-directory: amplify-js-samples-staging/cypress/integration/auth
       # - name: Install amplify
-      #   run: npm install amplify
+      #   run: |
+      #     npm install -g npm@latest
+      #     npm install aws-amplify -legacy-peer-deps
       #   working-directory: amplify-js-samples-staging/samples/vue/auth/vue-project
       # - name: Start application and run test
       #   run: |
