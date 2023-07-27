@@ -31,7 +31,7 @@ jobs:
       - name: Prepare samples
         run: |
           yarn
-          npm i
+          npm i --save --legacy-peer-deps
         working-directory: amplify-js
 
         #React
