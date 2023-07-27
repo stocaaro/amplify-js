@@ -73,14 +73,6 @@ jobs:
       #Angular
       - name: Install angular CLI
         run: npm install - g @angular/cli
-
-      - name: What are my files in interactions?
-        run: ls
-        working-directory: amplify-js-samples-staging/samples/angular/interactions
-
-      - name: Create interactions folder
-        run: mkdir interactions
-        working-directory: amplify-js-samples-staging/samples/angular
       - name: Create angular application
         run: npx -p @angular/cli ng new angular-app
         working-directory: amplify-js-samples-staging/samples/angular/interactions
