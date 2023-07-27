@@ -116,7 +116,7 @@ jobs:
         working-directory: amplify-js-samples-staging/samples/javascript
       - name: Install dependencies
         run: |
-          npm install aws-amplify 
+          npm install aws-amplify -legacy-peer-deps
           npm install webpack webpack-cli webpack-dev-server copy-webpack-plugin --save-dev
         working-directory: amplify-js-samples-staging/samples/javascript/javascript-amplified
       - name: Remove existing src folder
