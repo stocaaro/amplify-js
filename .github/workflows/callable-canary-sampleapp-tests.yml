@@ -135,8 +135,7 @@ jobs:
         #Vue
       - name: Create Vue application
         run: | 
-          npm install -g @vue/cli 
-          vue create vue-project
+          npm install -g @vue/cli --force
         working-directory: amplify-js-samples-staging/samples/vue/auth
       - name: Remove existing src folder
         run: rm -rf src
@@ -153,15 +152,5 @@ jobs:
         run: npm install amplify
         working-directory: amplify-js-samples-staging/samples/vue/auth/vue-project
 
-
-    #     #Vue
-    #   - name: Create vue application
-    #     run: npm init vue@3
-    #   - name: Copy App.vue from Samples Staging Repo
-    #     run: |
-    #       cp ./amplify-js-samples-staging/samples/vue/interactions/chatbot-component-vue3/src/App.vue ./vue-amplified/App.vue
-    #   - name: Run application
-    #     run: npm run dev
-    #     working-directory: vue-amplified
 
 
