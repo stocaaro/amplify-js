@@ -44,9 +44,10 @@ jobs:
       #   run: rm -rf src
       #   working-directory: amplify-js-samples-staging/samples/react/auth/react-amplified
       #   #copy the json over as well
-      # - name: Copy src from samples staging repo
+      # - name: Copy src and json from samples staging repo
       #   run: |
       #     cp -R ./samples/react/auth/credentials-auth/src ./samples/react/auth/react-amplified
+      #     cp ./samples/react/auth/credentials-auth/package.json ./samples/react/auth/react-amplified/package.json
       #   working-directory: amplify-js-samples-staging
       # - name: Copy test file from samples staging repo
       #   run: |
@@ -136,8 +137,8 @@ jobs:
         #Vue
       - name: Create Vue application
         run: | 
-          npm install
-          npm install -g @vue/cli --force
+          npm install --legacy-peer-deps
+          npm install -g @vue/cli --legacy-peer-deps
           vue create vue-project
         working-directory: amplify-js-samples-staging/samples/vue/auth
       - name: Remove existing src folder
