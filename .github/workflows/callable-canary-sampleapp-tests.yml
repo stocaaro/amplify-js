@@ -123,9 +123,32 @@ jobs:
         run: |
           cp auth-cdn.spec.js javascript-amplified.spec.js
         working-directory: amplify-js-samples-staging/cypress/integration/auth
-      - name: Install amplify
-        run: npm install amplify
+      - name: Install dependencies
+        run: |
+          npm init
+          npm install aws-amplify
+          npm install webpack webpack-cli webpack-dev-server copy-webpack-plugin --save-dev
         working-directory: amplify-js-samples-staging/samples/javascript/javascript-amplified
+    
+      #   #Vue
+      # - name: Create Vue application
+      #   run: npm init vue@3
+      #   working-directory: amplify-js-samples-staging/samples/javascript
+      # - name: Remove existing src folder
+      #   run: rm -rf src
+      #   working-directory: amplify-js-samples-staging/samples/javascript/javascript-amplified
+      # - name: Copy src from samples staging repo
+      #   run: |
+      #     cp -R ./samples/javascript/auth/auth-cdn/src ./samples/javascript/javascript-amplified
+      #   working-directory: amplify-js-samples-staging
+      # - name: Copy test file from samples staging repo
+      #   run: |
+      #     cp auth-cdn.spec.js javascript-amplified.spec.js
+      #   working-directory: amplify-js-samples-staging/cypress/integration/auth
+      # - name: Install amplify
+      #   run: npm install amplify
+      #   working-directory: amplify-js-samples-staging/samples/javascript/javascript-amplified
+
 
     #     #Vue
     #   - name: Create vue application
