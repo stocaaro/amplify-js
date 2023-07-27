@@ -65,20 +65,29 @@ jobs:
       #       -n ${{ inputs.retry_count }}
       #   working-directory: amplify-js-samples-staging
       #   shell: bash
+      
+      #Angular
+      - name: Install angular CLI
+        run: npm install - g @angular/cli
+      - name: Create angular application
+        run: npx -p @angular/cli ng new angular-app
+        working-directory: amplify-js-samples-staging/samples/angular
+      - name: Remove existing src folder
+        run: rm -rf src
+        working-directory: amplify-js-samples-staging/samples/angular/angular-app
+      - name: Copy src from samples staging repo
+        run: |
+          cp -R ./samples/angular/interactions/chatbot-component/src ./samples/angular/angular-app
+        working-directory: amplify-js-samples-staging
+      - name: Copy test file from samples staging repo
+        run: |
+          cp chatbot-component.spec.js angular-app.spec.js
+        working-directory: amplify-js-samples-staging/cypress/integration/interactions
+      - name: Install amplify
+        run: npm install amplify
+        working-directory: amplify-js-samples-staging/samples/angular/angular-app
 
-    #     #Angular
-    #   - name: Install angular CLI
-    #     run: npm install - g @angular/cli
-    #   - name: Create angular application
-    #     run: npx -p @angular/cli ng new angular-app
-          
-    #   #- name: Copy App.js from Samples Staging Repo
-    #   #  run: |
-    #   #    cp ./amplify-js-samples-staging/samples/react/auth/credentials-auth/src/App.js ./react-amplified/App.js
 
-    #   - name: Run application
-    #     run: ng serve
-    #     working-directory: angular-app
 
     #     #Next
     #   - name: Create next application
