@@ -23,8 +23,9 @@ jobs:
         uses: ./amplify-js/.github/actions/setup-samples-staging
         with:
           GH_TOKEN_STAGING_READ: ${{ secrets.GH_TOKEN_STAGING_READ }}
-
-        #need to copy the actual test over as well and run that
+      - name: Prepare samples staging 
+        run: yarn
+        working-directory: amplify-js-samples-staging
 
         #React
       - name: Create react application
@@ -39,6 +40,8 @@ jobs:
       - name: Install amplify
         run: npm install amplify
         working-directory: react-amplified
+        #need to copy the actual test over as well and run that somehow
+        #concurrently?
       - name: Start application and run test
         run: node ../amplify-js/scripts/test.js react auth credentials-auth credentials-auth ${{ matrix.BROWSER }}
         working-directory: react-amplified
