@@ -74,15 +74,15 @@ jobs:
       - name: Install angular CLI
         run: npm install - g @angular/cli
       - name: Create angular application
-        run: npx -p @angular/cli ng new angular-app
+        run: npx -p @angular/cli ng new interactions/angular-app
         working-directory: amplify-js-samples-staging/samples/angular
       - name: Remove existing src folder
         run: rm -rf src
-        working-directory: amplify-js-samples-staging/samples/angular/angular-app
+        working-directory: amplify-js-samples-staging/samples/angular/interactions/angular-app
       - name: Copy src and json from samples staging repo
         run: |
-          cp -R ./samples/angular/interactions/chatbot-component/src ./samples/angular/angular-app
-          cp ./samples/angular/interactions/chatbot-component/package.json ./samples/angular/angular-app/package.json
+          cp -R ./samples/angular/interactions/chatbot-component/src ./samples/angular/interactions/angular-app
+          cp ./samples/angular/interactions/chatbot-component/package.json ./samples/angular/interactions/angular-app/package.json
         working-directory: amplify-js-samples-staging
       - name: Copy test file from samples staging repo
         run: |
@@ -92,7 +92,7 @@ jobs:
         run: |
           npm install -g npm@latest
           npm install aws-amplify -legacy-peer-deps
-        working-directory: amplify-js-samples-staging/samples/angular/angular-app
+        working-directory: amplify-js-samples-staging/samples/angular/interactions/angular-app
       - name: Start application and run test
         run: |
             ../amplify-js/.circleci/retry-yarn-script.sh -s \
