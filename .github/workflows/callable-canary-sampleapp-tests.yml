@@ -80,7 +80,7 @@ jobs:
       - name: Remove existing src folder
         run: rm -rf src
         working-directory: amplify-js-samples-staging/samples/angular/interactions/angular-app
-      - name: Copy e2e, src, json from samples staging repo
+      - name: Copy files from samples staging repo
         run: |
           cp -R ./samples/angular/interactions/chatbot-component/e2e ./samples/angular/interactions/angular-app
           cp -R ./samples/angular/interactions/chatbot-component/src ./samples/angular/interactions/angular-app
@@ -91,7 +91,7 @@ jobs:
           cp chatbot-component.spec.js angular-app.spec.js
         working-directory: amplify-js-samples-staging/cypress/integration/interactions
       - name: Install dependencies
-        run: npm install
+        run: npm install --save --legacy-peer-deps
         working-directory: amplify-js-samples-staging/samples/angular/interactions/angular-app
       - name: Install amplify
         run: |
@@ -128,6 +128,9 @@ jobs:
         run: |
           cp auth-rsc.spec.js next-amplified.spec.js
         working-directory: amplify-js-samples-staging/cypress/integration/auth
+      - name: Install dependencies
+        run: npm install
+        working-directory: amplify-js-samples-staging/samples/next/auth/next-amplified
       - name: Install amplify
         run: |
           npm install -g npm@latest
@@ -170,6 +173,9 @@ jobs:
         run: |
           cp auth-cdn.spec.js javascript-amplified.spec.js
         working-directory: amplify-js-samples-staging/cypress/integration/auth
+      - name: Install dependencies
+        run: npm install
+        working-directory: amplify-js-samples-staging/samples/javascript/javascript-ampllified
       - name: Start application and run test
         run: |
             ../amplify-js/.circleci/retry-yarn-script.sh -s \
