@@ -181,6 +181,7 @@ jobs:
         working-directory: amplify-js-samples-staging/samples/javascript/auth/javascript-amplified
       - name: Start application and run test
         run: |
+            $amplifyJS = "true"
             ../amplify-js/.circleci/retry-yarn-script.sh -s \
             "ci:test \
             javascript \
@@ -188,8 +189,8 @@ jobs:
             javascript-amplified \
             javascript-amplified \
             ${{ matrix.BROWSER }} \
-            true" \
             dev \
+            ["amplifyJS" = "true"]" \
             -n 3
         working-directory: amplify-js-samples-staging
         shell: bash
