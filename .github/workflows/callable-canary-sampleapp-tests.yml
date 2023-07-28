@@ -36,6 +36,7 @@ jobs:
       - name: Setup node and build the repository
         uses: stocaaro/amplify-js/.github/actions/node-and-build@main
 
+
       #   #React
       # - name: Create react application
       #   run: npx create-react-app react-amplified
@@ -72,19 +73,10 @@ jobs:
       
       #Angular
       - name: Install angular CLI
-        run: npm install - g @angular/cli
+        run: npm install -g @angular/cli@12
       - name: Create angular application
         run: npx -p @angular/cli ng new angular-app
         working-directory: amplify-js-samples-staging/samples/angular/interactions
-
-      - name: Where am I?
-        run: |
-          ls
-          pwd
-        working-directory: amplify-js-samples-staging/samples/angular/interactions/angular-app
-
-      
-
       - name: Remove existing src folder
         run: rm -rf src
         working-directory: amplify-js-samples-staging/samples/angular/interactions/angular-app
@@ -98,6 +90,9 @@ jobs:
         run: |
           cp chatbot-component.spec.js angular-app.spec.js
         working-directory: amplify-js-samples-staging/cypress/integration/interactions
+      - name: Install dependencies
+        run: npm install
+        working-directory: amplify-js-samples-staging/samples/angular/interactions/angular-app
       - name: Install amplify
         run: |
           npm install -g npm@latest
