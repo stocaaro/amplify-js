@@ -118,10 +118,10 @@ jobs:
       - name: Remove existing src folder
         run: rm -rf src
         working-directory: amplify-js-samples-staging/samples/next/auth/next-amplified
-      - name: Copy src and json from samples staging repo
+      - name: Copy files from samples staging repo
         run: |
-          cp -R ./samples/next/auth/auth-rsc/src ./samples/next/auth/next-amplified
-          cp ./samples/next/auth/auth-rsc/package.json ./samples/next/auth/next-amplified/package.json
+          rm -r ./samples/next/auth/next-amplified 
+          cp -r ./samples/next/auth/auth-rsc ./samples/next/auth/next-amplified 
         working-directory: amplify-js-samples-staging
       - name: Copy test file from samples staging repo
         run: |
@@ -154,19 +154,19 @@ jobs:
         run: |
           mkdir -p javascript-amplified/src && cd javascript-amplified
           touch index.html src/app.js webpack.config.js
-        working-directory: amplify-js-samples-staging/samples/javascript
+        working-directory: amplify-js-samples-staging/samples/javascript/auth
       - name: Install dependencies
         run: |
           npm install -g npm@latest
           npm install aws-amplify -legacy-peer-deps
-        working-directory: amplify-js-samples-staging/samples/javascript/javascript-amplified
+        working-directory: amplify-js-samples-staging/samples/javascript/auth/javascript-amplified
       - name: Remove existing src folder
         run: rm -rf src
-        working-directory: amplify-js-samples-staging/samples/javascript/javascript-amplified
+        working-directory: amplify-js-samples-staging/samples/javascript/auth/javascript-amplified
       - name: Copy src and json from samples staging repo
         run: |
-          cp -R ./samples/javascript/auth/auth-cdn/src ./samples/javascript/javascript-amplified
-          cp ./samples/javascript/auth/auth-cdn/package.json ./samples/javascript/javascript-amplified/package.json
+          cp -R ./samples/javascript/auth/auth-cdn/src ./samples/javascript/auth/javascript-amplified
+          cp ./samples/javascript/auth/auth-cdn/package.json ./samples/javascript/auth/javascript-amplified/package.json
         working-directory: amplify-js-samples-staging
       - name: Copy test file from samples staging repo
         run: |
@@ -174,7 +174,7 @@ jobs:
         working-directory: amplify-js-samples-staging/cypress/integration/auth
       - name: Install dependencies
         run: npm install
-        working-directory: amplify-js-samples-staging/samples/javascript/javascript-ampllified
+        working-directory: amplify-js-samples-staging/samples/javascript/auth/javascript-ampllified
       - name: Start application and run test
         run: |
             ../amplify-js/.circleci/retry-yarn-script.sh -s \
