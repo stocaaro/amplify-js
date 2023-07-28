@@ -81,7 +81,8 @@ jobs:
         run: |
           ls
           pwd
-        working-directory: amplify-js-samples-staging/samples/angular/interactions
+        working-directory: amplify-js-samples-staging/samples/angular/interactions/angular-app
+
       
 
       - name: Remove existing src folder
