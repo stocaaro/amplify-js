@@ -163,10 +163,14 @@ jobs:
       - name: Remove existing src folder
         run: rm -rf src
         working-directory: amplify-js-samples-staging/samples/javascript/auth/javascript-amplified
-      - name: Copy src and json from samples staging repo
+      - name: Copy files from samples staging repo
         run: |
-          cp -R ./samples/javascript/auth/auth-cdn/src ./samples/javascript/auth/javascript-amplified
-          cp ./samples/javascript/auth/auth-cdn/package.json ./samples/javascript/auth/javascript-amplified/package.json
+
+          rm -r ./samples/javascript/auth/javascript-amplified 
+          cp -r ./samples/javascript/auth/auth-cdn ./samples/javascript/auth/javascript-amplified 
+
+          #cp -R ./samples/javascript/auth/auth-cdn/src ./samples/javascript/auth/javascript-amplified
+          #cp ./samples/javascript/auth/auth-cdn/package.json ./samples/javascript/auth/javascript-amplified/package.json
         working-directory: amplify-js-samples-staging
       - name: Copy test file from samples staging repo
         run: |
