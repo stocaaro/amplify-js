@@ -190,7 +190,7 @@ jobs:
             javascript-amplified \
             ${{ matrix.BROWSER }} \
             dev \
-            ${{ env.AMPLIFYJS == true }}" \
+            ${{ env.AMPLIFYJS == false }}" \
             -n 3
         working-directory: amplify-js-samples-staging
         shell: bash
