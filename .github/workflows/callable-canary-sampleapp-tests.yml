@@ -76,10 +76,18 @@ jobs:
       - name: Create angular application
         run: npx -p @angular/cli ng new angular-app
         working-directory: amplify-js-samples-staging/samples/angular/interactions
+
+      - name: Where am I?
+        run: |
+          ls
+          pwd
+        working-directory: amplify-js-samples-staging/samples/angular/interactions
+      
+
       - name: Remove existing src folder
         run: rm -rf src
         working-directory: amplify-js-samples-staging/samples/angular/interactions/angular-app
-      - name: Copy e23, src, json from samples staging repo
+      - name: Copy e2e, src, json from samples staging repo
         run: |
           cp -R ./samples/angular/interactions/chatbot-component/e2e ./samples/angular/interactions/angular-app
           cp -R ./samples/angular/interactions/chatbot-component/src ./samples/angular/interactions/angular-app
