@@ -8,7 +8,7 @@ env:
   NPM_USER: circleci
   NPM_PASS: circleci
   NPM_EMAIL: circleci@amplify.js
-  AMPLIFYJS: ${{ true }}
+  AMPLIFYJS: ${{ false }}
   AMPLIFY_DIR: /home/runner/work/amplify-js/amplify-js/amplify-js
   CYPRESS_GOOGLE_CLIENTID: ${{ secrets.CYPRESS_GOOGLE_CLIENTID }}
   CYPRESS_GOOGLE_CLIENT_SECRET: ${{ secrets.CYPRESS_GOOGLE_CLIENT_SECRET }}
