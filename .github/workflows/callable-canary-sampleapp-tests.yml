@@ -2,13 +2,17 @@ name: 'Canary Sample App Tests'
 
 on:
   workflow_call:
+    inputs:
+      amplifyjs_dir:
+        required: false
+        type: boolean
+        default: false
 
 env:      
   NPM_REGISTRY: http://localhost:4873/
   NPM_USER: circleci
   NPM_PASS: circleci
   NPM_EMAIL: circleci@amplify.js
-  AMPLIFYJS: ${{ false }}
   AMPLIFY_DIR: /home/runner/work/amplify-js/amplify-js/amplify-js
   CYPRESS_GOOGLE_CLIENTID: ${{ secrets.CYPRESS_GOOGLE_CLIENTID }}
   CYPRESS_GOOGLE_CLIENT_SECRET: ${{ secrets.CYPRESS_GOOGLE_CLIENT_SECRET }}
@@ -190,7 +194,7 @@ jobs:
             javascript-amplified \
             ${{ matrix.BROWSER }} \
             dev \
-            ${{ env.AMPLIFYJS == true && env.AMPLIFY_DIR}}" \
+            ${{ inputs.amplifyjs_dir == true && env.AMPLIFY_DIR || ''}}" \
             -n 3
         working-directory: amplify-js-samples-staging
         shell: bash
