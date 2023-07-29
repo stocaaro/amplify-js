@@ -6,7 +6,7 @@ on:
       amplifyjs_dir:
         required: false
         type: boolean
-        default: false
+        default: true
 
 env:      
   NPM_REGISTRY: http://localhost:4873/
@@ -194,7 +194,7 @@ jobs:
             javascript-amplified \
             ${{ matrix.BROWSER }} \
             dev \
-            ${{ inputs.amplifyjs_dir == true && env.AMPLIFY_DIR || ''}}" \
+            ${{ inputs.amplifyjs_dir == true }}" \
             -n 3
         working-directory: amplify-js-samples-staging
         shell: bash
