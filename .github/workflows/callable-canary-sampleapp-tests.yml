@@ -201,27 +201,13 @@ jobs:
     
     
         #Vue
-
-      - name: What are my files?
-        run: ls
-        working-directory: amplify-js-samples-staging/samples/vue/auth
-
       - name: Create Vue application
         run: | 
           npm init vue@3
         working-directory: amplify-js-samples-staging/samples/vue/auth
-
-      - name: What are my files?
-        run: ls
-        working-directory: amplify-js-samples-staging/samples/vue/auth
-
-      - name: Remove existing src folder
-        run: rm -rf src
-        working-directory: amplify-js-samples-staging/samples/vue/auth/vue-project
       - name: Copy files from samples staging repo
         run: |
-          cp -R ./samples/vue/auth/authenticator-vue3/src ./samples/vue/auth/vue-project
-          cp ./samples/vue/auth/authenticator-vue3/package.json ./samples/vue/vue-project/package.json
+          cp ./samples/vue/auth/authenticator-vue3 ./samples/vue/auth/vue-project
         working-directory: amplify-js-samples-staging
       - name: Copy test file from samples staging repo
         run: |
@@ -231,6 +217,9 @@ jobs:
         run: |
           npm install -g npm@latest
           npm install aws-amplify -legacy-peer-deps
+        working-directory: amplify-js-samples-staging/samples/vue/auth/vue-project
+      - name: Install dependencies
+        run: npm install
         working-directory: amplify-js-samples-staging/samples/vue/auth/vue-project
       - name: Start application and run test
         run: |
