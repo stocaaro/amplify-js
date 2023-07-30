@@ -211,7 +211,7 @@ jobs:
         working-directory: amplify-js-samples-staging
       - name: Copy test file from samples staging repo
         run: |
-          cp authenticator-vue3.spec.js vue-project.spec.js
+          cp new-ui-authenticator.spec.js vue-project.spec.js
         working-directory: amplify-js-samples-staging/cypress/integration/auth
       - name: Install amplify
         run: |
