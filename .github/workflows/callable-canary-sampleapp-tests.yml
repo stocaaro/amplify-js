@@ -207,7 +207,7 @@ jobs:
         working-directory: amplify-js-samples-staging/samples/vue/auth
       - name: Copy files from samples staging repo
         run: |
-          cp ./samples/vue/auth/authenticator-vue3 ./samples/vue/auth/vue-project
+          cp -r ./samples/vue/auth/authenticator-vue3 ./samples/vue/auth/vue-project
         working-directory: amplify-js-samples-staging
       - name: Copy test file from samples staging repo
         run: |
