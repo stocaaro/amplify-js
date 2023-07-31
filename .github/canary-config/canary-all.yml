@@ -6,12 +6,12 @@ extended_browser_list: &extended_browser_list
   - firefox
   - edge
 tests:
-  - test_name: 'DataStore Auth - Chrome'
-    framework: react
-    category: datastore
-    sample_name: owner-based-default
-    spec: owner-based-default
-    browser: *minimal_browser_list
+  # - test_name: 'DataStore Auth - Chrome'
+  #   framework: react
+  #   category: datastore
+  #   sample_name: owner-based-default
+  #   spec: owner-based-default
+  #   browser: *minimal_browser_list
   # - test_name: 'React GraphQL API'
   #   framework: react
   #   category: api

@@ -3,6 +3,10 @@ name: 'Canary E2E Tests'
 on:
   workflow_call:
 
+#Add this as a secret to the repo later
+env:
+  SLACK_WEBHOOK: https://hooks.slack.com/workflows/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
+
 jobs:
   prebuild-ubuntu:
     uses: ./.github/workflows/callable-prebuild-amplify-js.yml
@@ -25,8 +29,6 @@ jobs:
   sample-app-tests:
     secrets: inherit
     uses: ./.github/workflows/callable-canary-sampleapp-tests.yml
-    
-
   slack-alert:
     needs:
       - e2e
@@ -35,5 +37,6 @@ jobs:
     if: failure()
     steps:
       - name: Send slack message
-        run: curl https://hooks.slack.com/workflows/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
+        run: |
+          curl -X POST -H "Content-Type: application/json" \ --data '{"URL":"text"}' \ https://hooks.slack.com/workflows/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
         
