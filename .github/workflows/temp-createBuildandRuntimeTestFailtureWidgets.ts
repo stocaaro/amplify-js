@@ -6,7 +6,7 @@ import { CTI_GROUP, GHWorkflowsAccount, BUILD_AND_RUNTIME_TEST_FAILURE_DEF, Stag
 
 export function createBuildAndRuntimeTestFailureWidgets(scope: Construct, stage: StageName) {
   const buildAndRuntimeTestFailureMetric = new Metric({
-    metricName: "BuildAndRuntimeTestFailure",
+    metricName: "CanaryTestFailure",
     namespace: "AmplifyJsCanaries", 
     statistic: "Max",
     period: Duration.seconds(1200),
