@@ -25,22 +25,6 @@ jobs:
   sample-app-tests:
     secrets: inherit
     uses: ./.github/workflows/callable-canary-sampleapp-tests.yml
-  
-  # what-is-going-on:
-  #   runs-on: ubuntu-latest
-  #   steps:
-  #     - name: Where am I?
-  #       run: |
-  #         pwd
-  #         ls
-  #     - name: Where am I?
-  #       run: |
-  #         pwd
-  #         ls
-  #       working-directory: ./.github/actions/
-  # what-is-going-on-2:
-  #   uses: ./.github/actions/log-metrics/action.yml
-
   # log-failure-metric:
   #   # Send a failure data point to metric PublishNextFailure in github-workflows@ us-east-2, if it's a failure
   #   runs-on: ubuntu-latest
