@@ -42,6 +42,11 @@ jobs:
     #needs: build-test
     if: ${{ failure() }}
     steps:
+      - name: Where am I?
+        run: pwd
+        working-directory: amplify-js/github/actions/log-metrics/action.yml
+
+
       - name: Log failure data point to metric PublishNextFailure
         uses: ./.github/actions/log-metrics/action.yml
         with:
@@ -49,7 +54,6 @@ jobs:
           value: 1
           role-to-assume: ${{ secrets.METRIC_LOGGER_ROLE_ARN }} #what is this?
           aws-region: us-east-2
-
   log-success-metric:
       # Send a success data point to metric PublishNextFailure in github-workflows@ us-east-2, if it's a success
       runs-on: ubuntu-latest

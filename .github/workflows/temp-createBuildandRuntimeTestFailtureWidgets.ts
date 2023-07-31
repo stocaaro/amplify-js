@@ -28,7 +28,7 @@ export function createBuildAndRuntimeTestFailureWidgets(scope: Construct, stage:
 
   buildAndRuntimeTestFailureAlarm.addAlarmAction(new SIMTicketAlarmAction({
     severity,
-    dedupe: `github-build-and-runtime-test-failure-alarm-${stage}`,
+    dedupe: `github-canary-test-failure-alarm-${stage}`,
     summary: "There's a failure on Github Actions when running 'callable-canary-e2e' workflow.",
     details: "Check what failed -> https://github.com/aws-amplify/amplify-js/actions/workflows/callable-canary-e2e.yml",
     ...CTI_GROUP
