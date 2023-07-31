@@ -60,6 +60,10 @@ jobs:
           run: |
             pwd
             ls
+        - name: Where am I now?
+          run: |
+            pwd
+            ls
           working-directory: ./amplify-js/.github/actions/log-metrics
 
         - name: Log success data point to metric PublishNextFailure
