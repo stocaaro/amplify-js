@@ -25,7 +25,19 @@ jobs:
   sample-app-tests:
     secrets: inherit
     uses: ./.github/workflows/callable-canary-sampleapp-tests.yml
-
+  
+  what-is-going-on:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Where am I?
+        run: |
+          pwd
+          ls
+      - name: Where am I?
+        run: |
+          pwd
+          ls
+        working-directory: ./.github/actions/
 
   # log-failure-metric:
   #   # Send a failure data point to metric PublishNextFailure in github-workflows@ us-east-2, if it's a failure
@@ -47,7 +59,7 @@ jobs:
     if: ${{ success() }}
     steps:
       - name: Log success data point to metric PublishNextFailure
-        uses: ./.github/actions/log-metrics/action.yml@main
+        uses: ./.github/actions/log-metrics/action.yml #cannot find this??
         with:
           metric-name: PublishNextFailure
           value: 0
