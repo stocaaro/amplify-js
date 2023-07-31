@@ -38,6 +38,8 @@ jobs:
           pwd
           ls
         working-directory: ./.github/actions/
+  what-is-going-on-2:
+    uses: ./.github/actions/log-metrics/action.yml
 
   # log-failure-metric:
   #   # Send a failure data point to metric PublishNextFailure in github-workflows@ us-east-2, if it's a failure
