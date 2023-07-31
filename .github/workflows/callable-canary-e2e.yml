@@ -42,11 +42,6 @@ jobs:
     #needs: build-test
     if: ${{ failure() }}
     steps:
-      - name: Where am I?
-        run: pwd
-        working-directory: ./github/actions/log-metrics
-
-
       - name: Log failure data point to metric PublishNextFailure
         uses: ./.github/actions/log-metrics/action.yml
         with:
@@ -57,15 +52,17 @@ jobs:
   log-success-metric:
       # Send a success data point to metric PublishNextFailure in github-workflows@ us-east-2, if it's a success
       runs-on: ubuntu-latest
-      environment: ci
-      #needs: build-test
+      environment: ci #what does this do
+      #needs: build-test do we need this?
       if: ${{ success() }}
       steps:
         - name: Where am I?
           run: |
             pwd
             ls
-          working-directory: ./github/actions/log-metrics
+          working-directory: ./.github/actions/log-metrics
+
+
         - name: Log success data point to metric PublishNextFailure
           uses: ./.github/actions/log-metrics/action.yml
           with:
