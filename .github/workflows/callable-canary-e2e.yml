@@ -61,6 +61,9 @@ jobs:
       #needs: build-test
       if: ${{ success() }}
       steps:
+        - name: Where am I?
+          run: pwd
+          working-directory: amplify-js/github/actions/log-metrics/action.yml
         - name: Log success data point to metric PublishNextFailure
           uses: ./.github/actions/log-metrics/action.yml
           with:
