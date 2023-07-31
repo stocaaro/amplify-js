@@ -60,8 +60,7 @@ jobs:
           run: |
             pwd
             ls
-          working-directory: ./.github/actions/log-metrics
-
+          working-directory: ./amplify-js/.github/actions/log-metrics
 
         - name: Log success data point to metric PublishNextFailure
           uses: ./.github/actions/log-metrics/action.yml
