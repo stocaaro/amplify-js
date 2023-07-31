@@ -49,8 +49,7 @@ jobs:
       - name: Remove existing src folder
         run: rm -rf src
         working-directory: amplify-js-samples-staging/samples/react/auth/new-react-app
-        #copy the json over as well
-      - name: Copy src and json from samples staging repo
+      - name: Copy files from samples staging repo
         run: |
           cp -R ./samples/react/auth/credentials-auth/src ./samples/react/auth/new-react-app
           cp ./samples/react/auth/credentials-auth/package.json ./samples/react/auth/new-react-app/package.json
