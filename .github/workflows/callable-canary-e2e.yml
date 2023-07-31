@@ -3,9 +3,8 @@ name: 'Canary E2E Tests'
 on:
   workflow_call:
 
-#Add this as a secret to the repo later
 env:
-  SLACK_WEBHOOK: https://hooks.slack.com/workflows/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
+  WORKFLOW_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
 
 jobs:
   prebuild-ubuntu:
@@ -38,5 +37,8 @@ jobs:
     steps:
       - name: Send slack message
         run: |
-          curl -X POST -H "Content-Type: application/json" \ --data '{"URL":"text"}' \ https://hooks.slack.com/workflows/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
+          curl -X POST -H "Content-Type: application/json" \
+          --data '{"URL":"text"}' \
+          https://hooks.slack.com/workflows/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
+         # curl -X POST -H "Content-Type: application/json" \ --data '{"URL":"${{ env.WORKFLOW_URL }}"}' \ https://hooks.slack.com/workflows/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
         
