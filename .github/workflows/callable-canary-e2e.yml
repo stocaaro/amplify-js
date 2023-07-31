@@ -56,10 +56,8 @@ jobs:
       #needs: build-test do we need this?
       if: ${{ success() }}
       steps:
-        - name: Where am I?
-          run: |
-            pwd
-            ls
+        - name: What are my files?
+          run: ls
         - name: Where am I now?
           run: |
             pwd
