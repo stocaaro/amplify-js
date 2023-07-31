@@ -12,12 +12,12 @@ tests:
   #   sample_name: owner-based-default
   #   spec: owner-based-default
   #   browser: *minimal_browser_list
-  # - test_name: 'React GraphQL API'
-  #   framework: react
-  #   category: api
-  #   sample_name: [graphql]
-  #   spec: graphql
-  #   browser: *minimal_browser_list
+  - test_name: 'React GraphQL API'
+    framework: react
+    category: api
+    sample_name: [graphql]
+    spec: graphql
+    browser: *minimal_browser_list
   # - test_name: 'React Authenticator'
   #   framework: react
   #   category: auth

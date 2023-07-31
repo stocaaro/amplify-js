@@ -38,7 +38,7 @@ jobs:
       - name: Send slack message
         run: |
           curl -X POST -H "Content-Type: application/json" \
-          --data '{"URL":"text"}' \
+          --data '{"URL":"${{ env.WORKFLOW_URL }}"}' \
           https://hooks.slack.com/workflows/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
-         # curl -X POST -H "Content-Type: application/json" \ --data '{"URL":"${{ env.WORKFLOW_URL }}"}' \ https://hooks.slack.com/workflows/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
+         
         

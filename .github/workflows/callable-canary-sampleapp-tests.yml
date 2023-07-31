@@ -199,7 +199,7 @@ jobs:
         run: |
           npm install -g npm@latest
           npm install aws-amplify -legacy-peer-deps
-        working-directory: amplify-js-samples-staging/samples/javascript/auth/auth-cdn
+        working-directory: amplify-js-samples-staging/samples/javascript/auth/new-javascript-app
       # - name: Remove existing src folder
       #   run: rm -rf src
       #   working-directory: amplify-js-samples-staging/samples/javascript/auth/new-javascript-app
@@ -214,15 +214,15 @@ jobs:
       #   working-directory: amplify-js-samples-staging/cypress/integration/auth
       - name: Install dependencies
         run: npm install --save --legacy-peer-deps
-        working-directory: amplify-js-samples-staging/samples/javascript/auth/auth-cdn
+        working-directory: amplify-js-samples-staging/samples/javascript/auth/new-javascript-app
       - name: Start application and run test
         run: |
             ../amplify-js/.circleci/retry-yarn-script.sh -s \
             "ci:test \
             javascript \
             auth \
-            auth-cdn \
-            auth-cdn \
+            new-javascript-app \
+            new-javascript-app \
             ${{ matrix.BROWSER }} \
             dev \
             ${{ env.AMPLIFY_DIR }}" \
