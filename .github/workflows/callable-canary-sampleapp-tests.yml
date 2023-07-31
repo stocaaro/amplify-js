@@ -42,39 +42,39 @@ jobs:
         uses: stocaaro/amplify-js/.github/actions/node-and-build@main
 
 
-      #   #React
-      # - name: Create react application
-      #   run: npx create-react-app new-react-app
-      #   working-directory: amplify-js-samples-staging/samples/react/auth
-      # - name: Remove existing src folder
-      #   run: rm -rf src
-      #   working-directory: amplify-js-samples-staging/samples/react/auth/new-react-app
-      #   #copy the json over as well
-      # - name: Copy src and json from samples staging repo
-      #   run: |
-      #     cp -R ./samples/react/auth/credentials-auth/src ./samples/react/auth/new-react-app
-      #     cp ./samples/react/auth/credentials-auth/package.json ./samples/react/auth/new-react-app/package.json
-      #   working-directory: amplify-js-samples-staging
-      # - name: Copy test file from samples staging repo
-      #   run: |
-      #     cp credentials-auth.spec.js new-react-app.spec.js
-      #   working-directory: amplify-js-samples-staging/cypress/integration/auth
-      # - name: Install amplify
-      #   run: npm install amplify
-      #   working-directory: amplify-js-samples-staging/samples/react/auth/new-react-app
-      # - name: Start new application and run test
-      #   run: |
-      #       ../amplify-js/.circleci/retry-yarn-script.sh -s \
-      #       "ci:test \
-      #       react \
-      #       auth \
-      #       new-react-app \
-      #       new-react-app \
-      #       ${{ matrix.BROWSER }} \
-      #       dev" \
-      #       -n 3
-      #   working-directory: amplify-js-samples-staging
-      #   shell: bash
+        #React
+      - name: Create react application
+        run: npx create-react-app new-react-app
+        working-directory: amplify-js-samples-staging/samples/react/auth
+      - name: Remove existing src folder
+        run: rm -rf src
+        working-directory: amplify-js-samples-staging/samples/react/auth/new-react-app
+        #copy the json over as well
+      - name: Copy src and json from samples staging repo
+        run: |
+          cp -R ./samples/react/auth/credentials-auth/src ./samples/react/auth/new-react-app
+          cp ./samples/react/auth/credentials-auth/package.json ./samples/react/auth/new-react-app/package.json
+        working-directory: amplify-js-samples-staging
+      - name: Copy test file from samples staging repo
+        run: |
+          cp credentials-auth.spec.js new-react-app.spec.js
+        working-directory: amplify-js-samples-staging/cypress/integration/auth
+      - name: Install amplify
+        run: npm install amplify
+        working-directory: amplify-js-samples-staging/samples/react/auth/new-react-app
+      - name: Start new application and run test
+        run: |
+            ../amplify-js/.circleci/retry-yarn-script.sh -s \
+            "ci:test \
+            react \
+            auth \
+            new-react-app \
+            new-react-app \
+            ${{ matrix.BROWSER }} \
+            dev" \
+            -n 3
+        working-directory: amplify-js-samples-staging
+        shell: bash
       
       #Angular
       # - name: Install angular CLI
@@ -195,11 +195,11 @@ jobs:
       #     mkdir -p new-javascript-app/src && cd new-javascript-app
       #     touch index.html src/app.js webpack.config.js
       #   working-directory: amplify-js-samples-staging/samples/javascript/auth
-      - name: Install amplify
-        run: |
-          npm install -g npm@latest
-          npm install aws-amplify -legacy-peer-deps
-        working-directory: amplify-js-samples-staging/samples/javascript/auth/new-javascript-app
+      # - name: Install amplify
+      #   run: |
+      #     npm install -g npm@latest
+      #     npm install aws-amplify -legacy-peer-deps
+      #   working-directory: amplify-js-samples-staging/samples/javascript/auth/new-javascript-app
       # - name: Remove existing src folder
       #   run: rm -rf src
       #   working-directory: amplify-js-samples-staging/samples/javascript/auth/new-javascript-app
@@ -212,23 +212,23 @@ jobs:
       #   run: |
       #     cp auth-cdn.spec.js new-javascript-app.spec.js
       #   working-directory: amplify-js-samples-staging/cypress/integration/auth
-      - name: Install dependencies
-        run: npm install --save --legacy-peer-deps
-        working-directory: amplify-js-samples-staging/samples/javascript/auth/new-javascript-app
-      - name: Start application and run test
-        run: |
-            ../amplify-js/.circleci/retry-yarn-script.sh -s \
-            "ci:test \
-            javascript \
-            auth \
-            new-javascript-app \
-            new-javascript-app \
-            ${{ matrix.BROWSER }} \
-            dev \
-            ${{ env.AMPLIFY_DIR }}" \
-            -n 3
-        working-directory: amplify-js-samples-staging
-        shell: bash
+      # - name: Install dependencies
+      #   run: npm install --save --legacy-peer-deps
+      #   working-directory: amplify-js-samples-staging/samples/javascript/auth/new-javascript-app
+      # - name: Start application and run test
+      #   run: |
+      #       ../amplify-js/.circleci/retry-yarn-script.sh -s \
+      #       "ci:test \
+      #       javascript \
+      #       auth \
+      #       new-javascript-app \
+      #       new-javascript-app \
+      #       ${{ matrix.BROWSER }} \
+      #       dev \
+      #       ${{ env.AMPLIFY_DIR }}" \
+      #       -n 3
+      #   working-directory: amplify-js-samples-staging
+      #   shell: bash
     
     
       
