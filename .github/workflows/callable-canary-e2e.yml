@@ -26,40 +26,30 @@ jobs:
     secrets: inherit
     uses: ./.github/workflows/callable-canary-sampleapp-tests.yml
 
- 
-  log-failure-metric:
-    # Send a failure data point to metric PublishNextFailure in github-workflows@ us-east-2, if it's a failure
+
+  # log-failure-metric:
+  #   # Send a failure data point to metric PublishNextFailure in github-workflows@ us-east-2, if it's a failure
+  #   runs-on: ubuntu-latest
+  #   #needs: build-test
+  #   if: ${{ failure() }}
+  #   steps:
+  #     - name: Log failure data point to metric PublishNextFailure
+  #       uses: ./.github/actions/log-metrics/action.yml
+  #       with:
+  #         metric-name: PublishNextFailure
+  #         value: 1
+  #         role-to-assume: ${{ secrets.METRIC_LOGGER_ROLE_ARN }} #what is this?
+  #         aws-region: us-east-2
+  log-success-metric:
+    # Send a success data point to metric PublishNextFailure in github-workflows@ us-east-2, if it's a success
     runs-on: ubuntu-latest
-    environment: ci
-    #needs: build-test
-    if: ${{ failure() }}
+    #needs: build-test do we need this?      
+    if: ${{ success() }}
     steps:
-      - name: Log failure data point to metric PublishNextFailure
-        uses: ./.github/actions/log-metrics/action.yml
+      - name: Log success data point to metric PublishNextFailure
+        uses: ./.github/actions/log-metrics/action.yml@main
         with:
           metric-name: PublishNextFailure
-          value: 1
+          value: 0
           role-to-assume: ${{ secrets.METRIC_LOGGER_ROLE_ARN }} #what is this?
           aws-region: us-east-2
-  log-success-metric:
-      # Send a success data point to metric PublishNextFailure in github-workflows@ us-east-2, if it's a success
-      runs-on: ubuntu-latest
-      environment: ci #what does this do
-      #needs: build-test do we need this?
-      if: ${{ success() }}
-      steps:
-        - name: What are my files?
-          run: ls
-        - name: Where am I now?
-          run: |
-            pwd
-            ls
-          working-directory: ./amplify-js/.github/actions/log-metrics
-
-        - name: Log success data point to metric PublishNextFailure
-          uses: ./.github/actions/log-metrics/action.yml
-          with:
-            metric-name: PublishNextFailure
-            value: 0
-            role-to-assume: ${{ secrets.METRIC_LOGGER_ROLE_ARN }} #what is this?
-            aws-region: us-east-2
