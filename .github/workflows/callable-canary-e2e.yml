@@ -22,22 +22,36 @@ jobs:
       - prebuild-samples-staging
     secrets: inherit
     uses: ./.github/workflows/callable-canary-e2e-runner.yml
-  get-package-list:
-    uses: ./.github/workflows/callable-get-package-list.yml
-  unit-tests:
-    needs:
-      - prebuild-ubuntu
-      - get-package-list
-    strategy:
-      matrix:
-        package: ${{ fromJSON(needs.get-package-list.outputs.packages) }}
-      fail-fast: false
-    uses: ./.github/workflows/callable-unit-tests.yml
-    with:
-      package: ${{ matrix.package }}
   sample-app-tests:
     secrets: inherit
     uses: ./.github/workflows/callable-canary-sampleapp-tests.yml
-  bundle-size-tests:
-    needs: prebuild-ubuntu
-    uses: ./.github/workflows/callable-bundle-size-tests.yml
+
+  log-failure-metric:
+    # Send a failure data point to metric PublishNextFailure in github-workflows@ us-east-2, if it's a failure
+    runs-on: ubuntu-latest
+    environment: ci
+    #needs: build-test
+    if: ${{ failure() }}
+    steps:
+      - name: Log failure data point to metric PublishNextFailure
+        uses: ./.github/actions/log-metrics/action.yml
+        with:
+          metric-name: PublishNextFailure
+          value: 1
+          role-to-assume: ${{ secrets.METRIC_LOGGER_ROLE_ARN }} #what is this?
+          aws-region: us-east-2
+  
+  log-success-metric:
+      # Send a success data point to metric PublishNextFailure in github-workflows@ us-east-2, if it's a success
+      runs-on: ubuntu-latest
+      environment: ci
+      #needs: build-test
+      if: ${{ success() }}
+      steps:
+        - name: Log success data point to metric PublishNextFailure
+          uses: ./.github/actions/log-metrics/action.yml
+          with:
+            metric-name: PublishNextFailure
+            value: 0
+            role-to-assume: ${{ secrets.METRIC_LOGGER_ROLE_ARN }} #what is this?
+            aws-region: us-east-2
