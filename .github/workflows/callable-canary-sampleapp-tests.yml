@@ -219,7 +219,7 @@ jobs:
           npm install aws-amplify -legacy-peer-deps
         working-directory: amplify-js-samples-staging/samples/vue/auth/vue-project
       - name: Install dependencies
-        run: npm install
+        run: npm install --save --legacy-peer-deps
         working-directory: amplify-js-samples-staging/samples/vue/auth/vue-project
       - name: Start application and run test
         run: |
