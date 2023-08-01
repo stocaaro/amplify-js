@@ -23,7 +23,7 @@ jobs:
       detox-integ-config: ${{steps.load_config.outputs.DETOX_INTEG_CONFIG}}
 
   e2e-test-runner:
-    name: e2e test runnner
+    name: e2e test runner
     needs: e2e-prep
     secrets: inherit
     strategy:
