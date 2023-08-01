@@ -86,7 +86,7 @@ jobs:
         working-directory: amplify-js-samples-staging/samples/angular/interactions/new-angular-app
       - name: Copy files from samples staging repo
         run: |
-          rm -r ./samples/angular/interactions new-angular-app  
+          rm -r ./samples/angular/interactions/new-angular-app  
           cp -r ./samples/angular/interactions/chatbot-component ./samples/angular/interactions/new-angular-app  
         working-directory: amplify-js-samples-staging
       - name: Copy test file from samples staging repo
