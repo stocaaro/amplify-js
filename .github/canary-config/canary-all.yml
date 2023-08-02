@@ -156,12 +156,6 @@ tests:
     sample_name: [v2/background-process-manager]
     spec: background-process-manager
     browser: *extended_browser_list
-  - test_name: 'DataStore - Background Process Manager'
-    framework: react
-    category: datastore
-    sample_name: [v2/background-process-manager]
-    spec: background-process-manager
-    browser: [webkit]
   - test_name: 'DataStore - Related Models'
     framework: react
     category: datastore
@@ -204,12 +198,6 @@ tests:
     category: datastore
     sample_name: [owner-based-default]
     spec: next-owner-based-default
-    browser: *minimal_browser_list
-  - test_name: 'DataStore - Nextjs 13 build with SWC - basic JS app'
-    framework: next
-    category: datastore
-    sample_name: [next-13-basic]
-    spec: nextjs-13-basic
     browser: *minimal_browser_list
   - test_name: 'DataStore - Nextjs 13 build with SWC - JS app'
     framework: next
