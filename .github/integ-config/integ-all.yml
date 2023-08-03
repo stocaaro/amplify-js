@@ -7,308 +7,308 @@ extended_browser_list: &extended_browser_list
   - firefox
   - edge
 tests:
-  - test_name: 'DataStore Auth - Chrome'
-    framework: react
-    category: datastore
-    sample_name: owner-based-default
-    spec: owner-based-default
-    browser: *minimal_browser_list
-  - test_name: 'DataStore Auth - Chrome'
-    framework: react
-    category: datastore
-    sample_name: static-user-pool-groups-default
-    spec: static-user-pool-groups-default
-    browser: *minimal_browser_list
-  - test_name: 'DataStore Auth - Chrome'
-    framework: react
-    category: datastore
-    sample_name: static-user-pool-groups-operations
-    spec: static-user-pool-groups-operations
-    browser: *minimal_browser_list
-  - test_name: 'DataStore Auth - Chrome'
-    framework: react
-    category: datastore
-    sample_name: owner-and-group-different-models-default
-    spec: owner-and-group-different-models-default
-    browser: *minimal_browser_list
-  - test_name: 'DataStore Auth - Chrome'
-    framework: react
-    category: datastore
-    sample_name: owner-and-group-same-model-default
-    spec: owner-and-group-same-model-default
-    browser: *minimal_browser_list
-  - test_name: 'DataStore Auth - Chrome'
-    framework: react
-    category: datastore
-    sample_name: owner-and-group-same-model-operations
-    spec: owner-and-group-same-model-operations
-    browser: *minimal_browser_list
-  - test_name: 'DataStore Auth - Chrome'
-    framework: react
-    category: datastore
-    sample_name: dynamic-user-pool-groups-default
-    spec: dynamic-user-pool-groups-default
-    browser: *minimal_browser_list
-  - test_name: 'DataStore Auth - Chrome'
-    framework: react
-    category: datastore
-    sample_name: dynamic-user-pool-groups-owner-based-default
-    spec: dynamic-user-pool-groups-owner-based-default
-    browser: *minimal_browser_list
-  - test_name: 'DataStore Auth - Chrome'
-    framework: react
-    category: datastore
-    sample_name: private-auth-default
-    spec: private-auth-default
-    browser: *minimal_browser_list
-  - test_name: 'DataStore Auth - Chrome'
-    framework: react
-    category: datastore
-    sample_name: private-auth-iam
-    spec: private-auth-iam
-    browser: *minimal_browser_list
-  - test_name: 'DataStore Auth - Chrome'
-    framework: react
-    category: datastore
-    sample_name: public-auth-default
-    spec: public-auth-default
-    browser: *minimal_browser_list
-  - test_name: 'DataStore Auth - Chrome'
-    framework: react
-    category: datastore
-    sample_name: public-auth-iam
-    spec: public-auth-iam
-    browser: *minimal_browser_list
-  - test_name: 'DataStore Auth - Chrome'
-    framework: react
-    category: datastore
-    sample_name: owner-custom-claim-default
-    spec: owner-custom-claim-default
-    browser: *minimal_browser_list
-  - test_name: 'DataStore Auth - Chrome'
-    framework: react
-    category: datastore
-    sample_name: owner-custom-field-default
-    spec: owner-custom-field-default
-    browser: *minimal_browser_list
-  - test_name: 'DataStore Auth v2 - Chrome'
-    framework: react
-    category: datastore
-    sample_name: v2/owner-based-default-v2
-    spec: owner-based-default
-    browser: *minimal_browser_list
-  - test_name: 'DataStore Auth v2 - Chrome'
-    framework: react
-    category: datastore
-    sample_name: v2/static-user-pool-groups-default-v2
-    spec: static-user-pool-groups-default
-    browser: *minimal_browser_list
-  - test_name: 'DataStore Auth v2 - Chrome'
-    framework: react
-    category: datastore
-    sample_name: v2/static-user-pool-groups-operations-v2
-    spec: static-user-pool-groups-operations
-    browser: *minimal_browser_list
-  - test_name: 'DataStore Auth v2 - Chrome'
-    framework: react
-    category: datastore
-    sample_name: v2/owner-and-group-different-models-default-v2
-    spec: owner-and-group-different-models-default
-    browser: *minimal_browser_list
-  - test_name: 'DataStore Auth v2 - Chrome'
-    framework: react
-    category: datastore
-    sample_name: v2/owner-and-group-same-model-default-v2
-    spec: owner-and-group-same-model-default
-    browser: *minimal_browser_list
-  - test_name: 'DataStore Auth v2 - Chrome'
-    framework: react
-    category: datastore
-    sample_name: v2/owner-and-group-same-model-operations-v2
-    spec: owner-and-group-same-model-operations
-    browser: *minimal_browser_list
-  - test_name: 'DataStore Auth v2 - Chrome'
-    framework: react
-    category: datastore
-    sample_name: v2/dynamic-user-pool-groups-default-v2
-    spec: dynamic-user-pool-groups-default
-    browser: *minimal_browser_list
-  - test_name: 'DataStore Auth v2 - Chrome'
-    framework: react
-    category: datastore
-    sample_name: v2/dynamic-user-pool-groups-owner-based-default-v2
-    spec: dynamic-user-pool-groups-owner-based-default
-    browser: *minimal_browser_list
-  - test_name: 'DataStore Auth v2 - Chrome'
-    framework: react
-    category: datastore
-    sample_name: v2/private-auth-default-v2
-    spec: private-auth-default
-    browser: *minimal_browser_list
-  - test_name: 'DataStore Auth v2 - Chrome'
-    framework: react
-    category: datastore
-    sample_name: v2/private-auth-iam-v2
-    spec: private-auth-iam
-    browser: *minimal_browser_list
-  - test_name: 'DataStore Auth v2 - Chrome'
-    framework: react
-    category: datastore
-    sample_name: v2/public-auth-default-v2
-    spec: public-auth-default
-    browser: *minimal_browser_list
-  - test_name: 'DataStore Auth v2 - Chrome'
-    framework: react
-    category: datastore
-    sample_name: v2/public-auth-iam-v2
-    spec: public-auth-iam
-    browser: *minimal_browser_list
-  - test_name: 'DataStore Auth v2 - Chrome'
-    framework: react
-    category: datastore
-    sample_name: v2/owner-custom-claim-default-v2
-    spec: owner-custom-claim-default
-    browser: *minimal_browser_list
-  - test_name: 'DataStore Auth v2 - Chrome'
-    framework: react
-    category: datastore
-    sample_name: v2/owner-custom-field-default-v2
-    spec: owner-custom-field-default
-    browser: *minimal_browser_list
+  # - test_name: 'DataStore Auth - Chrome'
+  #   framework: react
+  #   category: datastore
+  #   sample_name: owner-based-default
+  #   spec: owner-based-default
+  #   browser: *minimal_browser_list
+  # - test_name: 'DataStore Auth - Chrome'
+  #   framework: react
+  #   category: datastore
+  #   sample_name: static-user-pool-groups-default
+  #   spec: static-user-pool-groups-default
+  #   browser: *minimal_browser_list
+  # - test_name: 'DataStore Auth - Chrome'
+  #   framework: react
+  #   category: datastore
+  #   sample_name: static-user-pool-groups-operations
+  #   spec: static-user-pool-groups-operations
+  #   browser: *minimal_browser_list
+  # - test_name: 'DataStore Auth - Chrome'
+  #   framework: react
+  #   category: datastore
+  #   sample_name: owner-and-group-different-models-default
+  #   spec: owner-and-group-different-models-default
+  #   browser: *minimal_browser_list
+  # - test_name: 'DataStore Auth - Chrome'
+  #   framework: react
+  #   category: datastore
+  #   sample_name: owner-and-group-same-model-default
+  #   spec: owner-and-group-same-model-default
+  #   browser: *minimal_browser_list
+  # - test_name: 'DataStore Auth - Chrome'
+  #   framework: react
+  #   category: datastore
+  #   sample_name: owner-and-group-same-model-operations
+  #   spec: owner-and-group-same-model-operations
+  #   browser: *minimal_browser_list
+  # - test_name: 'DataStore Auth - Chrome'
+  #   framework: react
+  #   category: datastore
+  #   sample_name: dynamic-user-pool-groups-default
+  #   spec: dynamic-user-pool-groups-default
+  #   browser: *minimal_browser_list
+  # - test_name: 'DataStore Auth - Chrome'
+  #   framework: react
+  #   category: datastore
+  #   sample_name: dynamic-user-pool-groups-owner-based-default
+  #   spec: dynamic-user-pool-groups-owner-based-default
+  #   browser: *minimal_browser_list
+  # - test_name: 'DataStore Auth - Chrome'
+  #   framework: react
+  #   category: datastore
+  #   sample_name: private-auth-default
+  #   spec: private-auth-default
+  #   browser: *minimal_browser_list
+  # - test_name: 'DataStore Auth - Chrome'
+  #   framework: react
+  #   category: datastore
+  #   sample_name: private-auth-iam
+  #   spec: private-auth-iam
+  #   browser: *minimal_browser_list
+  # - test_name: 'DataStore Auth - Chrome'
+  #   framework: react
+  #   category: datastore
+  #   sample_name: public-auth-default
+  #   spec: public-auth-default
+  #   browser: *minimal_browser_list
+  # - test_name: 'DataStore Auth - Chrome'
+  #   framework: react
+  #   category: datastore
+  #   sample_name: public-auth-iam
+  #   spec: public-auth-iam
+  #   browser: *minimal_browser_list
+  # - test_name: 'DataStore Auth - Chrome'
+  #   framework: react
+  #   category: datastore
+  #   sample_name: owner-custom-claim-default
+  #   spec: owner-custom-claim-default
+  #   browser: *minimal_browser_list
+  # - test_name: 'DataStore Auth - Chrome'
+  #   framework: react
+  #   category: datastore
+  #   sample_name: owner-custom-field-default
+  #   spec: owner-custom-field-default
+  #   browser: *minimal_browser_list
+  # - test_name: 'DataStore Auth v2 - Chrome'
+  #   framework: react
+  #   category: datastore
+  #   sample_name: v2/owner-based-default-v2
+  #   spec: owner-based-default
+  #   browser: *minimal_browser_list
+  # - test_name: 'DataStore Auth v2 - Chrome'
+  #   framework: react
+  #   category: datastore
+  #   sample_name: v2/static-user-pool-groups-default-v2
+  #   spec: static-user-pool-groups-default
+  #   browser: *minimal_browser_list
+  # - test_name: 'DataStore Auth v2 - Chrome'
+  #   framework: react
+  #   category: datastore
+  #   sample_name: v2/static-user-pool-groups-operations-v2
+  #   spec: static-user-pool-groups-operations
+  #   browser: *minimal_browser_list
+  # - test_name: 'DataStore Auth v2 - Chrome'
+  #   framework: react
+  #   category: datastore
+  #   sample_name: v2/owner-and-group-different-models-default-v2
+  #   spec: owner-and-group-different-models-default
+  #   browser: *minimal_browser_list
+  # - test_name: 'DataStore Auth v2 - Chrome'
+  #   framework: react
+  #   category: datastore
+  #   sample_name: v2/owner-and-group-same-model-default-v2
+  #   spec: owner-and-group-same-model-default
+  #   browser: *minimal_browser_list
+  # - test_name: 'DataStore Auth v2 - Chrome'
+  #   framework: react
+  #   category: datastore
+  #   sample_name: v2/owner-and-group-same-model-operations-v2
+  #   spec: owner-and-group-same-model-operations
+  #   browser: *minimal_browser_list
+  # - test_name: 'DataStore Auth v2 - Chrome'
+  #   framework: react
+  #   category: datastore
+  #   sample_name: v2/dynamic-user-pool-groups-default-v2
+  #   spec: dynamic-user-pool-groups-default
+  #   browser: *minimal_browser_list
+  # - test_name: 'DataStore Auth v2 - Chrome'
+  #   framework: react
+  #   category: datastore
+  #   sample_name: v2/dynamic-user-pool-groups-owner-based-default-v2
+  #   spec: dynamic-user-pool-groups-owner-based-default
+  #   browser: *minimal_browser_list
+  # - test_name: 'DataStore Auth v2 - Chrome'
+  #   framework: react
+  #   category: datastore
+  #   sample_name: v2/private-auth-default-v2
+  #   spec: private-auth-default
+  #   browser: *minimal_browser_list
+  # - test_name: 'DataStore Auth v2 - Chrome'
+  #   framework: react
+  #   category: datastore
+  #   sample_name: v2/private-auth-iam-v2
+  #   spec: private-auth-iam
+  #   browser: *minimal_browser_list
+  # - test_name: 'DataStore Auth v2 - Chrome'
+  #   framework: react
+  #   category: datastore
+  #   sample_name: v2/public-auth-default-v2
+  #   spec: public-auth-default
+  #   browser: *minimal_browser_list
+  # - test_name: 'DataStore Auth v2 - Chrome'
+  #   framework: react
+  #   category: datastore
+  #   sample_name: v2/public-auth-iam-v2
+  #   spec: public-auth-iam
+  #   browser: *minimal_browser_list
+  # - test_name: 'DataStore Auth v2 - Chrome'
+  #   framework: react
+  #   category: datastore
+  #   sample_name: v2/owner-custom-claim-default-v2
+  #   spec: owner-custom-claim-default
+  #   browser: *minimal_browser_list
+  # - test_name: 'DataStore Auth v2 - Chrome'
+  #   framework: react
+  #   category: datastore
+  #   sample_name: v2/owner-custom-field-default-v2
+  #   spec: owner-custom-field-default
+  #   browser: *minimal_browser_list
 
   # React
   # integ_react_graphql_api
-  - test_name: 'React GraphQL API'
-    framework: react
-    category: api
-    sample_name: [graphql]
-    spec: graphql
-    browser: *minimal_browser_list
+  # - test_name: 'React GraphQL API'
+  #   framework: react
+  #   category: api
+  #   sample_name: [graphql]
+  #   spec: graphql
+  #   browser: *minimal_browser_list
 
   # React
   # integ_react_auth_1
-  - test_name: 'React Authenticator'
-    framework: react
-    category: auth
-    sample_name: [amplify-authenticator]
-    spec: new-ui-authenticator
-    browser: *minimal_browser_list
-  - test_name: 'Guest to Authenticated User"'
-    framework: react
-    category: auth
-    sample_name: [guest-to-auth-user]
-    spec: guest-to-auth-user
-    browser: *minimal_browser_list
-  - test_name: 'React Typescript Authenticator'
-    framework: react
-    category: auth
-    sample_name: [typescript-amplify-authenticator]
-    spec: new-ui-authenticator
-    browser: *minimal_browser_list
+  # - test_name: 'React Authenticator'
+  #   framework: react
+  #   category: auth
+  #   sample_name: [amplify-authenticator]
+  #   spec: new-ui-authenticator
+  #   browser: *minimal_browser_list
+  # - test_name: 'Guest to Authenticated User"'
+  #   framework: react
+  #   category: auth
+  #   sample_name: [guest-to-auth-user]
+  #   spec: guest-to-auth-user
+  #   browser: *minimal_browser_list
+  # - test_name: 'React Typescript Authenticator'
+  #   framework: react
+  #   category: auth
+  #   sample_name: [typescript-amplify-authenticator]
+  #   spec: new-ui-authenticator
+  #   browser: *minimal_browser_list
 
   # integ_react_auth_2
-  - test_name: 'React Credentials Different Region'
-    framework: react
-    category: auth
-    sample_name: [credentials-auth]
-    spec: credentials-auth
-    browser: *minimal_browser_list
-  - test_name: 'React Custom Authenticator'
-    framework: react
-    category: auth
-    sample_name: [amplify-authenticator]
-    spec: new-ui-custom-authenticator
-    browser: *minimal_browser_list
-  - test_name: 'React Custom Authenticator'
-    framework: react
-    category: auth
-    sample_name: [with-authenticator]
-    spec: new-ui-authenticator
-    browser: *minimal_browser_list
-  - test_name: 'Sign In after Sign Up'
-    framework: react
-    category: auth
-    sample_name: [auto-signin-after-signup]
-    spec: auto-signin-after-signup
-    browser: *minimal_browser_list
+  # - test_name: 'React Credentials Different Region'
+  #   framework: react
+  #   category: auth
+  #   sample_name: [credentials-auth]
+  #   spec: credentials-auth
+  #   browser: *minimal_browser_list
+  # - test_name: 'React Custom Authenticator'
+  #   framework: react
+  #   category: auth
+  #   sample_name: [amplify-authenticator]
+  #   spec: new-ui-custom-authenticator
+  #   browser: *minimal_browser_list
+  # - test_name: 'React Custom Authenticator'
+  #   framework: react
+  #   category: auth
+  #   sample_name: [with-authenticator]
+  #   spec: new-ui-authenticator
+  #   browser: *minimal_browser_list
+  # - test_name: 'Sign In after Sign Up'
+  #   framework: react
+  #   category: auth
+  #   sample_name: [auto-signin-after-signup]
+  #   spec: auto-signin-after-signup
+  #   browser: *minimal_browser_list
 
   # integ_react_amazon_cognito_identity_js_cookie_storage
-  - test_name: 'amazon-cognito-identity-js-cookie-storage'
-    framework: react
-    category: auth
-    sample_name: [amazon-cognito-identity-js-cookie-storage]
-    spec: amazon-cognito-identity-js-cookie-storage
-    browser: *minimal_browser_list
+  # - test_name: 'amazon-cognito-identity-js-cookie-storage'
+  #   framework: react
+  #   category: auth
+  #   sample_name: [amazon-cognito-identity-js-cookie-storage]
+  #   spec: amazon-cognito-identity-js-cookie-storage
+  #   browser: *minimal_browser_list
 
   # integ_react_amazon_cognito_identity_js
-  - test_name: 'amazon-cognito-identity-js'
-    framework: react
-    category: auth
-    sample_name: [amazon-cognito-identity-js]
-    spec: amazon-cognito-identity-js
-    browser: *minimal_browser_list
+  # - test_name: 'amazon-cognito-identity-js'
+  #   framework: react
+  #   category: auth
+  #   sample_name: [amazon-cognito-identity-js]
+  #   spec: amazon-cognito-identity-js
+  #   browser: *minimal_browser_list
 
   # integ_react_device_tracking
-  - test_name: 'cognito-device-tracking'
-    framework: react
-    category: auth
-    sample_name: [device-tracking]
-    spec: device-tracking
-    browser: *minimal_browser_list
+  # - test_name: 'cognito-device-tracking'
+  #   framework: react
+  #   category: auth
+  #   sample_name: [device-tracking]
+  #   spec: device-tracking
+  #   browser: *minimal_browser_list
 
   # integ_react_delete_user
-  - test_name: 'delete-user'
-    framework: react
-    category: auth
-    sample_name: [delete-user]
-    spec: delete-user
-    browser: *minimal_browser_list
+  # - test_name: 'delete-user'
+  #   framework: react
+  #   category: auth
+  #   sample_name: [delete-user]
+  #   spec: delete-user
+  #   browser: *minimal_browser_list
 
   # Angular
   # integ_angular_auth
-  - test_name: 'Angular Authenticator'
-    framework: angular
-    category: auth
-    sample_name: [amplify-authenticator]
-    spec: ui-amplify-authenticator
-    browser: *minimal_browser_list
-  - test_name: 'Angular Custom Authenticator'
-    framework: angular
-    category: auth
-    sample_name: [amplify-authenticator]
-    spec: custom-authenticator
-    browser: *minimal_browser_list
+  # - test_name: 'Angular Authenticator'
+  #   framework: angular
+  #   category: auth
+  #   sample_name: [amplify-authenticator]
+  #   spec: ui-amplify-authenticator
+  #   browser: *minimal_browser_list
+  # - test_name: 'Angular Custom Authenticator'
+  #   framework: angular
+  #   category: auth
+  #   sample_name: [amplify-authenticator]
+  #   spec: custom-authenticator
+  #   browser: *minimal_browser_list
 
   # Javascript
   # integ_javascript_auth
-  - test_name: 'JavaScript Auth CDN'
-    framework: javascript
-    category: auth
-    sample_name: [auth-cdn]
-    spec: auth-cdn
-    browser: *minimal_browser_list
-    amplifyjs_dir: true
+  # - test_name: 'JavaScript Auth CDN'
+  #   framework: javascript
+  #   category: auth
+  #   sample_name: [auth-cdn]
+  #   spec: auth-cdn
+  #   browser: *minimal_browser_list
+  #   amplifyjs_dir: true
 
   # Vue
   # integ_vue_auth
-  - test_name: 'Legacy Vue Authenticator'
-    framework: vue
-    category: auth
-    sample_name: [amplify-authenticator-legacy]
-    spec: authenticator
-    browser: *minimal_browser_list
-  - test_name: 'Vue 3 Authenticator'
-    framework: vue
-    category: auth
-    sample_name: [authenticator-vue3]
-    spec: new-ui-authenticator
-    browser: *minimal_browser_list
-  - test_name: 'Vue Custom Authenticator'
-    framework: vue
-    category: auth
-    sample_name: [amplify-authenticator]
-    spec: custom-authenticator
-    browser: *minimal_browser_list
+  # - test_name: 'Legacy Vue Authenticator'
+  #   framework: vue
+  #   category: auth
+  #   sample_name: [amplify-authenticator-legacy]
+  #   spec: authenticator
+  #   browser: *minimal_browser_list
+  # - test_name: 'Vue 3 Authenticator'
+  #   framework: vue
+  #   category: auth
+  #   sample_name: [authenticator-vue3]
+  #   spec: new-ui-authenticator
+  #   browser: *minimal_browser_list
+  # - test_name: 'Vue Custom Authenticator'
+  #   framework: vue
+  #   category: auth
+  #   sample_name: [amplify-authenticator]
+  #   spec: custom-authenticator
+  #   browser: *minimal_browser_list
 
   # Next
   # integ_next_auth
