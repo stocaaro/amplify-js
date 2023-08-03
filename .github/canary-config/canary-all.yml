@@ -284,8 +284,14 @@ tests:
     category: datastore
     sample_name: [rollup-basic-crud]
     spec: rollup-basic-crud
+    browser: [chrome]
+    timeout_minutes: 45
+    retry_count: 10
   - test_name: 'Vite + DataStore - Basic CRUD'
     framework: vite
     category: datastore
     sample_name: [v2/basic-crud]
     spec: vite-basic-crud
+    browser: [chrome]
+    timeout_minutes: 45
+    retry_count: 10
