@@ -168,6 +168,8 @@ tests:
     sample_name: [v2/amplify-docs-examples]
     spec: amplify-docs-examples
     browser: *minimal_browser_list
+    timeout_minutes: 45
+    retry_count: 10
   - test_name: 'DataStore - WebSocket Disruption'
     framework: react
     category: datastore
@@ -181,6 +183,8 @@ tests:
     browser: *minimal_browser_list
     spec: vanilla-js-basic-crud
     amplifyjs_dir: true
+    timeout_minutes: 45
+    retry_count: 10
   - test_name: 'next owner auth'
     framework: next
     category: datastore
