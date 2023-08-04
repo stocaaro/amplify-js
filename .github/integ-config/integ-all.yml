@@ -312,129 +312,129 @@ tests:
 
   # Next
   # integ_next_auth
-  - test_name: 'Authenticator and SSR page'
-    framework: next
-    category: auth
-    sample_name: [auth-ssr]
-    spec: auth-ssr
-    browser: *minimal_browser_list
-  - test_name: 'Authenticator and RSC page'
-    framework: next
-    category: auth
-    sample_name: [auth-rsc]
-    spec: auth-rsc
-    browser: *minimal_browser_list
-    timeout_minutes: 45
-    retry_count: 10
-  - test_name: 'NextJS Auth Custom Implementation with SSR'
-    framework: next
-    category: auth
-    sample_name: [custom-auth-ssr]
-    spec: authenticator
-    browser: *minimal_browser_list
+  # - test_name: 'Authenticator and SSR page'
+  #   framework: next
+  #   category: auth
+  #   sample_name: [auth-ssr]
+  #   spec: auth-ssr
+  #   browser: *minimal_browser_list
+  # - test_name: 'Authenticator and RSC page'
+  #   framework: next
+  #   category: auth
+  #   sample_name: [auth-rsc]
+  #   spec: auth-rsc
+  #   browser: *minimal_browser_list
+  #   timeout_minutes: 45
+  #   retry_count: 10
+  # - test_name: 'NextJS Auth Custom Implementation with SSR'
+  #   framework: next
+  #   category: auth
+  #   sample_name: [custom-auth-ssr]
+  #   spec: authenticator
+  #   browser: *minimal_browser_list
 
   # Node
   # integ_node_amazon_cognito_identity_js
-  - test_name: 'amazon-cognito-identity-js'
-    framework: node
-    category: auth
-    sample_name: [amazon-cognito-identity-js]
-    build_type: dev
+  # - test_name: 'amazon-cognito-identity-js'
+  #   framework: node
+  #   category: auth
+  #   sample_name: [amazon-cognito-identity-js]
+  #   build_type: dev
   # React
   # integ_react_datastore
-  - test_name: 'React DataStore'
-    framework: react
-    category: datastore
-    sample_name: [many-to-many]
-    spec: many-to-many
-    browser: *minimal_browser_list
+  # - test_name: 'React DataStore'
+  #   framework: react
+  #   category: datastore
+  #   sample_name: [many-to-many]
+  #   spec: many-to-many
+  #   browser: *minimal_browser_list
 
   # integ_react_datastore_v2
-  - test_name: 'React DataStore CLI v2'
-    framework: react
-    category: datastore
-    sample_name: [v2/many-to-many-v2]
-    spec: many-to-many
-    browser: *minimal_browser_list
+  # - test_name: 'React DataStore CLI v2'
+  #   framework: react
+  #   category: datastore
+  #   sample_name: [v2/many-to-many-v2]
+  #   spec: many-to-many
+  #   browser: *minimal_browser_list
 
   # integ_react_datastore_multi_auth_one_rule
-  - test_name: 'React DataStore Multi-Auth - One Rule'
-    framework: react
-    category: datastore
-    sample_name: [multi-auth]
-    spec: multi-auth-one-rule
-    browser: *minimal_browser_list
+  # - test_name: 'React DataStore Multi-Auth - One Rule'
+  #   framework: react
+  #   category: datastore
+  #   sample_name: [multi-auth]
+  #   spec: multi-auth-one-rule
+  #   browser: *minimal_browser_list
 
   # integ_react_datastore_multi_auth_one_rule_v2
-  - test_name: 'React DataStore Multi-Auth - One Rule CLI v2'
-    framework: react
-    category: datastore
-    sample_name: [v2/multi-auth-v2]
-    spec: multi-auth-one-rule
-    browser: *minimal_browser_list
+  # - test_name: 'React DataStore Multi-Auth - One Rule CLI v2'
+  #   framework: react
+  #   category: datastore
+  #   sample_name: [v2/multi-auth-v2]
+  #   spec: multi-auth-one-rule
+  #   browser: *minimal_browser_list
 
   # integ_react_datastore_multi_auth_two_rules
-  - test_name: 'React DataStore Multi-Auth - Two Rules'
-    framework: react
-    category: datastore
-    sample_name: [multi-auth]
-    spec: multi-auth-two-rules
-    browser: *minimal_browser_list
+  # - test_name: 'React DataStore Multi-Auth - Two Rules'
+  #   framework: react
+  #   category: datastore
+  #   sample_name: [multi-auth]
+  #   spec: multi-auth-two-rules
+  #   browser: *minimal_browser_list
 
   # integ_react_datastore_multi_auth_two_rules_v2
-  - test_name: 'React DataStore Multi-Auth - Two Rules CLI v2'
-    framework: react
-    category: datastore
-    sample_name: [v2/multi-auth-v2]
-    spec: multi-auth-two-rules
-    browser: *minimal_browser_list
+  # - test_name: 'React DataStore Multi-Auth - Two Rules CLI v2'
+  #   framework: react
+  #   category: datastore
+  #   sample_name: [v2/multi-auth-v2]
+  #   spec: multi-auth-two-rules
+  #   browser: *minimal_browser_list
   # integ_react_datastore_multi_auth_three_plus_rules
-  - test_name: 'React DataStore Multi-Auth - Three Plus Rules'
-    framework: react
-    category: datastore
-    sample_name: [multi-auth]
-    spec: multi-auth-three-plus-rules
-    browser: *minimal_browser_list
+  # - test_name: 'React DataStore Multi-Auth - Three Plus Rules'
+  #   framework: react
+  #   category: datastore
+  #   sample_name: [multi-auth]
+  #   spec: multi-auth-three-plus-rules
+  #   browser: *minimal_browser_list
 
   # integ_react_datastore_multi_auth_three_plus_rules_v2
-  - test_name: 'React DataStore Multi-Auth - Three Plus Rules CLI v2'
-    framework: react
-    category: datastore
-    sample_name: [v2/multi-auth-v2]
-    spec: multi-auth-three-plus-rules
-    browser: *minimal_browser_list
+  # - test_name: 'React DataStore Multi-Auth - Three Plus Rules CLI v2'
+  #   framework: react
+  #   category: datastore
+  #   sample_name: [v2/multi-auth-v2]
+  #   spec: multi-auth-three-plus-rules
+  #   browser: *minimal_browser_list
 
   # integ_react_datastore_subs_disabled
-  - test_name: 'DataStore - Subs Disabled'
-    framework: react
-    category: datastore
-    sample_name: [subs-disabled]
-    spec: subs-disabled
-    browser: *minimal_browser_list
+  # - test_name: 'DataStore - Subs Disabled'
+  #   framework: react
+  #   category: datastore
+  #   sample_name: [subs-disabled]
+  #   spec: subs-disabled
+  #   browser: *minimal_browser_list
 
   # integ_react_datastore_subs_disabled_v2
-  - test_name: 'DataStore - Subs Disabled CLI v2'
-    framework: react
-    category: datastore
-    sample_name: [v2/subs-disabled-v2]
-    spec: subs-disabled
-    browser: *minimal_browser_list
+  # - test_name: 'DataStore - Subs Disabled CLI v2'
+  #   framework: react
+  #   category: datastore
+  #   sample_name: [v2/subs-disabled-v2]
+  #   spec: subs-disabled
+  #   browser: *minimal_browser_list
 
   # integ_react_datastore_consecutive_saves
-  - test_name: 'DataStore - Subs Disabled'
-    framework: react
-    category: datastore
-    sample_name: [consecutive-saves]
-    spec: consecutive-saves
-    browser: *minimal_browser_list
+  # - test_name: 'DataStore - Subs Disabled'
+  #   framework: react
+  #   category: datastore
+  #   sample_name: [consecutive-saves]
+  #   spec: consecutive-saves
+  #   browser: *minimal_browser_list
 
   # integ_react_datastore_consecutive_saves_v2
-  - test_name: 'DataStore - Subs Disabled CLI v2'
-    framework: react
-    category: datastore
-    sample_name: [v2/consecutive-saves-v2]
-    spec: consecutive-saves
-    browser: *minimal_browser_list
+  # - test_name: 'DataStore - Subs Disabled CLI v2'
+  #   framework: react
+  #   category: datastore
+  #   sample_name: [v2/consecutive-saves-v2]
+  #   spec: consecutive-saves
+  #   browser: *minimal_browser_list
 
   # # integ_react_datastore_observe_query
   # - test_name: 'DataStore - Observe Query'
@@ -453,19 +453,19 @@ tests:
   #   browser: *minimal_browser_list
 
   # integ_react_datastore_schema_drift
-  - test_name: 'DataStore - Schema Drift'
-    framework: react
-    category: datastore
-    sample_name: [schema-drift]
-    spec: schema-drift
-    browser: *minimal_browser_list
+  # - test_name: 'DataStore - Schema Drift'
+  #   framework: react
+  #   category: datastore
+  #   sample_name: [schema-drift]
+  #   spec: schema-drift
+  #   browser: *minimal_browser_list
   # integ_react_datastore_custom_pk_unconnected_models
-  - test_name: 'DataStore - Custom Primary Key (Connected Models)'
-    framework: react
-    category: datastore
-    sample_name: [v2/custom-pk-unconnected-models]
-    spec: custom-pk-unconnected-models
-    browser: *extended_browser_list
+  # - test_name: 'DataStore - Custom Primary Key (Connected Models)'
+  #   framework: react
+  #   category: datastore
+  #   sample_name: [v2/custom-pk-unconnected-models]
+  #   spec: custom-pk-unconnected-models
+  #   browser: *extended_browser_list
 
   # integ_react_datastore_custom_pk_unconnected_models_webkit
   # - test_name: 'DataStore - Custom Primary Key (Connected Models)'
@@ -476,28 +476,28 @@ tests:
   #   browser: [webkit]
 
   # integ_react_datastore_custom_pk_has_one
-  - test_name: 'DataStore - Custom Primary Key (Has One)'
-    framework: react
-    category: datastore
-    sample_name: [v2/custom-pk-has-one]
-    spec: custom-pk-has-one
-    browser: *minimal_browser_list
+  # - test_name: 'DataStore - Custom Primary Key (Has One)'
+  #   framework: react
+  #   category: datastore
+  #   sample_name: [v2/custom-pk-has-one]
+  #   spec: custom-pk-has-one
+  #   browser: *minimal_browser_list
 
   # integ_react_datastore_custom_pk_has_many_many_to_many
-  - test_name: 'DataStore - Custom Primary Key (Has Many / Many to Many)'
-    framework: react
-    category: datastore
-    sample_name: [v2/custom-pk-has-many-many-to-many]
-    spec: custom-pk-has-many-many-to-many
-    browser: *minimal_browser_list
+  # - test_name: 'DataStore - Custom Primary Key (Has Many / Many to Many)'
+  #   framework: react
+  #   category: datastore
+  #   sample_name: [v2/custom-pk-has-many-many-to-many]
+  #   spec: custom-pk-has-many-many-to-many
+  #   browser: *minimal_browser_list
 
   # integ_react_datastore_background_process_manager
-  - test_name: 'DataStore - Background Process Manager'
-    framework: react
-    category: datastore
-    sample_name: [v2/background-process-manager]
-    spec: background-process-manager
-    browser: *extended_browser_list
+  # - test_name: 'DataStore - Background Process Manager'
+  #   framework: react
+  #   category: datastore
+  #   sample_name: [v2/background-process-manager]
+  #   spec: background-process-manager
+  #   browser: *extended_browser_list
 
   # integ_react_datastore_background_process_manager_webkit
   # - test_name: 'DataStore - Background Process Manager'
@@ -508,83 +508,83 @@ tests:
   #   browser: [webkit]
 
   # integ_react_datastore_related_models
-  - test_name: 'DataStore - Related Models'
-    framework: react
-    category: datastore
-    sample_name: [related-models]
-    spec: related-models
-    browser: *minimal_browser_list
+  # - test_name: 'DataStore - Related Models'
+  #   framework: react
+  #   category: datastore
+  #   sample_name: [related-models]
+  #   spec: related-models
+  #   browser: *minimal_browser_list
 
   # integ_react_datastore_selective_sync
-  - test_name: 'DataStore - Selective Sync'
-    framework: react
-    category: datastore
-    sample_name: [selective-sync-v5]
-    spec: selective-sync-v5
-    browser: *minimal_browser_list
+  # - test_name: 'DataStore - Selective Sync'
+  #   framework: react
+  #   category: datastore
+  #   sample_name: [selective-sync-v5]
+  #   spec: selective-sync-v5
+  #   browser: *minimal_browser_list
 
   # integ_react_datastore_nested_predicate
-  - test_name: 'DataStore - Nested Predicate'
-    framework: react
-    category: datastore
-    sample_name: [nested-predicate]
-    spec: nested-predicate
-    browser: *minimal_browser_list
+  # - test_name: 'DataStore - Nested Predicate'
+  #   framework: react
+  #   category: datastore
+  #   sample_name: [nested-predicate]
+  #   spec: nested-predicate
+  #   browser: *minimal_browser_list
 
   # integ_react_datastore_docs_examples
-  - test_name: 'DataStore - Docs Examples'
-    framework: react
-    category: datastore
-    sample_name: [v2/amplify-docs-examples]
-    spec: amplify-docs-examples
-    browser: *minimal_browser_list
-    timeout_minutes: 45
-    retry_count: 10
+  # - test_name: 'DataStore - Docs Examples'
+  #   framework: react
+  #   category: datastore
+  #   sample_name: [v2/amplify-docs-examples]
+  #   spec: amplify-docs-examples
+  #   browser: *minimal_browser_list
+  #   timeout_minutes: 45
+  #   retry_count: 10
 
   # integ_react_datastore_websocket_disruption
-  - test_name: 'DataStore - WebSocket Disruption'
-    framework: react
-    category: datastore
-    sample_name: [websocket-disruption]
-    spec: websocket-disruption
-    browser: *minimal_browser_list
+  # - test_name: 'DataStore - WebSocket Disruption'
+  #   framework: react
+  #   category: datastore
+  #   sample_name: [websocket-disruption]
+  #   spec: websocket-disruption
+  #   browser: *minimal_browser_list
 
   # Javascript
   # integ_vanilla_js_datastore_basic_crud
-  - test_name: 'Vanilla JS + Webpack 4 + DataStore - Basic CRUD'
-    framework: javascript
-    category: datastore
-    sample_name: [basic-crud]
-    browser: *minimal_browser_list
-    spec: vanilla-js-basic-crud
-    amplifyjs_dir: true
-    timeout_minutes: 45
-    retry_count: 10
+  # - test_name: 'Vanilla JS + Webpack 4 + DataStore - Basic CRUD'
+  #   framework: javascript
+  #   category: datastore
+  #   sample_name: [basic-crud]
+  #   browser: *minimal_browser_list
+  #   spec: vanilla-js-basic-crud
+  #   amplifyjs_dir: true
+  #   timeout_minutes: 45
+  #   retry_count: 10
 
   # Next
   # integ_next_datastore_owner_auth
-  - test_name: 'next owner auth'
-    framework: next
-    category: datastore
-    sample_name: [owner-based-default]
-    spec: next-owner-based-default
-    browser: *minimal_browser_list
+  # - test_name: 'next owner auth'
+  #   framework: next
+  #   category: datastore
+  #   sample_name: [owner-based-default]
+  #   spec: next-owner-based-default
+  #   browser: *minimal_browser_list
 
   # integ_next_datastore_13_basic
-  - test_name: 'DataStore - Nextjs 13 build with SWC - basic JS app'
-    framework: next
-    category: datastore
-    sample_name: [next-13-basic]
-    spec: nextjs-13-basic
-    browser: *minimal_browser_list
+  # - test_name: 'DataStore - Nextjs 13 build with SWC - basic JS app'
+  #   framework: next
+  #   category: datastore
+  #   sample_name: [next-13-basic]
+  #   spec: nextjs-13-basic
+  #   browser: *minimal_browser_list
 
   # integ_next_datastore_13_js
-  - test_name: 'DataStore - Nextjs 13 build with SWC - JS app'
-    framework: next
-    category: datastore
-    sample_name: [next-13-js]
-    spec: nextjs-13
-    browser: *minimal_browser_list
+  # - test_name: 'DataStore - Nextjs 13 build with SWC - JS app'
+  #   framework: next
+  #   category: datastore
+  #   sample_name: [next-13-js]
+  #   spec: nextjs-13
+  #   browser: *minimal_browser_list
 
   # Vite
   # integ_vite_datastore_basic_crud
@@ -604,20 +604,20 @@ tests:
 
   # React
   # integ_react_geo
-  - test_name: 'Display Map'
-    framework: react
-    category: geo
-    sample_name: [display-map]
-    spec: display-map
-    # Temp fix:
-    browser: [chrome]
-  - test_name: 'Search Outside Map'
-    framework: react
-    category: geo
-    sample_name: [search-outside-map]
-    spec: search-outside-map
-    # Temp fix:
-    browser: [chrome]
+  # - test_name: 'Display Map'
+  #   framework: react
+  #   category: geo
+  #   sample_name: [display-map]
+  #   spec: display-map
+  #   # Temp fix:
+  #   browser: [chrome]
+  # - test_name: 'Search Outside Map'
+  #   framework: react
+  #   category: geo
+  #   sample_name: [search-outside-map]
+  #   spec: search-outside-map
+  #   # Temp fix:
+  #   browser: [chrome]
 
   # Javascript
   # integ_javascript_geo
@@ -638,97 +638,97 @@ tests:
 
   # React
   # integ_react_interactions
-  - test_name: 'React Interactions'
-    framework: react
-    category: interactions
-    sample_name: [chatbot-component]
-    spec: chatbot-component
-    browser: *minimal_browser_list
-  - test_name: 'Chatbot V1'
-    framework: react
-    category: interactions
-    sample_name: [lex-test-component]
-    spec: chatbot-v1
-    browser: *minimal_browser_list
-  - test_name: 'Chatbot V2'
-    framework: react
-    category: interactions
-    sample_name: [lex-test-component]
-    spec: chatbot-v2
-    browser: *minimal_browser_list
+  # - test_name: 'React Interactions'
+  #   framework: react
+  #   category: interactions
+  #   sample_name: [chatbot-component]
+  #   spec: chatbot-component
+  #   browser: *minimal_browser_list
+  # - test_name: 'Chatbot V1'
+  #   framework: react
+  #   category: interactions
+  #   sample_name: [lex-test-component]
+  #   spec: chatbot-v1
+  #   browser: *minimal_browser_list
+  # - test_name: 'Chatbot V2'
+  #   framework: react
+  #   category: interactions
+  #   sample_name: [lex-test-component]
+  #   spec: chatbot-v2
+  #   browser: *minimal_browser_list
 
   # Angular
   # integ_angular_interactions
-  - test_name: 'Angular Interactions'
-    framework: angular
-    category: interactions
-    sample_name: [chatbot-component]
-    spec: chatbot-component
-    browser: *minimal_browser_list
+  # - test_name: 'Angular Interactions'
+  #   framework: angular
+  #   category: interactions
+  #   sample_name: [chatbot-component]
+  #   spec: chatbot-component
+  #   browser: *minimal_browser_list
 
   # Vue
   # integ_vue_interactions
-  - test_name: 'Vue 2 Interactions'
-    framework: vue
-    category: interactions
-    sample_name: [chatbot-component]
-    spec: chatbot-component
-    browser: [chrome]
-  - test_name: 'Vue 3 Interactions'
-    framework: vue
-    category: interactions
-    sample_name: [chatbot-component-vue3]
-    spec: chatbot-component
-    browser: [chrome]
+  # - test_name: 'Vue 2 Interactions'
+  #   framework: vue
+  #   category: interactions
+  #   sample_name: [chatbot-component]
+  #   spec: chatbot-component
+  #   browser: [chrome]
+  # - test_name: 'Vue 3 Interactions'
+  #   framework: vue
+  #   category: interactions
+  #   sample_name: [chatbot-component-vue3]
+  #   spec: chatbot-component
+  #   browser: [chrome]
 
   # React
   # integ_react_predictions
-  - test_name: 'React Predictions'
-    framework: react
-    category: predictions
-    sample_name: [multi-user-translation]
-    spec: multiuser-translation
-    browser: *minimal_browser_list
+  # - test_name: 'React Predictions'
+  #   framework: react
+  #   category: predictions
+  #   sample_name: [multi-user-translation]
+  #   spec: multiuser-translation
+  #   browser: *minimal_browser_list
 
   # React
   # integ_react_iot_reconnect
-  - test_name: 'PubSub - Reconnection for IoT'
-    framework: react
-    category: pubsub
-    sample_name: [reconnection-iot]
-    spec: reconnection
-    # Firefox doesn't support network state management in cypress
-    browser: [chrome]
+  # - test_name: 'PubSub - Reconnection for IoT'
+  #   framework: react
+  #   category: pubsub
+  #   sample_name: [reconnection-iot]
+  #   spec: reconnection
+  #   # Firefox doesn't support network state management in cypress
+  #   browser: [chrome]
 
   # integ_react_api_reconnect
-  - test_name: 'PubSub - Reconnection for API'
-    framework: react
-    category: pubsub
-    sample_name: [reconnection-api]
-    spec: reconnection
-    # Firefox doesn't support network state management in cypress
-    browser: [chrome]
+  # - test_name: 'PubSub - Reconnection for API'
+  #   framework: react
+  #   category: pubsub
+  #   sample_name: [reconnection-api]
+  #   spec: reconnection
+  #   # Firefox doesn't support network state management in cypress
+  #   browser: [chrome]
   # React
   # integ_react_storage
-  - test_name: 'React Storage'
-    framework: react
-    category: storage
-    sample_name: [storageApp]
-    spec: storage
-    browser: *minimal_browser_list
+  # - test_name: 'React Storage'
+  #   framework: react
+  #   category: storage
+  #   sample_name: [storageApp]
+  #   spec: storage
+  #   browser: *minimal_browser_list
 
   # integ_react_storage_multipart_progress
-  - test_name: 'React Storage Multi-Part Upload with Progress'
-    framework: react
-    category: storage
-    sample_name: [multi-part-upload-with-progress]
-    spec: multi-part-upload-with-progress
-    browser: *minimal_browser_list
+  # - test_name: 'React Storage Multi-Part Upload with Progress'
+  #   framework: react
+  #   category: storage
+  #   sample_name: [multi-part-upload-with-progress]
+  #   spec: multi-part-upload-with-progress
+  #   browser: *minimal_browser_list
 
   # integ_react_storage_copy
-  - test_name: 'React Storage Copy'
-    framework: react
-    category: storage
-    sample_name: [multi-part-copy-with-progress]
-    spec: multi-part-copy-with-progress
-    browser: *minimal_browser_list
+  # - test_name: 'React Storage Copy'
+  #   framework: react
+  #   category: storage
+  #   sample_name: [multi-part-copy-with-progress]
+  #   spec: multi-part-copy-with-progress
+  #   browser: *minimal_browser_list
