@@ -8,6 +8,7 @@ concurrency:
 on:
   push:
     branches:
+      - feat/github-actions/test-ashwinkumar6
       - feat/example-integ-test-branch/main
 
 jobs:
