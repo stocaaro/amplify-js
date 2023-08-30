@@ -4,7 +4,11 @@ concurrency:
   group: pr-${{ github.event.pull_request.number }}-${{ github.event.sender.login }} # This is to make the group name unique for a PR.
   cancel-in-progress: true
 
-on: pull_request
+on:
+  pull_request:
+  workflow_run:
+    workflows: [Update yarn.lock]
+    types: [completed]
 
 permissions: read-all
 
