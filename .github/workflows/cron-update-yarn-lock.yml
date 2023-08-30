@@ -20,6 +20,14 @@ jobs:
       - uses: actions/checkout@24cb9080177205b6e8c946b17badbe402adc938f # v3.4.0 https://github.com/actions/checkout/commit/24cb9080177205b6e8c946b17badbe402adc938f
         with:
           ref: main
+      - name: Set github commit user
+        shell: bash
+        env:
+          GITHUB_EMAIL: ${{ vars.GH_EMAIL }}
+          GITHUB_USER: ${{ vars.GH_USER }}
+        run: |
+          git config --global user.email $GITHUB_EMAIL
+          git config --global user.name $GITHUB_USER
       - name:
         env:
           BRANCH: update-yarnlock/${{ steps.current-date.outputs.date }}
