@@ -4,25 +4,27 @@ on:
   push:
     branches: ['01-yarnlock']
   schedule:
-    - cron: '0 8 * * *' # run daily at midnight GMT
+    - cron: '0 8 * * 0' # run weekly on Sunday at 8am GMT
 
 permissions:
   pull-requests: write
   contents: write
 
 jobs:
-  snyk:
+  yarn-update:
     runs-on: ubuntu-latest
     steps:
       - name: Get current date
         id: current-date
         run: echo "::set-output name=date::$(date +'%Y-%m-%d')"
       - uses: actions/checkout@24cb9080177205b6e8c946b17badbe402adc938f # v3.4.0 https://github.com/actions/checkout/commit/24cb9080177205b6e8c946b17badbe402adc938f
+        with:
+          ref: main
       - name:
         env:
           BRANCH: update-yarnlock/${{ steps.current-date.outputs.date }}
         run: |
-          git checkout -b $BRANCH main
+          git checkout -b $BRANCH
           rm yarn.lock \
           yarn || true \
           git add -A \
