@@ -24,11 +24,9 @@ jobs:
         env:
           BRANCH: update-yarnlock/${{ steps.current-date.outputs.date }}
         run: |
-          git checkout -b $BRANCH
-          ls \
+          git checkout -b $BRANCH \
           rm yarn.lock \
           yarn || true \
-          ls \
           git add yarn.lock \
           git commit -am "chore: update yarn.lock" \
           git push origin HEAD
