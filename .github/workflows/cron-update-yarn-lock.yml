@@ -25,9 +25,9 @@ jobs:
           BRANCH: update-yarnlock/${{ steps.current-date.outputs.date }}
         run: |
           git checkout -b $BRANCH
-          rm yarn.lock \
+          rm yarn\.lock \
           yarn || true \
-          git add -A \
+          git add yarn.lock \
           git commit -am "chore: update yarn.lock" \
           git push origin HEAD
       - name: Create Pull Request
