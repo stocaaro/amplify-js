@@ -24,12 +24,12 @@ jobs:
         env:
           BRANCH: update-yarnlock/${{ steps.current-date.outputs.date }}
         run: |
-          git fetch origin \
-          git checkout -b $BRANCH \
-          rm yarn.lock \
-          yarn || true \
-          git add yarn.lock \
-          git commit -am "chore: update yarn.lock" \
+          git fetch origin
+          git checkout -b $BRANCH
+          rm yarn.lock
+          yarn || true
+          git add yarn.lock
+          git commit -am "chore: update yarn.lock"
           git push origin HEAD
       - name: Create Pull Request
         env:
