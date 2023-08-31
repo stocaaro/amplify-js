@@ -54,14 +54,28 @@ jobs:
         run: |
           git push origin release
           git push -f origin required-release
-
+      - name: Create branch name
+        env:
+          GH_SHA: ${{ github.sha }}
+        id: branch-name
+        run: |
+          export SHORT_SHA=$(echo $GH_SHA | cut -c -7 | sed 's/^/\./')
+          echo "name=merge-release-to-main/$SHORT_SHA" >> $GITHUB_OUTPUT
+      - name: Create merge to main branch
+        env:
+          BRANCH: ${{ steps.branch-name.outcome.name }}
+        run: |
+          git fetch origin
+          git checkout -b $BRANCH
+          git push origin HEAD
       - name: Create PR back to main
         working-directory: ./amplify-js
         env:
           GH_TOKEN: ${{ secrets.GH_TOKEN_AMPLIFY_JS_AUTOMATION }}
+          BRANCH: ${{ steps.branch-name.outcome.name }}
         run: |
           gh pr create \
           --title "chore: Merge release back to main" \
           --body "Merge version updates and docs changes from release back to main." \
-          --head release \
+          --head $BRANCH \
           --base main
