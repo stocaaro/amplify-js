@@ -16,7 +16,7 @@ jobs:
     steps:
       - name: Get current date
         id: current-date
-        run: echo "::set-output name=date::$(date +'%Y-%m-%d')"
+        run: echo "date=$(date +'%Y-%m-%d')" >> $GITHUB_OUTPUT
       - uses: actions/checkout@24cb9080177205b6e8c946b17badbe402adc938f # v3.4.0 https://github.com/actions/checkout/commit/24cb9080177205b6e8c946b17badbe402adc938f
         with:
           ref: main
@@ -32,20 +32,8 @@ jobs:
         env:
           BRANCH: update-yarnlock/${{ steps.current-date.outputs.date }}
         run: |
-          git fetch origin
-          git checkout -b $BRANCH
           rm yarn.lock
           yarn || true
           git add yarn.lock
           git commit -am "chore: update yarn.lock"
-          git push origin HEAD
-      - name: Create Pull Request
-        env:
-          GH_TOKEN: ${{ github.token }}
-          BRANCH: update-yarnlock/${{ steps.current-date.outputs.date }}
-        run: |
-          gh pr create \
-          --title "chore: update yarn.lock" \
-          --body "Update the yarn.lock file" \
-          --head $BRANCH \
-          --base main
+          git push

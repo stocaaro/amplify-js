@@ -6,9 +6,7 @@ concurrency:
 
 on:
   pull_request:
-  workflow_run:
-    workflows: [Update yarn.lock]
-    types: [completed]
+  workflow_call:
 
 permissions: read-all
 
