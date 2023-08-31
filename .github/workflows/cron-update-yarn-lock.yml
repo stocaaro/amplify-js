@@ -53,9 +53,10 @@ jobs:
           BRANCH: update-yarnlock/${{ steps.current-date.outputs.date }}
         with:
           script: |
+            const { BRANCH } = process.env 
             github.rest.actions.createWorkflowDispatch({
               owner: context.repo.owner,
               repo: context.repo.repo,
               workflow_id: 'pr.yml',
-              ref: '${BRANCH}',
+              ref: `${BRANCH}`,
             })
