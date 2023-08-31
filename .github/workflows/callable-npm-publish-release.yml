@@ -18,6 +18,9 @@ jobs:
       - name: Setup node and build the repository
         uses: ./amplify-js/.github/actions/node-and-build
 
+      - name: FOR TESTING Load Verdaccio with AmplifyJs
+        uses: ./amplify-js/.github/actions/load-verdaccio-with-amplify-js
+
       - name: Run npm publish
         uses: ./amplify-js/.github/actions/npm-publish
         with:
@@ -53,7 +56,6 @@ jobs:
         working-directory: ./amplify-js
         run: |
           git push origin release
-          git push -f origin required-release
       - name: Create branch name
         env:
           GH_SHA: ${{ github.sha }}
