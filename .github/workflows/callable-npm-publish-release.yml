@@ -56,11 +56,12 @@ jobs:
           git push -f origin required-release
 
       - name: Create PR back to main
+        working-directory: ./amplify-js
         env:
           GH_TOKEN: ${{ secrets.GH_TOKEN_AMPLIFY_JS_AUTOMATION }}
         run: |
           gh pr create \
           --title "chore: Merge release back to main" \
-          --body "Merge version updates and docs changes from `release` back to `main`." \
+          --body "Merge version updates and docs changes from release back to main." \
           --head release \
           --base main
