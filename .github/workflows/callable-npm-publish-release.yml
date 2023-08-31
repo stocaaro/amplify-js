@@ -64,6 +64,7 @@ jobs:
           export SHORT_SHA=$(echo $GH_SHA | cut -c -7 | sed 's/^/\./')
           echo "name=merge-release-to-main/$SHORT_SHA" >> $GITHUB_OUTPUT
       - name: Create merge to main branch
+        working-directory: ./amplify-js
         env:
           BRANCH: ${{ steps.branch-name.outcome.name }}
         run: |
