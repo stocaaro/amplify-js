@@ -6,9 +6,7 @@ on:
   schedule:
     - cron: '0 8 * * 0' # run weekly on Sunday at 8am GMT
 
-permissions:
-  pull-requests: write
-  contents: write
+permissions: write-all
 
 jobs:
   yarn-update:
