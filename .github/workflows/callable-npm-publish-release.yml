@@ -2,9 +2,6 @@ name: Release to npm and update repository
 
 on: workflow_call
 
-permissions:
-  contents: write
-
 jobs:
   deploy:
     name: Publish to Amplify Package
