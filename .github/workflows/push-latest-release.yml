@@ -5,6 +5,9 @@ concurrency:
   group: push-release-${{ github.ref }}
   cancel-in-progress: true
 
+permissions:
+  contents: write
+
 on:
   push:
     branches:
@@ -15,8 +18,6 @@ jobs:
     secrets: inherit
     uses: ./.github/workflows/callable-release-verification.yml
   release:
-    needs:
-      - e2e
     permissions:
       contents: write
     secrets: inherit
