@@ -39,7 +39,7 @@ jobs:
           git push origin HEAD
       - name: Create Pull Request
         env:
-          GH_TOKEN: ${{ github.token }}
+          GH_TOKEN: ${{ secrets.GH_TOKEN_AMPLIFY_JS_AUTOMATION }}
           BRANCH: update-yarnlock/${{ steps.current-date.outputs.date }}
         run: |
           gh pr create \
@@ -47,16 +47,3 @@ jobs:
           --body "Update the yarn.lock file" \
           --head $BRANCH \
           --base main
-      - name: Trigger PR Workflow
-        uses: actions/github-script@98814c53be79b1d30f795b907e553d8679345975 # v6.4.0 https://github.com/actions/github-script/commit/98814c53be79b1d30f795b907e553d8679345975
-        env:
-          BRANCH: update-yarnlock/${{ steps.current-date.outputs.date }}
-        with:
-          script: |
-            const { BRANCH } = process.env 
-            github.rest.actions.createWorkflowDispatch({
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              workflow_id: 'pr.yml',
-              ref: `${BRANCH}`,
-            })
