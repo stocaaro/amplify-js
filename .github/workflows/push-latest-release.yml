@@ -18,7 +18,38 @@ jobs:
     secrets: inherit
     uses: ./.github/workflows/callable-release-verification.yml
   release:
-    permissions:
-      contents: write
     secrets: inherit
     uses: ./.github/workflows/callable-npm-publish-release.yml
+  pr_back_to_main:
+    needs:
+      - release
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@24cb9080177205b6e8c946b17badbe402adc938f # v3.4.0 https://github.com/actions/checkout/commit/24cb9080177205b6e8c946b17badbe402adc938f
+        with:
+          ref: release
+          fetch-depth: 0
+      - name: Create branch name
+        env:
+          GH_SHA: ${{ github.sha }}
+        id: branch-name
+        run: |
+          export SHORT_SHA=$(echo $GH_SHA | cut -c -7)
+          echo "name=merge-release-to-main/$SHORT_SHA" >> $GITHUB_OUTPUT
+      - name: Create merge to main branch
+        env:
+          BRANCH: ${{ steps.branch-name.outputs.name }}
+        run: |
+          git checkout -b $BRANCH
+          git push origin HEAD
+      - name: Create PR back to main
+        env:
+          GH_TOKEN: ${{ secrets.GH_TOKEN_AMPLIFY_JS_AUTOMATION }}
+          BRANCH: ${{ steps.branch-name.outputs.name }}
+        run: |
+          gh pr create \
+          --title "chore: Merge release back to main" \
+          --body "Merge version updates and docs changes from release back to main." \
+          --head $BRANCH \
+          --base main
