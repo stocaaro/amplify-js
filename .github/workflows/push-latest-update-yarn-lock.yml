@@ -1,9 +1,9 @@
 name: Latest Experiment - Update yarn.lock
 
 on:
-  push:
-    branches:
-      - release
+  workflow_run:
+    workflows: [Push - release from release to latest]
+    types: [completed]
 
 permissions:
   contents: write
