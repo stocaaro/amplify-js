@@ -2,7 +2,8 @@ name: Latest Experiment - Update yarn.lock
 
 on:
   workflow_run:
-    workflows: [Push - release from release to latest]
+    workflows:
+      - Push - release from release to latest
     types: [completed]
 
 permissions:
