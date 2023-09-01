@@ -8,7 +8,7 @@ concurrency:
 on:
   push:
     branches:
-      - main
+      - main1
 
 jobs:
   e2e:

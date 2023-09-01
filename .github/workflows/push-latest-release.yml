@@ -15,5 +15,7 @@ on:
 
 jobs:
   release:
+    permissions:
+      contents: write
     secrets: inherit
     uses: ./.github/workflows/callable-npm-publish-release.yml
