@@ -24,7 +24,7 @@ jobs:
           echo "name=merge-release-to-main/$SHORT_SHA" >> $GITHUB_OUTPUT
       - uses: actions/checkout@24cb9080177205b6e8c946b17badbe402adc938f # v3.4.0 https://github.com/actions/checkout/commit/24cb9080177205b6e8c946b17badbe402adc938f
         with:
-          ref: main
+          ref: release
       - name: Set github commit user
         shell: bash
         env:

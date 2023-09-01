@@ -11,12 +11,9 @@ permissions:
 on:
   push:
     branches:
-      - release
+      - release2 # Disable for now
 
 jobs:
-  e2e:
-    secrets: inherit
-    uses: ./.github/workflows/callable-release-verification.yml
   release:
     secrets: inherit
     uses: ./.github/workflows/callable-npm-publish-release.yml
@@ -37,9 +34,3 @@ jobs:
         run: |
           export SHORT_SHA=$(echo $GH_SHA | cut -c -7)
           echo "name=merge-release-to-main/$SHORT_SHA" >> $GITHUB_OUTPUT
-      - name: Create merge to main branch
-        env:
-          BRANCH: ${{ steps.branch-name.outputs.name }}
-        run: |
-          git checkout -b $BRANCH
-          git push origin HEAD
