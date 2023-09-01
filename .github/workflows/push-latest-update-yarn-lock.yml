@@ -53,6 +53,7 @@ jobs:
           git checkout -b $BRANCH
           git push origin HEAD
       - name: Create Pull Request
+        working-directory: ./amplify-js
         env:
           GH_TOKEN: ${{ secrets.GH_TOKEN_AMPLIFY_JS_AUTOMATION }}
           BRANCH: ${{ steps.branch-name.outputs.name }}
