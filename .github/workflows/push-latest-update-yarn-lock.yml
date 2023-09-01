@@ -20,10 +20,16 @@ jobs:
         run: |
           export SHORT_SHA=$(echo $GH_SHA | cut -c -7)
           echo "name=merge-release-to-main/$SHORT_SHA" >> $GITHUB_OUTPUT
+
       - uses: actions/checkout@24cb9080177205b6e8c946b17badbe402adc938f # v3.4.0 https://github.com/actions/checkout/commit/24cb9080177205b6e8c946b17badbe402adc938f
         with:
           ref: release
           fetch-depth: 0
+          path: amplify-js
+
+      - name: Setup node and build the repository
+        uses: ./amplify-js/.github/actions/node-and-build
+
       - name: Set github commit user
         shell: bash
         env:
@@ -39,6 +45,7 @@ jobs:
           git add ./docs/api/
           git commit -m "chore: update API docs"
       - name:
+        working-directory: ./amplify-js
         env:
           BRANCH: ${{ steps.branch-name.outputs.name }}
         run: |
