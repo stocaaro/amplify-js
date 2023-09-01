@@ -43,13 +43,3 @@ jobs:
         run: |
           git checkout -b $BRANCH
           git push origin HEAD
-      - name: Create PR back to main
-        env:
-          GH_TOKEN: ${{ secrets.GH_TOKEN_AMPLIFY_JS_AUTOMATION }}
-          BRANCH: ${{ steps.branch-name.outputs.name }}
-        run: |
-          gh pr create \
-          --title "chore: Merge release back to main" \
-          --body "Merge version updates and docs changes from release back to main." \
-          --head $BRANCH \
-          --base main
