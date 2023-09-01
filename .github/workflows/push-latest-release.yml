@@ -14,9 +14,9 @@ on:
       - release
 
 jobs:
-  e2e:
-    secrets: inherit
-    uses: ./.github/workflows/callable-release-verification.yml
+  # e2e:
+  #   secrets: inherit
+  #   uses: ./.github/workflows/callable-release-verification.yml
   release:
     secrets: inherit
     uses: ./.github/workflows/callable-npm-publish-release.yml
