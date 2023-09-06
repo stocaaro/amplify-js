@@ -17,6 +17,7 @@ jobs:
 
       - name: Load Verdaccio with AmplifyJs
         uses: ./amplify-js/.github/actions/load-verdaccio-with-amplify-js
+
       - name: Run npm publish
         uses: ./amplify-js/.github/actions/npm-publish
         with:
