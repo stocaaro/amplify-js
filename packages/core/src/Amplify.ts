@@ -7,7 +7,7 @@ const logger = new LoggerClass('Amplify');
 
 export class AmplifyClass {
 	// Everything that is `register`ed is tracked here
-	private _components:any[] = [];
+	private _components: any[] = [];
 	private _config = {};
 
 	// All modules (with `getModuleName()`) are stored here for dependency injection
@@ -40,7 +40,7 @@ export class AmplifyClass {
 		return Object.assign({}, this._config);
 	}
 
-	register(comp:any) {
+	register(comp: any) {
 		logger.debug('component registered in amplify', comp);
 		this._components.push(comp);
 		if (typeof comp.getModuleName === 'function') {
@@ -68,7 +68,7 @@ export class AmplifyClass {
 		// Dependency Injection via property-setting.
 		// This avoids introducing a public method/interface/setter that's difficult to remove later.
 		// Plus, it reduces `if` statements within the `constructor` and `configure` of each module
-		Object.entries(this._modules).forEach(([Name, comp]:[any, any]) => {
+		Object.entries(this._modules).forEach(([Name, comp]: [any, any]) => {
 			// e.g. Auth.*
 			Object.keys(comp).forEach(property => {
 				// e.g. Auth["Credentials"] = this._modules["Credentials"] when set

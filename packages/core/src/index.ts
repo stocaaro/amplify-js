@@ -69,3 +69,5 @@ export { BrowserStorageCache as Cache }; // Maintain interoperability with React
 export { I18n } from './I18n';
 
 export { parseAWSExports } from './parseAWSExports';
+
+export { externalLogger as logger } from './Logger';

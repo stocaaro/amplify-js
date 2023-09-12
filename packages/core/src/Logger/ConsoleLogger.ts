@@ -4,6 +4,9 @@
 import { LoggingProvider, InputLogEvent } from '../types';
 import { AWS_CLOUDWATCH_CATEGORY } from '../Util/Constants';
 import { Logger } from './logger-interface';
+import { log as centralizedLog } from './index';
+import { LogLevel } from './types';
+import { setLogLevel } from './AdministrateLogger';
 
 const LOG_LEVELS: Record<string, number> = {
 	VERBOSE: 1,
@@ -21,9 +24,12 @@ export enum LOG_TYPE {
 	VERBOSE = 'VERBOSE',
 }
 
+let consoleLogLevel: LOG_TYPE | undefined = undefined;
+
 /**
  * Write logs
  * @class Logger
+ * @deprecated The ConsoleLogger will be deprecated with the next major version release. Please migrate to the `logger` function.
  */
 export class ConsoleLogger implements Logger {
 	name: string;
@@ -41,7 +47,14 @@ export class ConsoleLogger implements Logger {
 		this._pluggables = [];
 	}
 
-	static LOG_LEVEL = null;
+	static get LOG_LEVEL() {
+		return consoleLogLevel;
+	}
+
+	static set LOG_LEVEL(level: LOG_TYPE | undefined) {
+		if (level) setLogLevel(level?.toString() as LogLevel);
+		consoleLogLevel = level;
+	}
 
 	_padding(n: number) {
 		return n < 10 ? '0' + n : '' + n;
@@ -83,17 +96,18 @@ export class ConsoleLogger implements Logger {
 		}
 		const logger_level = LOG_LEVELS[logger_level_name];
 		const type_level = LOG_LEVELS[type];
+		let objects = msg.slice(1);
+		centralizedLog(
+			[this.name],
+			type_level.toString() as LogLevel,
+			msg[0],
+			objects
+		);
+
+		// TODO Everything after this point is left to maintain the cloud logging behavior only
 		if (!(type_level >= logger_level)) {
 			// Do nothing if type is not greater than or equal to logger level (handle undefined)
 			return;
-		}
-
-		let log = console.log.bind(console);
-		if (type === LOG_TYPE.ERROR && console.error) {
-			log = console.error.bind(console);
-		}
-		if (type === LOG_TYPE.WARN && console.warn) {
-			log = console.warn.bind(console);
 		}
 
 		const prefix = `[${type}] ${this._ts()} ${this.name}`;
@@ -101,20 +115,16 @@ export class ConsoleLogger implements Logger {
 
 		if (msg.length === 1 && typeof msg[0] === 'string') {
 			message = `${prefix} - ${msg[0]}`;
-			log(message);
 		} else if (msg.length === 1) {
 			message = `${prefix} ${msg[0]}`;
-			log(prefix, msg[0]);
 		} else if (typeof msg[0] === 'string') {
 			let obj = msg.slice(1);
 			if (obj.length === 1) {
 				obj = obj[0];
 			}
 			message = `${prefix} - ${msg[0]} ${obj}`;
-			log(`${prefix} - ${msg[0]}`, obj);
 		} else {
 			message = `${prefix} ${msg}`;
-			log(prefix, msg);
 		}
 
 		for (const plugin of this._pluggables) {

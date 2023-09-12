@@ -105,3 +105,5 @@ export {
 } from './Util/Constants';
 export { fetchAuthSession } from './singleton/apis/internal/fetchAuthSession';
 export { AMPLIFY_SYMBOL } from './Hub';
+
+export { internalLogger as logger } from './Logger';
