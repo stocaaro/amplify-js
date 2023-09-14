@@ -349,7 +349,10 @@ describe('BrowserStorageCache', () => {
 
 		test('output a console warning and return null if invalid keys', () => {
 			cache.getItem('');
+			console.log('TEST');
+			console.warn('test');
 			expect(spyonConsoleWarn).toBeCalled();
+			console.warn('test');
 			spyonConsoleWarn.mockReset();
 
 			cache.getItem('CurSize');

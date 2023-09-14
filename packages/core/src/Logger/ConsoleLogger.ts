@@ -29,7 +29,7 @@ let consoleLogLevel: LOG_TYPE | undefined = undefined;
 /**
  * Write logs
  * @class Logger
- * @deprecated The ConsoleLogger will be deprecated with the next major version release. Please migrate to the `logger` function.
+ * @deprecated The ConsoleLogger is deprecated. Please migrate to the `logger` function.
  */
 export class ConsoleLogger implements Logger {
 	name: string;
@@ -96,7 +96,7 @@ export class ConsoleLogger implements Logger {
 		}
 		const logger_level = LOG_LEVELS[logger_level_name];
 		const type_level = LOG_LEVELS[type];
-		let objects = msg.slice(1);
+		const objects = msg.slice(1);
 		centralizedLog(
 			[this.name],
 			type_level.toString() as LogLevel,

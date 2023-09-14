@@ -31,6 +31,6 @@ export const checkLogLevel = (
 	level: LogLevel,
 	setLevel: LogLevel | undefined = undefined
 ): boolean => {
-	setLevel ||= getLogLevel();
-	return logLevelIndex.indexOf(level) >= logLevelIndex.indexOf(setLevel);
+	const targetLevel = setLevel ?? getLogLevel();
+	return logLevelIndex.indexOf(level) >= logLevelIndex.indexOf(targetLevel);
 };
