@@ -4,9 +4,8 @@
 import { LoggingProvider, InputLogEvent } from '../types';
 import { AWS_CLOUDWATCH_CATEGORY } from '../Util/Constants';
 import { Logger } from './logger-interface';
-import { log as centralizedLog } from './index';
 import { LogLevel } from './types';
-import { setLogLevel } from './AdministrateLogger';
+import { setLogLevel, log as centralizedLog } from './AdministrateLogger';
 
 const LOG_LEVELS: Record<string, number> = {
 	VERBOSE: 1,
@@ -204,3 +203,4 @@ export class ConsoleLogger implements Logger {
 		return this._pluggables;
 	}
 }
+console.log('done loading', ConsoleLogger);

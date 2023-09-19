@@ -1,4 +1,4 @@
-import { checkLogLevel, getLogLevel } from '../AdministrateLogger';
+import { checkLogLevel } from '../AdministrateLogger';
 import { LogLevel, Logger } from '../types';
 export const recorder: Logger = {
 	log: (

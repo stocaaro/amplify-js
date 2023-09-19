@@ -2,6 +2,11 @@ import { LogLevel } from './types';
 import { log as centralizedLog } from './index';
 import { AmplifyLoggingCategories } from '../types';
 
+/**
+ * Write logs
+ * @class Logger
+ * @deprecated The ConsoleLogger is deprecated. Please migrate to the `logger` function.
+ **/
 class Logger {
 	namespaces: string[];
 
