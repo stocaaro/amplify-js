@@ -1,3 +1,6 @@
+// Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved.
+// SPDX-License-Identifier: Apache-2.0
+
 import { LogCallInputs, LogLevel, Logger } from './types';
 import { recorder as consoleRecorder } from './LogRecorder/Console';
 const loggers: Logger[] = [];

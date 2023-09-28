@@ -1,3 +1,6 @@
+// Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved.
+// SPDX-License-Identifier: Apache-2.0
+
 import { checkLogLevel } from '../AdministrateLogger';
 import { LogLevel, Logger } from '../types';
 export const recorder: Logger = {
