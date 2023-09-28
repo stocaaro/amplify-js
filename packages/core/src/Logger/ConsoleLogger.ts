@@ -96,12 +96,7 @@ export class ConsoleLogger implements Logger {
 		const logger_level = LOG_LEVELS[logger_level_name];
 		const type_level = LOG_LEVELS[type];
 		const objects = msg.slice(1);
-		centralizedLog(
-			[this.name],
-			type_level.toString() as LogLevel,
-			msg[0],
-			objects
-		);
+		centralizedLog([this.name], type as LogLevel, msg[0], objects);
 
 		// TODO Everything after this point is left to maintain the cloud logging behavior only
 		if (!(type_level >= logger_level)) {
@@ -203,4 +198,3 @@ export class ConsoleLogger implements Logger {
 		return this._pluggables;
 	}
 }
-console.log('done loading', ConsoleLogger);
