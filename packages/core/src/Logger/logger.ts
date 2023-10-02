@@ -8,7 +8,6 @@ import { AmplifyLoggingCategories } from '../types';
 /**
  * Write logs
  * @class Logger
- * @deprecated The ConsoleLogger is deprecated. Please migrate to the `logger` function.
  **/
 class Logger {
 	namespaces: string[];
@@ -72,13 +71,13 @@ class Logger {
 	}
 }
 
-export const internalLogger = (
+export const generateInternalLogger = (
 	forCategory: AmplifyLoggingCategories,
 	...forNamespace: string[]
 ) => {
 	return new Logger([forCategory, ...forNamespace]);
 };
 
-export const externalLogger = (...forNamespace: string[]) => {
+export const generateExternalLogger = (...forNamespace: string[]) => {
 	return new Logger(forNamespace);
 };

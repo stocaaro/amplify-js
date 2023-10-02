@@ -2,7 +2,7 @@
 // SPDX-License-Identifier: Apache-2.0
 
 import { LogCallInputs, LogLevel, Logger } from './types';
-import { recorder as consoleRecorder } from './LogRecorder/Console';
+import { recorder as consoleLogRecorder } from './LogRecorder/Console';
 const loggers: Logger[] = [];
 let logLevel: LogLevel = 'INFO';
 const logLevelIndex = ['VERBOSE', 'DEBUG', 'INFO', 'WARN', 'ERROR'];
@@ -11,7 +11,7 @@ export const addLogger = (logger: Logger) => {
 };
 
 export const initializeLogger = () => {
-	addLogger(consoleRecorder);
+	addLogger(consoleLogRecorder);
 };
 
 export const log = (...params: LogCallInputs) => {
