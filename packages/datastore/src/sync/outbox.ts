@@ -15,7 +15,7 @@ import {
 	QueryOne,
 	SchemaModel,
 } from '../types';
-import { USER, SYNC, valuesEqual } from '../util';
+import { USER, SYNC, objectMatches } from '../util';
 import { getIdentifierValue, TransformerMutationType } from './utils';
 
 // TODO: Persist deleted ids
@@ -196,7 +196,7 @@ class MutationEventOutbox {
 		// NOTE: `incomingData` contains all the fields in the record, and `outgoingData`
 		// only contains updated fields, resulting in an error when doing a comparison
 		// of two equal mutations. Fix this, or mitigate otherwise.
-		if (!valuesEqual(incomingData, outgoingData, true)) {
+		if (!objectMatches(outgoingData, incomingData, true)) {
 			return;
 		}
 
