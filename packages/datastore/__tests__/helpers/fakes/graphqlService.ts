@@ -40,6 +40,12 @@ const defaultLatencies: FakeLatencies = {
 };
 
 /**
+ * Fake mirrors logic from multiple merge strategies
+ * https://docs.aws.amazon.com/appsync/latest/devguide/conflict-detection-and-sync.html#automerge
+ */
+export type MergeStrategy = 'Automerge' | 'OptimisticConcurrency';
+
+/**
  * Statefully pretends to be AppSync, with minimal built-in assertions with
  * error callbacks and settings to help simulate various conditions.
  */
@@ -86,10 +92,16 @@ export class FakeGraphQLService {
 	 */
 	public latencies: FakeLatencies = defaultLatencies;
 
-	constructor(public schema: Schema) {
+	public mergeStrategy: MergeStrategy;
+
+	constructor(
+		public schema: Schema,
+		mergeStrategy: MergeStrategy = 'Automerge'
+	) {
 		for (const model of Object.values(schema.models)) {
 			this.tables.set(model.name, new Map<string, any[]>());
 			this.tableDefinitions.set(model.name, model);
+			this.mergeStrategy = mergeStrategy;
 			let CPKFound = false;
 
 			for (const attribute of model.attributes || []) {
@@ -458,6 +470,23 @@ export class FakeGraphQLService {
 		return merged;
 	}
 
+	private occMerge(existing, updated) {
+		let merged;
+		if (updated._version === existing._version) {
+			merged = {
+				...this.populatedFields(existing),
+				...this.populatedFields(updated),
+				_version: updated._version + 1,
+				_lastChangedAt: new Date().getTime(),
+				updatedAt: new Date().toISOString(),
+			};
+		} else {
+			return null;
+		}
+		this.log('occ merged', { existing, updated, merged });
+		return merged;
+	}
+
 	public simulateDisconnect() {
 		this.isConnected = false;
 	}
@@ -655,11 +684,23 @@ export class FakeGraphQLService {
 						};
 						errors = [this.makeMissingUpdateTarget(selection)];
 					} else {
-						const updated = this.autoMerge(existing, record);
-						data = {
-							[selection]: updated,
-						};
-						table.set(this.getPK(tableName, record), updated);
+						if (this.mergeStrategy === 'OptimisticConcurrency') {
+							const updated = this.occMerge(existing, record);
+							data = {
+								[selection]: updated,
+							};
+							if (updated !== null) {
+								table.set(this.getPK(tableName, record), updated);
+							} else {
+								errors = [this.makeOCCConflictUnhandeled(existing, selection)];
+							}
+						} else {
+							const updated = this.autoMerge(existing, record);
+							data = {
+								[selection]: updated,
+							};
+							table.set(this.getPK(tableName, record), updated);
+						}
 					}
 				} else if (type === 'delete') {
 					const existing = table.get(this.getPK(tableName, record));

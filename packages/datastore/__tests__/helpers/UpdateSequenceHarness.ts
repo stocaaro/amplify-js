@@ -1,5 +1,6 @@
 import { Subscription } from 'rxjs';
 import { getDataStore } from './datastoreFactory';
+import { MergeStrategy } from './fakes';
 import { Post } from './schemas';
 import {
 	waitForExpectModelUpdateGraphqlCallCount,
@@ -107,10 +108,11 @@ export class UpdateSequenceHarness {
 		this.latencyValue = value;
 	}
 
-	constructor() {
+	constructor(mergeStrategy: MergeStrategy) {
 		this.datastoreFake = getDataStore({
 			online: true,
 			isNode: false,
+			mergeStrategy,
 		});
 
 		this.subscriptionLogSubscription = this.datastoreFake.DataStore.observe(
@@ -148,10 +150,16 @@ export class UpdateSequenceHarness {
 		});
 	}
 
-	async createPostHarness(...args: ConstructorParameters<typeof Post>) {
+	async createPostHarness(
+		args: ConstructorParameters<typeof Post>[0],
+		settleOutbox: boolean = true
+	) {
 		const original = await this.datastoreFake.DataStore.save(
-			new this.datastoreFake.Post(...args)
+			new this.datastoreFake.Post(args)
 		);
+		if (settleOutbox) {
+			await this.outboxSettled();
+		}
 		return new PostHarness(original, this);
 	}
 

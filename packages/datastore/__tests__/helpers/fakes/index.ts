@@ -1,2 +1,2 @@
-export { FakeGraphQLService } from './graphqlService';
+export { FakeGraphQLService, MergeStrategy } from './graphqlService';
 export { FakeDataStoreConnectivity } from './connectivityMonitor';
