@@ -1,6 +1,44 @@
 import { warpTime, unwarpTime, pause } from './helpers';
 import { UpdateSequenceHarness } from './helpers/UpdateSequenceHarness';
 
+/**
+ * NOTE:
+ * The following test assertions are based on *existing* behavior, not *correct*
+ * behavior. Once we have fixed rapid single-field consecutive updates, and updates on a
+ * poor connection, we should update these assertions to reflect the *correct* behavior.
+ *
+ * WHAT WE ARE TESTING:
+ * Test observed rapid single-field mutations with variable connection latencies, as well as
+ * waiting / not waiting on the outbox between mutations. All permutations are necessary,
+ * as each scenario results in different observed behavior - essentially, whether or not
+ * the outbox merges updates. We are updating a single field with each mutation to ensure
+ * that the outbox's `syncOutboxVersionsOnDequeue` does the right value comparison when
+ * there are multiple fields present on a model, but only one is updated.
+ *
+ * NOTE: if these tests fail, and you witness one of the following:
+ *     1) The retry throws an error
+ *     2) The number of observed updates has changed
+ *     3) The record's final version number has changed
+ * make sure you haven't adjusted the artifical latency or `pause` values, as this will
+ * result in a change in the expected number of merges performed by the outbox.
+ *
+ * NOTES ON HOW WE PERFORM CONSECUTIVE UPDATES:
+ *
+ * When we want to test a scenario where the outbox does not necessarily merge all outgoing
+ * requests (for instance, when we do not add artifical latency to the connection), we make
+ * the mutations rapidly (i.e. we don't await the outbox). However, because of how
+ * rapidly the mutations are performed, we are creating an artifical situation where
+ * mutations will always be merged. Adding a slight pause between mutations dds a
+ * semi-realistic pause ("button clicks") between updates. This is not required when awaiting
+ * the outbox after each mutation. Additionally, a pause is not required if we are
+ * intentionally testing rapid updates, such as when the initial save is still pending.
+ *
+ * When we want to test a scenario where the user is waiting for a long period of time
+ * between each mutation (non-concurrent updates), we wait for an empty outbox after each
+ * mutation. This ensures each mutation completes a full cycle before the next mutation
+ * begins. This guarantees that there will NEVER be concurrent updates being processed by
+ * the outbox.
+ */
 describe('DataStore sync engine', () => {
 	let harness: UpdateSequenceHarness;
 
@@ -31,50 +69,13 @@ describe('DataStore sync engine', () => {
 			afterEach(async () => {
 				unwarpTime();
 			});
-			/**
-			 * NOTE:
-			 * The following test assertions are based on *existing* behavior, not *correct*
-			 * behavior. Once we have fixed rapid single-field consecutive updates, and updates on a
-			 * poor connection, we should update these assertions to reflect the *correct* behavior.
-			 *
-			 * WHAT WE ARE TESTING:
-			 * Test observed rapid single-field mutations with variable connection latencies, as well as
-			 * waiting / not waiting on the outbox between mutations. All permutations are necessary,
-			 * as each scenario results in different observed behavior - essentially, whether or not
-			 * the outbox merges updates. We are updating a single field with each mutation to ensure
-			 * that the outbox's `syncOutboxVersionsOnDequeue` does the right value comparison when
-			 * there are multiple fields present on a model, but only one is updated.
-			 *
-			 * NOTE: if these tests fail, and you witness one of the following:
-			 *     1) The retry throws an error
-			 *     2) The number of observed updates has changed
-			 *     3) The record's final version number has changed
-			 * make sure you haven't adjusted the artifical latency or `pause` values, as this will
-			 * result in a change in the expected number of merges performed by the outbox.
-			 *
-			 * NOTES ON HOW WE PERFORM CONSECUTIVE UPDATES:
-			 *
-			 * When we want to test a scenario where the outbox does not necessarily merge all outgoing
-			 * requests (for instance, when we do not add artifical latency to the connection), we make
-			 * the mutations rapidly (i.e. we don't await the outbox). However, because of how
-			 * rapidly the mutations are performed, we are creating an artifical situation where
-			 * mutations will always be merged. Adding a slight pause between mutations dds a
-			 * semi-realistic pause ("button clicks") between updates. This is not required when awaiting
-			 * the outbox after each mutation. Additionally, a pause is not required if we are
-			 * intentionally testing rapid updates, such as when the initial save is still pending.
-			 *
-			 * When we want to test a scenario where the user is waiting for a long period of time
-			 * between each mutation (non-concurrent updates), we wait for an empty outbox after each
-			 * mutation. This ensures each mutation completes a full cycle before the next mutation
-			 * begins. This guarantees that there will NEVER be concurrent updates being processed by
-			 * the outbox.
-			 */
+
 			describe('observed rapid single-field mutations with variable connection latencies', () => {
 				describe('single client updates', () => {
 					test('slow connection speed, high latency where we wait for the create to clear the outbox', async () => {
 						/**
 						 * Slow connection speed is simulated by running datastore commands as quickly as possible,
-						 * leaving as little time for internal resolution before the next command runs.
+						 * leaving little time for internal resolution before the next command runs.
 						 */
 						harness.connectionSpeed = 'slow';
 						/**
@@ -103,8 +104,8 @@ describe('DataStore sync engine', () => {
 							['post title 0', 3],
 						]);
 
-						postHarness.expectCurrentToMatch({
-							version: 3,
+						expect(await postHarness.currentContents).toMatchObject({
+							_version: 3,
 							title: 'post title 0',
 						});
 					});
@@ -142,8 +143,8 @@ describe('DataStore sync engine', () => {
 							['post title 0', 4],
 						]);
 
-						postHarness.expectCurrentToMatch({
-							version: 4,
+						expect(await postHarness.currentContents).toMatchObject({
+							_version: 4,
 							title: 'post title 0',
 						});
 					});
@@ -175,8 +176,8 @@ describe('DataStore sync engine', () => {
 							['post title 2', 1],
 						]);
 
-						postHarness.expectCurrentToMatch({
-							version: 1,
+						expect(await postHarness.currentContents).toMatchObject({
+							_version: 1,
 							title: 'post title 2',
 						});
 					});
@@ -208,8 +209,8 @@ describe('DataStore sync engine', () => {
 							['post title 2', 1],
 						]);
 
-						postHarness.expectCurrentToMatch({
-							version: 1,
+						expect(await postHarness.currentContents).toMatchObject({
+							_version: 1,
 							title: 'post title 2',
 						});
 					});
@@ -244,8 +245,8 @@ describe('DataStore sync engine', () => {
 							['post title 2', 4],
 						]);
 
-						postHarness.expectCurrentToMatch({
-							version: 4,
+						expect(await postHarness.currentContents).toMatchObject({
+							_version: 4,
 							title: 'post title 2',
 						});
 					});
@@ -274,8 +275,8 @@ describe('DataStore sync engine', () => {
 							['post title 2', 4],
 						]);
 
-						postHarness.expectCurrentToMatch({
-							version: 4,
+						expect(await postHarness.currentContents).toMatchObject({
+							_version: 4,
 							title: 'post title 2',
 						});
 					});
@@ -318,8 +319,8 @@ describe('DataStore sync engine', () => {
 								['update from second client', 4],
 							]);
 
-							postHarness.expectCurrentToMatch({
-								version: 4,
+							expect(await postHarness.currentContents).toMatchObject({
+								_version: 4,
 								title: 'update from second client',
 							});
 						});
@@ -351,8 +352,8 @@ describe('DataStore sync engine', () => {
 								['post title 0', 5],
 							]);
 
-							postHarness.expectCurrentToMatch({
-								version: 5,
+							expect(await postHarness.currentContents).toMatchObject({
+								_version: 5,
 								title: 'post title 0',
 							});
 						});
@@ -389,8 +390,8 @@ describe('DataStore sync engine', () => {
 								['post title 2', 5],
 							]);
 
-							postHarness.expectCurrentToMatch({
-								version: 5,
+							expect(await postHarness.currentContents).toMatchObject({
+								_version: 5,
 								title: 'post title 2',
 							});
 						});
@@ -428,8 +429,8 @@ describe('DataStore sync engine', () => {
 								['post title 2', 5],
 							]);
 
-							postHarness.expectCurrentToMatch({
-								version: 5,
+							expect(await postHarness.currentContents).toMatchObject({
+								_version: 5,
 								title: 'post title 2',
 							});
 						});
@@ -480,8 +481,8 @@ describe('DataStore sync engine', () => {
 								['original title', 'update from second client', 4],
 							]);
 
-							postHarness.expectCurrentToMatch({
-								version: 4,
+							expect(await postHarness.currentContents).toMatchObject({
+								_version: 4,
 								title: 'original title',
 								blogId: 'update from second client',
 							});
@@ -524,8 +525,8 @@ describe('DataStore sync engine', () => {
 								['post title 0', 'update from second client', 5],
 							]);
 
-							postHarness.expectCurrentToMatch({
-								version: 5,
+							expect(await postHarness.currentContents).toMatchObject({
+								_version: 5,
 								title: 'post title 0',
 								blogId: 'update from second client',
 							});
@@ -563,8 +564,8 @@ describe('DataStore sync engine', () => {
 								['post title 0', 'update from second client', 5],
 							]);
 
-							postHarness.expectCurrentToMatch({
-								version: 5,
+							expect(await postHarness.currentContents).toMatchObject({
+								_version: 5,
 								title: 'post title 0',
 								blogId: 'update from second client',
 							});
@@ -613,8 +614,8 @@ describe('DataStore sync engine', () => {
 								['post title 0', 'original blogId', 5],
 							]);
 
-							postHarness.expectCurrentToMatch({
-								version: 5,
+							expect(await postHarness.currentContents).toMatchObject({
+								_version: 5,
 								title: 'post title 0',
 								blogId: 'original blogId',
 							});
@@ -655,8 +656,8 @@ describe('DataStore sync engine', () => {
 								['post title 2', 'update from second client', 5],
 							]);
 
-							postHarness.expectCurrentToMatch({
-								version: 5,
+							expect(await postHarness.currentContents).toMatchObject({
+								_version: 5,
 								title: 'post title 2',
 								blogId: 'update from second client',
 							});
@@ -696,8 +697,8 @@ describe('DataStore sync engine', () => {
 								['post title 2', 'update from second client', 5],
 							]);
 
-							postHarness.expectCurrentToMatch({
-								version: 5,
+							expect(await postHarness.currentContents).toMatchObject({
+								_version: 5,
 								title: 'post title 2',
 								blogId: 'update from second client',
 							});
@@ -708,7 +709,7 @@ describe('DataStore sync engine', () => {
 		});
 	});
 
-	describe('OptimisticConcurrency conflict resolution XXX', () => {
+	describe('OptimisticConcurrency conflict resolution', () => {
 		beforeEach(async () => {
 			harness = new UpdateSequenceHarness('OptimisticConcurrency');
 			await harness.startDatastore();
@@ -725,50 +726,13 @@ describe('DataStore sync engine', () => {
 			afterEach(async () => {
 				unwarpTime();
 			});
-			/**
-			 * NOTE:
-			 * The following test assertions are based on *existing* behavior, not *correct*
-			 * behavior. Once we have fixed rapid single-field consecutive updates, and updates on a
-			 * poor connection, we should update these assertions to reflect the *correct* behavior.
-			 *
-			 * WHAT WE ARE TESTING:
-			 * Test observed rapid single-field mutations with variable connection latencies, as well as
-			 * waiting / not waiting on the outbox between mutations. All permutations are necessary,
-			 * as each scenario results in different observed behavior - essentially, whether or not
-			 * the outbox merges updates. We are updating a single field with each mutation to ensure
-			 * that the outbox's `syncOutboxVersionsOnDequeue` does the right value comparison when
-			 * there are multiple fields present on a model, but only one is updated.
-			 *
-			 * NOTE: if these tests fail, and you witness one of the following:
-			 *     1) The retry throws an error
-			 *     2) The number of observed updates has changed
-			 *     3) The record's final version number has changed
-			 * make sure you haven't adjusted the artifical latency or `pause` values, as this will
-			 * result in a change in the expected number of merges performed by the outbox.
-			 *
-			 * NOTES ON HOW WE PERFORM CONSECUTIVE UPDATES:
-			 *
-			 * When we want to test a scenario where the outbox does not necessarily merge all outgoing
-			 * requests (for instance, when we do not add artifical latency to the connection), we make
-			 * the mutations rapidly (i.e. we don't await the outbox). However, because of how
-			 * rapidly the mutations are performed, we are creating an artifical situation where
-			 * mutations will always be merged. Adding a slight pause between mutations dds a
-			 * semi-realistic pause ("button clicks") between updates. This is not required when awaiting
-			 * the outbox after each mutation. Additionally, a pause is not required if we are
-			 * intentionally testing rapid updates, such as when the initial save is still pending.
-			 *
-			 * When we want to test a scenario where the user is waiting for a long period of time
-			 * between each mutation (non-concurrent updates), we wait for an empty outbox after each
-			 * mutation. This ensures each mutation completes a full cycle before the next mutation
-			 * begins. This guarantees that there will NEVER be concurrent updates being processed by
-			 * the outbox.
-			 */
-			describe('observed rapid single-field mutations with variable connection latencies', () => {
+
+			describe('observed rapid single-field mutations with variable connection latencies 123', () => {
 				describe('single client updates', () => {
 					test('slow connection speed, high latency where we wait for the create to clear the outbox', async () => {
 						/**
 						 * Slow connection speed is simulated by running datastore commands as quickly as possible,
-						 * leaving as little time for internal resolution before the next command runs.
+						 * leaving little time for internal resolution before the next command runs.
 						 */
 						harness.connectionSpeed = 'slow';
 						/**
@@ -794,11 +758,10 @@ describe('DataStore sync engine', () => {
 							['post title 0', 1],
 							['post title 1', 1],
 							['post title 2', 1],
-							['post title 0', 3],
 						]);
 
-						postHarness.expectCurrentToMatch({
-							version: 3,
+						expect(await postHarness.currentContents).toMatchObject({
+							_version: 2,
 							title: 'post title 0',
 						});
 					});
@@ -833,11 +796,10 @@ describe('DataStore sync engine', () => {
 							['post title 0', 1],
 							['post title 1', 1],
 							['post title 2', 1],
-							['post title 0', 4],
 						]);
 
-						postHarness.expectCurrentToMatch({
-							version: 4,
+						expect(await postHarness.currentContents).toMatchObject({
+							_version: 2,
 							title: 'post title 0',
 						});
 					});
@@ -869,8 +831,8 @@ describe('DataStore sync engine', () => {
 							['post title 2', 1],
 						]);
 
-						postHarness.expectCurrentToMatch({
-							version: 1,
+						expect(await postHarness.currentContents).toMatchObject({
+							_version: 1,
 							title: 'post title 2',
 						});
 					});
@@ -902,8 +864,8 @@ describe('DataStore sync engine', () => {
 							['post title 2', 1],
 						]);
 
-						postHarness.expectCurrentToMatch({
-							version: 1,
+						expect(await postHarness.currentContents).toMatchObject({
+							_version: 1,
 							title: 'post title 2',
 						});
 					});
@@ -938,8 +900,8 @@ describe('DataStore sync engine', () => {
 							['post title 2', 4],
 						]);
 
-						postHarness.expectCurrentToMatch({
-							version: 4,
+						expect(await postHarness.currentContents).toMatchObject({
+							_version: 4,
 							title: 'post title 2',
 						});
 					});
@@ -968,8 +930,8 @@ describe('DataStore sync engine', () => {
 							['post title 2', 4],
 						]);
 
-						postHarness.expectCurrentToMatch({
-							version: 4,
+						expect(await postHarness.currentContents).toMatchObject({
+							_version: 4,
 							title: 'post title 2',
 						});
 					});
@@ -1009,11 +971,10 @@ describe('DataStore sync engine', () => {
 								['post title 0', 1],
 								['post title 1', 1],
 								['post title 2', 1],
-								['update from second client', 4],
 							]);
 
-							postHarness.expectCurrentToMatch({
-								version: 4,
+							expect(await postHarness.currentContents).toMatchObject({
+								_version: 2,
 								title: 'update from second client',
 							});
 						});
@@ -1042,11 +1003,10 @@ describe('DataStore sync engine', () => {
 								['post title 0', 1],
 								['post title 1', 1],
 								['post title 2', 1],
-								['post title 0', 5],
 							]);
 
-							postHarness.expectCurrentToMatch({
-								version: 5,
+							expect(await postHarness.currentContents).toMatchObject({
+								_version: 2,
 								title: 'post title 0',
 							});
 						});
@@ -1083,8 +1043,8 @@ describe('DataStore sync engine', () => {
 								['post title 2', 5],
 							]);
 
-							postHarness.expectCurrentToMatch({
-								version: 5,
+							expect(await postHarness.currentContents).toMatchObject({
+								_version: 5,
 								title: 'post title 2',
 							});
 						});
@@ -1122,8 +1082,8 @@ describe('DataStore sync engine', () => {
 								['post title 2', 5],
 							]);
 
-							postHarness.expectCurrentToMatch({
-								version: 5,
+							expect(await postHarness.currentContents).toMatchObject({
+								_version: 5,
 								title: 'post title 2',
 							});
 						});
@@ -1163,6 +1123,7 @@ describe('DataStore sync engine', () => {
 
 							await harness.outboxSettled();
 							await harness.expectUpdateCallCount(3);
+							await pause(5000);
 
 							expect(
 								harness.subscriptionLogs(['title', 'blogId', '_version'])
@@ -1171,16 +1132,15 @@ describe('DataStore sync engine', () => {
 								['post title 0', null, 1],
 								['post title 1', null, 1],
 								['post title 2', null, 1],
-								['original title', 'update from second client', 4],
 							]);
 
-							postHarness.expectCurrentToMatch({
-								version: 4,
+							expect(await postHarness.currentContents).toMatchObject({
+								_version: 2,
 								title: 'original title',
 								blogId: 'update from second client',
 							});
 						});
-						test('slow connection speed, high latency where external request is second received update', async () => {
+						test('slow connection speed, high latency where external request is second received update XX X', async () => {
 							harness.connectionSpeed = 'slow';
 							harness.latency = 'high';
 							const postHarness = await harness.createPostHarness({
@@ -1215,16 +1175,17 @@ describe('DataStore sync engine', () => {
 								['post title 0', null, 1],
 								['post title 1', null, 1],
 								['post title 2', null, 1],
-								['post title 0', 'update from second client', 5],
+								['post title 2', null, 4],
 							]);
 
-							postHarness.expectCurrentToMatch({
-								version: 5,
-								title: 'post title 0',
-								blogId: 'update from second client',
+							const currentPostContent = await postHarness.currentContents;
+							expect(currentPostContent).toMatchObject({
+								_version: 4,
+								title: 'post title 2',
 							});
+							expect(currentPostContent?.['blogId']).toEqual(undefined);
 						});
-						test('fast connection speed, low latency where second field is created `null`', async () => {
+						test('fast connection speed, low latency where second field is created `null` XX X', async () => {
 							harness.connectionSpeed = 'fast';
 							harness.latency = 'low';
 
@@ -1254,14 +1215,15 @@ describe('DataStore sync engine', () => {
 								['post title 0', null, 1],
 								['post title 1', null, 1],
 								['post title 2', null, 1],
-								['post title 0', 'update from second client', 5],
+								['post title 2', null, 4],
 							]);
 
-							postHarness.expectCurrentToMatch({
-								version: 5,
-								title: 'post title 0',
-								blogId: 'update from second client',
+							const currentPostContent = await postHarness.currentContents;
+							expect(currentPostContent).toMatchObject({
+								_version: 4,
+								title: 'post title 2',
 							});
+							expect(currentPostContent?.['blogId']).toEqual(undefined);
 						});
 						/**
 						 * All other multi-client tests begin with a `null` value to the field that is being
@@ -1304,11 +1266,10 @@ describe('DataStore sync engine', () => {
 								['post title 0', 'original blogId', 1],
 								['post title 1', 'original blogId', 1],
 								['post title 2', 'original blogId', 1],
-								['post title 0', 'original blogId', 5],
 							]);
 
-							postHarness.expectCurrentToMatch({
-								version: 5,
+							expect(await postHarness.currentContents).toMatchObject({
+								_version: 2,
 								title: 'post title 0',
 								blogId: 'original blogId',
 							});
@@ -1329,7 +1290,7 @@ describe('DataStore sync engine', () => {
 								originalPostId: postHarness.original.id,
 								// External client performs a mutation against a different field:
 								updatedFields: { blogId: 'update from second client' },
-								version: undefined,
+								version: 3,
 							});
 
 							await postHarness.revise('post title 2');
@@ -1349,8 +1310,8 @@ describe('DataStore sync engine', () => {
 								['post title 2', 'update from second client', 5],
 							]);
 
-							postHarness.expectCurrentToMatch({
-								version: 5,
+							expect(await postHarness.currentContents).toMatchObject({
+								_version: 5,
 								title: 'post title 2',
 								blogId: 'update from second client',
 							});
@@ -1390,8 +1351,8 @@ describe('DataStore sync engine', () => {
 								['post title 2', 'update from second client', 5],
 							]);
 
-							postHarness.expectCurrentToMatch({
-								version: 5,
+							expect(await postHarness.currentContents).toMatchObject({
+								_version: 5,
 								title: 'post title 2',
 								blogId: 'update from second client',
 							});

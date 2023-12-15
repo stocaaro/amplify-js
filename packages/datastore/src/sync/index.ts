@@ -330,37 +330,39 @@ export class SyncEngine {
 												.subscribe(
 													({ modelDefinition, model: item, hasMore }) =>
 														this.runningProcesses.add(async () => {
-															const modelConstructor = this.userModelClasses[
-																modelDefinition.name
-															] as PersistentModelConstructor<any>;
+															try {
+																const modelConstructor = this.userModelClasses[
+																	modelDefinition.name
+																] as PersistentModelConstructor<any>;
 
-															const model = this.modelInstanceCreator(
-																modelConstructor,
-																item
-															);
+																const model = this.modelInstanceCreator(
+																	modelConstructor,
+																	item
+																);
 
-															await this.storage.runExclusive(storage =>
-																this.modelMerger.merge(
-																	storage,
-																	model,
-																	modelDefinition
-																)
-															);
+																await this.storage.runExclusive(storage =>
+																	this.modelMerger.merge(
+																		storage,
+																		model,
+																		modelDefinition
+																	)
+																);
 
-															observer.next({
-																type: ControlMessage.SYNC_ENGINE_OUTBOX_MUTATION_PROCESSED,
-																data: {
-																	model: modelConstructor,
-																	element: model,
-																},
-															});
-
-															observer.next({
-																type: ControlMessage.SYNC_ENGINE_OUTBOX_STATUS,
-																data: {
-																	isEmpty: !hasMore,
-																},
-															});
+																observer.next({
+																	type: ControlMessage.SYNC_ENGINE_OUTBOX_MUTATION_PROCESSED,
+																	data: {
+																		model: modelConstructor,
+																		element: model,
+																	},
+																});
+															} finally {
+																observer.next({
+																	type: ControlMessage.SYNC_ENGINE_OUTBOX_STATUS,
+																	data: {
+																		isEmpty: !hasMore,
+																	},
+																});
+															}
 														}, 'mutation processor event')
 												)
 										);

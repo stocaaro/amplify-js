@@ -756,6 +756,7 @@ export class FakeGraphQLService {
 				!ignoreLatency && (await this.jitteredPause(this.latencies.response));
 
 				this.log('API Response', { data, errors });
+
 				resolve({
 					data,
 					errors,

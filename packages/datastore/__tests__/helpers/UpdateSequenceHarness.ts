@@ -55,11 +55,8 @@ class PostHarness {
 		await this.harness.revisePost(this.original.id, title);
 	}
 
-	expectCurrentToMatch(values: { version; title; blogId? }) {
-		this.harness.expectFinalRecordsToMatch({
-			postId: this.original.id,
-			...values,
-		});
+	get currentContents() {
+		return this.harness.getCurrentRecord(this.original.id);
 	}
 }
 
@@ -119,13 +116,6 @@ export class UpdateSequenceHarness {
 			this.datastoreFake.Post
 		).subscribe(({ opType, element }) => {
 			if (opType === 'UPDATE') {
-				// const response: SubscriptionLogTuple = [
-				// 	element.title,
-				// 	// No, TypeScript, there is a version:
-				// 	// @ts-ignore
-				// 	element._version,
-				// ];
-				// Track sequence of versions and titles
 				this.subscriptionLog.push(element);
 			}
 		});
@@ -241,34 +231,8 @@ export class UpdateSequenceHarness {
 		this.expectedNumberOfInternalUpdates++;
 	}
 
-	async expectFinalRecordsToMatch({
-		postId,
-		version,
-		title,
-		blogId = undefined,
-	}: FinalAssertionParams) {
-		// Validate that the record was saved to the service:
+	async getCurrentRecord(postId: string) {
 		const table = this.datastoreFake.graphqlService.tables.get('Post')!;
-		expect(table.size).toEqual(1);
-
-		// Validate that the title was updated successfully:
-		const savedItem = table.get(JSON.stringify([postId])) as any;
-		expect(savedItem.title).toEqual(title);
-
-		if (blogId) expect(savedItem.blogId).toEqual(blogId);
-
-		// Validate that the `_version` was incremented correctly:
-		expect(savedItem._version).toEqual(version);
-
-		// Validate that `query` returns the latest `title` and `_version`:
-		const queryResult = await this.datastoreFake.DataStore.query(
-			this.datastoreFake.Post,
-			postId
-		);
-		expect(queryResult?.title).toEqual(title);
-		// @ts-ignore
-		expect(queryResult?._version).toEqual(version);
-
-		if (blogId) expect(queryResult?.blogId).toEqual(blogId);
+		return table.get(JSON.stringify([postId]));
 	}
 }

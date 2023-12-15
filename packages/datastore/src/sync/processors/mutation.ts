@@ -228,6 +228,7 @@ class MutationProcessor {
 
 								return response;
 							} catch (error) {
+								console.log(error);
 								authModeAttempts++;
 								if (authModeAttempts >= operationAuthModes.length) {
 									logger.debug(
@@ -470,6 +471,7 @@ class MutationProcessor {
 
 								await this.storage.save(updatedMutation);
 
+								console.log('Throwing RetryMutation');
 								throw new NonRetryableError('RetryMutation');
 							} else {
 								try {
