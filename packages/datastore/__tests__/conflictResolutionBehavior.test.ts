@@ -106,13 +106,13 @@ describe('DataStore sync engine', () => {
 							['post title 0', 1],
 							['post title 1', 1],
 							['post title 2', 1],
-							['post title 0', 3],
-							['post title 0', 3],
+							['post title 2', 3],
+							['post title 2', 3],
 						]);
 
 						expect(await postHarness.currentContents).toMatchObject({
 							_version: 3,
-							title: 'post title 0',
+							title: 'post title 2',
 						});
 					});
 					test('fast connection speed, low latency where we wait for the create to clear the outbox', async () => {
@@ -146,12 +146,12 @@ describe('DataStore sync engine', () => {
 							['post title 0', 1],
 							['post title 1', 1],
 							['post title 2', 1],
-							['post title 0', 4],
+							['post title 2', 4],
 						]);
 
 						expect(await postHarness.currentContents).toMatchObject({
 							_version: 4,
-							title: 'post title 0',
+							title: 'post title 2',
 						});
 					});
 					test('slow connection speed, high latency where we DO NOT wait for the create to clear the outbox', async () => {
@@ -772,7 +772,7 @@ describe('DataStore sync engine', () => {
 						await postHarness.revise('post title 2');
 
 						await harness.outboxSettled();
-						await harness.expectUpdateCallCount(3);
+						await harness.expectUpdateCallCount(2);
 
 						expect(harness.subscriptionLogs()).toEqual([
 							['original title', 1],
@@ -813,7 +813,7 @@ describe('DataStore sync engine', () => {
 						await postHarness.revise('post title 2');
 
 						await harness.outboxSettled();
-						await harness.expectUpdateCallCount(4);
+						await harness.expectUpdateCallCount(3);
 
 						expect(harness.subscriptionLogs()).toEqual([
 							['original title', 1],
@@ -1034,7 +1034,7 @@ describe('DataStore sync engine', () => {
 							await postHarness.revise('post title 2');
 
 							await harness.outboxSettled();
-							await harness.expectUpdateCallCount(5);
+							await harness.expectUpdateCallCount(4);
 
 							expect(harness.subscriptionLogs()).toEqual([
 								['original title', 1],
@@ -1315,7 +1315,7 @@ describe('DataStore sync engine', () => {
 							}
 							await postHarness.revise('post title 2');
 							await harness.outboxSettled();
-							await harness.expectUpdateCallCount(5);
+							await harness.expectUpdateCallCount(4);
 							expect(
 								harness.subscriptionLogs(['title', 'blogId', '_version'])
 							).toEqual([
@@ -1323,13 +1323,13 @@ describe('DataStore sync engine', () => {
 								['post title 0', 'original blogId', 1],
 								['post title 1', 'original blogId', 1],
 								['post title 2', 'original blogId', 1],
-								['post title 2', null, 4],
+								['post title 2', 'original blogId', 4],
 							]);
 
 							expect(await postHarness.currentContents).toMatchObject({
 								_version: 4,
 								title: 'post title 2',
-								blogId: null,
+								blogId: 'original blogId',
 							});
 						});
 						test('slow connection speed, high latency where we wait for all mutations to clear the outbox', async () => {
