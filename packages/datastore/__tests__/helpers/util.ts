@@ -534,3 +534,14 @@ export async function waitForExpectModelUpdateGraphqlCallCount({
 		);
 	}
 }
+
+export const occRejectionError = expect.objectContaining({
+	data: {
+		updatePost: null,
+	},
+	errors: [
+		expect.objectContaining({
+			message: 'Conflict resolver rejects mutation.',
+		}),
+	],
+});

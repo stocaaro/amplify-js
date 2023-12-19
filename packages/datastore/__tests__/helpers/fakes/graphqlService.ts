@@ -39,6 +39,12 @@ const defaultLatencies: FakeLatencies = {
 	jitter: 5,
 };
 
+export let subscriptionDeliveryPromiseList: Promise<void>[] = [];
+
+export function clearSubscriptionDeliveryPromiseList() {
+	subscriptionDeliveryPromiseList = [];
+}
+
 /**
  * Fake mirrors logic from multiple merge strategies
  * https://docs.aws.amazon.com/appsync/latest/devguide/conflict-detection-and-sync.html#automerge
@@ -470,6 +476,10 @@ export class FakeGraphQLService {
 		return merged;
 	}
 
+	private canOccMerge(existing, updated) {
+		return updated._version === existing._version;
+	}
+
 	private occMerge(existing, updated) {
 		let merged;
 		if (updated._version === existing._version) {
@@ -481,7 +491,9 @@ export class FakeGraphQLService {
 				updatedAt: new Date().toISOString(),
 			};
 		} else {
-			return null;
+			merged = {
+				...this.populatedFields(existing),
+			};
 		}
 		this.log('occ merged', { existing, updated, merged });
 		return merged;
@@ -524,29 +536,33 @@ export class FakeGraphQLService {
 		selection,
 		ignoreLatency = false
 	) {
-		!ignoreLatency && (await this.jitteredPause(this.latencies.subscriber));
-		const observers = this.getObservers(tableName, type);
-		const typeName = {
-			create: 'Create',
-			update: 'Update',
-			delete: 'Delete',
-		}[type];
-		const observerMessageName = `on${typeName}${tableName}`;
-		observers.forEach(observer => {
-			const message = {
-				data: {
-					[observerMessageName]: data[selection],
-				},
-			};
-			if (!this.stopSubscriptionMessages) {
-				this.log('API subscription message', {
-					observerMessageName,
-					message,
-				});
-				this.subscriptionMessagesSent.push([observerMessageName, message]);
-				observer.next(message);
-			}
+		const deliveryPromise = new Promise<void>(async resolve => {
+			!ignoreLatency && (await this.jitteredPause(this.latencies.subscriber));
+			const observers = this.getObservers(tableName, type);
+			const typeName = {
+				create: 'Create',
+				update: 'Update',
+				delete: 'Delete',
+			}[type];
+			const observerMessageName = `on${typeName}${tableName}`;
+			observers.forEach(observer => {
+				const message = {
+					data: {
+						[observerMessageName]: data[selection],
+					},
+				};
+				if (!this.stopSubscriptionMessages) {
+					this.log('API subscription message', {
+						observerMessageName,
+						message,
+					});
+					this.subscriptionMessagesSent.push([observerMessageName, message]);
+					observer.next(message);
+				}
+			});
+			resolve();
 		});
+		subscriptionDeliveryPromiseList.push(deliveryPromise);
 	}
 
 	public graphql(request: GraphQLRequest, ignoreLatency: boolean = false) {
@@ -599,6 +615,7 @@ export class FakeGraphQLService {
 			type,
 		});
 		let data;
+		let returnData;
 		let errors = [] as any;
 
 		const table = this.getTable(tableName);
@@ -615,7 +632,7 @@ export class FakeGraphQLService {
 			});
 		}
 
-		return new Promise(async resolve => {
+		return new Promise(async (resolve, reject) => {
 			!ignoreLatency && (await this.jitteredPause(this.latencies.request));
 
 			if (operation === 'query') {
@@ -686,12 +703,14 @@ export class FakeGraphQLService {
 					} else {
 						if (this.mergeStrategy === 'OptimisticConcurrency') {
 							const updated = this.occMerge(existing, record);
+							table.set(this.getPK(tableName, record), updated);
 							data = {
 								[selection]: updated,
 							};
-							if (updated !== null) {
-								table.set(this.getPK(tableName, record), updated);
-							} else {
+							if (!this.canOccMerge(existing, record)) {
+								returnData = {
+									[selection]: null,
+								};
 								errors = [this.makeOCCConflictUnhandeled(existing, selection)];
 							}
 						} else {
@@ -757,11 +776,16 @@ export class FakeGraphQLService {
 
 				this.log('API Response', { data, errors });
 
-				resolve({
-					data,
+				const response = {
+					data: returnData ?? data,
 					errors,
 					extensions: {},
-				});
+				};
+
+				if (response.errors && response.errors.length) {
+					reject(response);
+				}
+				resolve(response);
 			}
 
 			!ignoreLatency && (await this.jitteredPause(this.latencies.response));
@@ -770,8 +794,9 @@ export class FakeGraphQLService {
 			this.runningMutations.delete(variables?.input?.id);
 
 			this.log('API Response', { data, errors });
+
 			resolve({
-				data,
+				data: returnData ?? data,
 				errors,
 				extensions: {},
 			});

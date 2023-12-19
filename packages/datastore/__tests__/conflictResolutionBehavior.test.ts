@@ -1,5 +1,9 @@
-import { warpTime, unwarpTime, pause } from './helpers';
+import { warpTime, unwarpTime, pause, occRejectionError } from './helpers';
 import { UpdateSequenceHarness } from './helpers/UpdateSequenceHarness';
+import {
+	clearSubscriptionDeliveryPromiseList,
+	subscriptionDeliveryPromiseList,
+} from './helpers/fakes/graphqlService';
 
 /**
  * NOTE:
@@ -98,9 +102,11 @@ describe('DataStore sync engine', () => {
 
 						expect(harness.subscriptionLogs()).toEqual([
 							['original title', 1],
+							['original title', 1],
 							['post title 0', 1],
 							['post title 1', 1],
 							['post title 2', 1],
+							['post title 0', 3],
 							['post title 0', 3],
 						]);
 
@@ -174,6 +180,7 @@ describe('DataStore sync engine', () => {
 							['post title 1', undefined],
 							['post title 2', undefined],
 							['post title 2', 1],
+							['post title 2', 1],
 						]);
 
 						expect(await postHarness.currentContents).toMatchObject({
@@ -237,11 +244,15 @@ describe('DataStore sync engine', () => {
 
 						expect(harness.subscriptionLogs()).toEqual([
 							['original title', 1],
+							['original title', 1],
 							['post title 0', 1],
+							['post title 0', 2],
 							['post title 0', 2],
 							['post title 1', 2],
 							['post title 1', 3],
+							['post title 1', 3],
 							['post title 2', 3],
+							['post title 2', 4],
 							['post title 2', 4],
 						]);
 
@@ -313,9 +324,11 @@ describe('DataStore sync engine', () => {
 							await harness.expectUpdateCallCount(3);
 							expect(harness.subscriptionLogs()).toEqual([
 								['original title', 1],
+								['original title', 1],
 								['post title 0', 1],
 								['post title 1', 1],
 								['post title 2', 1],
+								['update from second client', 4],
 								['update from second client', 4],
 							]);
 
@@ -381,12 +394,16 @@ describe('DataStore sync engine', () => {
 
 							expect(harness.subscriptionLogs()).toEqual([
 								['original title', 1],
+								['original title', 1],
 								['post title 0', 1],
+								['post title 0', 2],
 								['post title 0', 2],
 								['post title 1', 2],
 								['post title 1', 3],
 								['update from second client', 4],
+								['update from second client', 4],
 								['post title 2', 4],
+								['post title 2', 5],
 								['post title 2', 5],
 							]);
 
@@ -475,9 +492,11 @@ describe('DataStore sync engine', () => {
 								harness.subscriptionLogs(['title', 'blogId', '_version'])
 							).toEqual([
 								['original title', null, 1],
+								['original title', null, 1],
 								['post title 0', null, 1],
 								['post title 1', null, 1],
 								['post title 2', null, 1],
+								['original title', 'update from second client', 4],
 								['original title', 'update from second client', 4],
 							]);
 
@@ -519,9 +538,11 @@ describe('DataStore sync engine', () => {
 								harness.subscriptionLogs(['title', 'blogId', '_version'])
 							).toEqual([
 								['original title', null, 1],
+								['original title', null, 1],
 								['post title 0', null, 1],
 								['post title 1', null, 1],
 								['post title 2', null, 1],
+								['post title 0', 'update from second client', 5],
 								['post title 0', 'update from second client', 5],
 							]);
 
@@ -601,11 +622,7 @@ describe('DataStore sync engine', () => {
 							await harness.expectUpdateCallCount(4);
 
 							expect(
-								harness.subscriptionLogs([
-									'title',
-									'blogId',
-									'_version' ?? null,
-								])
+								harness.subscriptionLogs(['title', 'blogId', '_version'])
 							).toEqual([
 								['original title', 'original blogId', 1],
 								['post title 0', 'original blogId', 1],
@@ -647,12 +664,16 @@ describe('DataStore sync engine', () => {
 								harness.subscriptionLogs(['title', 'blogId', '_version'])
 							).toEqual([
 								['original title', null, 1],
+								['original title', null, 1],
 								['post title 0', null, 1],
+								['post title 0', null, 2],
 								['post title 0', null, 2],
 								['post title 1', null, 2],
 								['post title 1', null, 3],
 								['post title 1', 'update from second client', 4],
+								['post title 1', 'update from second client', 4],
 								['post title 2', 'update from second client', 4],
+								['post title 2', 'update from second client', 5],
 								['post title 2', 'update from second client', 5],
 							]);
 
@@ -727,7 +748,7 @@ describe('DataStore sync engine', () => {
 				unwarpTime();
 			});
 
-			describe('observed rapid single-field mutations with variable connection latencies 123', () => {
+			describe('observed rapid single-field mutations with variable connection latencies', () => {
 				describe('single client updates', () => {
 					test('slow connection speed, high latency where we wait for the create to clear the outbox', async () => {
 						/**
@@ -751,18 +772,21 @@ describe('DataStore sync engine', () => {
 						await postHarness.revise('post title 2');
 
 						await harness.outboxSettled();
-						await harness.expectUpdateCallCount(2);
+						await harness.expectUpdateCallCount(3);
 
 						expect(harness.subscriptionLogs()).toEqual([
+							['original title', 1],
 							['original title', 1],
 							['post title 0', 1],
 							['post title 1', 1],
 							['post title 2', 1],
+							['post title 2', 3],
+							['post title 2', 3],
 						]);
 
 						expect(await postHarness.currentContents).toMatchObject({
-							_version: 2,
-							title: 'post title 0',
+							_version: 3,
+							title: 'post title 2',
 						});
 					});
 					test('fast connection speed, low latency where we wait for the create to clear the outbox', async () => {
@@ -789,18 +813,19 @@ describe('DataStore sync engine', () => {
 						await postHarness.revise('post title 2');
 
 						await harness.outboxSettled();
-						await harness.expectUpdateCallCount(3);
+						await harness.expectUpdateCallCount(4);
 
 						expect(harness.subscriptionLogs()).toEqual([
 							['original title', 1],
 							['post title 0', 1],
 							['post title 1', 1],
 							['post title 2', 1],
+							['post title 2', 4],
 						]);
 
 						expect(await postHarness.currentContents).toMatchObject({
-							_version: 2,
-							title: 'post title 0',
+							_version: 4,
+							title: 'post title 2',
 						});
 					});
 					test('slow connection speed, high latency where we DO NOT wait for the create to clear the outbox', async () => {
@@ -828,6 +853,7 @@ describe('DataStore sync engine', () => {
 							['post title 0', undefined],
 							['post title 1', undefined],
 							['post title 2', undefined],
+							['post title 2', 1],
 							['post title 2', 1],
 						]);
 
@@ -892,11 +918,15 @@ describe('DataStore sync engine', () => {
 
 						expect(harness.subscriptionLogs()).toEqual([
 							['original title', 1],
+							['original title', 1],
 							['post title 0', 1],
+							['post title 0', 2],
 							['post title 0', 2],
 							['post title 1', 2],
 							['post title 1', 3],
+							['post title 1', 3],
 							['post title 2', 3],
+							['post title 2', 4],
 							['post title 2', 4],
 						]);
 
@@ -965,20 +995,24 @@ describe('DataStore sync engine', () => {
 							await postHarness.revise('post title 2');
 
 							await harness.outboxSettled();
-							await harness.expectUpdateCallCount(3);
+							await harness.expectUpdateCallCount(4);
 							expect(harness.subscriptionLogs()).toEqual([
+								['original title', 1],
 								['original title', 1],
 								['post title 0', 1],
 								['post title 1', 1],
 								['post title 2', 1],
+								['post title 2', 4],
+								['post title 2', 4],
 							]);
 
 							expect(await postHarness.currentContents).toMatchObject({
-								_version: 2,
-								title: 'update from second client',
+								_version: 4,
+								title: 'post title 2',
 							});
 						});
 						test('fast connection speed, low latency where we wait for the create to clear the outbox', async () => {
+							expect.assertions(3);
 							harness.connectionSpeed = 'fast';
 							harness.latency = 'low';
 							const postHarness = await harness.createPostHarness({
@@ -988,26 +1022,31 @@ describe('DataStore sync engine', () => {
 
 							await postHarness.revise('post title 0');
 							await postHarness.revise('post title 1');
-							await harness.externalPostUpdate({
-								originalPostId: postHarness.original.id,
-								updatedFields: { title: 'update from second client' },
-								version: 1,
-							});
+							try {
+								await harness.externalPostUpdate({
+									originalPostId: postHarness.original.id,
+									updatedFields: { title: 'update from second client' },
+									version: 1,
+								});
+							} catch (e) {
+								expect(e).toEqual(occRejectionError);
+							}
 							await postHarness.revise('post title 2');
 
 							await harness.outboxSettled();
-							await harness.expectUpdateCallCount(4);
+							await harness.expectUpdateCallCount(5);
 
 							expect(harness.subscriptionLogs()).toEqual([
 								['original title', 1],
 								['post title 0', 1],
 								['post title 1', 1],
 								['post title 2', 1],
+								['post title 2', 4],
 							]);
 
 							expect(await postHarness.currentContents).toMatchObject({
-								_version: 2,
-								title: 'post title 0',
+								_version: 4,
+								title: 'post title 2',
 							});
 						});
 						test('fast connection speed, high latency where we wait for all mutations to clear the outbox', async () => {
@@ -1034,12 +1073,16 @@ describe('DataStore sync engine', () => {
 
 							expect(harness.subscriptionLogs()).toEqual([
 								['original title', 1],
+								['original title', 1],
 								['post title 0', 1],
+								['post title 0', 2],
 								['post title 0', 2],
 								['post title 1', 2],
 								['post title 1', 3],
 								['update from second client', 4],
+								['update from second client', 4],
 								['post title 2', 4],
+								['post title 2', 5],
 								['post title 2', 5],
 							]);
 
@@ -1122,25 +1165,30 @@ describe('DataStore sync engine', () => {
 							await postHarness.revise('post title 2');
 
 							await harness.outboxSettled();
-							await harness.expectUpdateCallCount(3);
+							await harness.expectUpdateCallCount(4);
 							await pause(5000);
 
 							expect(
 								harness.subscriptionLogs(['title', 'blogId', '_version'])
 							).toEqual([
 								['original title', null, 1],
+								['original title', null, 1],
 								['post title 0', null, 1],
 								['post title 1', null, 1],
 								['post title 2', null, 1],
+								['post title 2', null, 4],
+								['post title 2', null, 4],
 							]);
 
 							expect(await postHarness.currentContents).toMatchObject({
-								_version: 2,
-								title: 'original title',
-								blogId: 'update from second client',
+								_version: 4,
+								title: 'post title 2',
+								blogId: null,
 							});
 						});
-						test('slow connection speed, high latency where external request is second received update XX X', async () => {
+						test('slow connection speed, high latency where external request is second received update', async () => {
+							expect.assertions(4);
+
 							harness.connectionSpeed = 'slow';
 							harness.latency = 'high';
 							const postHarness = await harness.createPostHarness({
@@ -1156,12 +1204,16 @@ describe('DataStore sync engine', () => {
 							 */
 							await pause(3000);
 
-							await harness.externalPostUpdate({
-								originalPostId: postHarness.original.id,
-								// External client performs a mutation against a different field:
-								updatedFields: { blogId: 'update from second client' },
-								version: 1,
-							});
+							try {
+								await harness.externalPostUpdate({
+									originalPostId: postHarness.original.id,
+									// External client performs a mutation against a different field:
+									updatedFields: { blogId: 'update from second client' },
+									version: 1,
+								});
+							} catch (e) {
+								expect(e).toEqual(occRejectionError);
+							}
 
 							await postHarness.revise('post title 2');
 
@@ -1172,9 +1224,11 @@ describe('DataStore sync engine', () => {
 								harness.subscriptionLogs(['title', 'blogId', '_version'])
 							).toEqual([
 								['original title', null, 1],
+								['original title', null, 1],
 								['post title 0', null, 1],
 								['post title 1', null, 1],
 								['post title 2', null, 1],
+								['post title 2', null, 4],
 								['post title 2', null, 4],
 							]);
 
@@ -1185,7 +1239,9 @@ describe('DataStore sync engine', () => {
 							});
 							expect(currentPostContent?.['blogId']).toEqual(undefined);
 						});
-						test('fast connection speed, low latency where second field is created `null` XX X', async () => {
+						test('fast connection speed, low latency where second field is created `null`', async () => {
+							expect.assertions(4);
+
 							harness.connectionSpeed = 'fast';
 							harness.latency = 'low';
 
@@ -1196,12 +1252,16 @@ describe('DataStore sync engine', () => {
 							await postHarness.revise('post title 0');
 							await postHarness.revise('post title 1');
 
-							await harness.externalPostUpdate({
-								originalPostId: postHarness.original.id,
-								// External client performs a mutation against a different field:
-								updatedFields: { blogId: 'update from second client' },
-								version: 1,
-							});
+							try {
+								await harness.externalPostUpdate({
+									originalPostId: postHarness.original.id,
+									// External client performs a mutation against a different field:
+									updatedFields: { blogId: 'update from second client' },
+									version: 1,
+								});
+							} catch (e) {
+								expect(e).toEqual(occRejectionError);
+							}
 
 							await postHarness.revise('post title 2');
 
@@ -1232,6 +1292,8 @@ describe('DataStore sync engine', () => {
 						 * in different behavior.
 						 */
 						test('fast connection speed, low latency where second field is created with initial value', async () => {
+							expect.assertions(3);
+
 							harness.connectionSpeed = 'fast';
 							harness.latency = 'low';
 
@@ -1239,39 +1301,35 @@ describe('DataStore sync engine', () => {
 								title: 'original title',
 								blogId: 'original blogId',
 							});
-
 							await postHarness.revise('post title 0');
 							await postHarness.revise('post title 1');
-
-							await harness.externalPostUpdate({
-								originalPostId: postHarness.original.id,
-								// External client performs a mutation against a different field:
-								updatedFields: { blogId: 'update from second client' },
-								version: 1,
-							});
-
+							try {
+								await harness.externalPostUpdate({
+									originalPostId: postHarness.original.id,
+									// External client performs a mutation against a different field:
+									updatedFields: { blogId: 'update from second client' },
+									version: 1,
+								});
+							} catch (e) {
+								expect(e).toEqual(occRejectionError);
+							}
 							await postHarness.revise('post title 2');
-
 							await harness.outboxSettled();
-							await harness.expectUpdateCallCount(4);
-
+							await harness.expectUpdateCallCount(5);
 							expect(
-								harness.subscriptionLogs([
-									'title',
-									'blogId',
-									'_version' ?? null,
-								])
+								harness.subscriptionLogs(['title', 'blogId', '_version'])
 							).toEqual([
 								['original title', 'original blogId', 1],
 								['post title 0', 'original blogId', 1],
 								['post title 1', 'original blogId', 1],
 								['post title 2', 'original blogId', 1],
+								['post title 2', null, 4],
 							]);
 
 							expect(await postHarness.currentContents).toMatchObject({
-								_version: 2,
-								title: 'post title 0',
-								blogId: 'original blogId',
+								_version: 4,
+								title: 'post title 2',
+								blogId: null,
 							});
 						});
 						test('slow connection speed, high latency where we wait for all mutations to clear the outbox', async () => {
@@ -1301,12 +1359,16 @@ describe('DataStore sync engine', () => {
 								harness.subscriptionLogs(['title', 'blogId', '_version'])
 							).toEqual([
 								['original title', null, 1],
+								['original title', null, 1],
 								['post title 0', null, 1],
+								['post title 0', null, 2],
 								['post title 0', null, 2],
 								['post title 1', null, 2],
 								['post title 1', null, 3],
 								['post title 1', 'update from second client', 4],
+								['post title 1', 'update from second client', 4],
 								['post title 2', 'update from second client', 4],
+								['post title 2', 'update from second client', 5],
 								['post title 2', 'update from second client', 5],
 							]);
 

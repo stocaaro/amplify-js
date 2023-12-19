@@ -7,6 +7,10 @@ import {
 	pause,
 	waitForEmptyOutbox,
 } from './util';
+import {
+	clearSubscriptionDeliveryPromiseList,
+	subscriptionDeliveryPromiseList,
+} from './fakes/graphqlService';
 
 /**
  * Simulate a second client updating the original post
@@ -41,6 +45,7 @@ type FinalAssertionParams = {
  */
 const jitter: number = 0;
 const highLatency = 1000;
+const highSubscriptionLatency = 1100;
 const lowLatency = 15;
 
 class PostHarness {
@@ -98,7 +103,7 @@ export class UpdateSequenceHarness {
 			this.datastoreFake.graphqlService.setLatencies({
 				request: highLatency,
 				response: highLatency,
-				subscriber: highLatency,
+				subscriber: highSubscriptionLatency,
 				jitter,
 			});
 		}
@@ -119,10 +124,12 @@ export class UpdateSequenceHarness {
 				this.subscriptionLog.push(element);
 			}
 		});
+		clearSubscriptionDeliveryPromiseList();
 	}
 
 	async outboxSettled() {
 		await waitForEmptyOutbox();
+		await Promise.all(subscriptionDeliveryPromiseList);
 	}
 
 	async expectUpdateCallCount(expectedCallCount: number) {
@@ -138,6 +145,7 @@ export class UpdateSequenceHarness {
 			expectedCallCount,
 			modelName: 'Post',
 		});
+		await Promise.resolve();
 	}
 
 	async createPostHarness(
@@ -218,7 +226,7 @@ export class UpdateSequenceHarness {
 			postId
 		);
 		if (retrieved) {
-			const x = await this.datastoreFake.DataStore.save(
+			await this.datastoreFake.DataStore.save(
 				this.datastoreFake.Post.copyOf(retrieved, updated => {
 					updated.title = updatedTitle;
 				})
