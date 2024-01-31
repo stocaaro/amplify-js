@@ -10,7 +10,37 @@ jobs:
   prebuild-samples-staging:
     secrets: inherit
     uses: ./.github/workflows/callable-prebuild-samples-staging.yml
-  e2e:
+  e2e1:
+    needs:
+      - prebuild-ubuntu
+      - prebuild-samples-staging
+    secrets: inherit
+    uses: ./.github/workflows/callable-e2e-tests-focus.yml
+  e2e2:
+    needs:
+      - prebuild-ubuntu
+      - prebuild-samples-staging
+    secrets: inherit
+    uses: ./.github/workflows/callable-e2e-tests-focus.yml
+  e2e3:
+    needs:
+      - prebuild-ubuntu
+      - prebuild-samples-staging
+    secrets: inherit
+    uses: ./.github/workflows/callable-e2e-tests-focus.yml
+  e2e4:
+    needs:
+      - prebuild-ubuntu
+      - prebuild-samples-staging
+    secrets: inherit
+    uses: ./.github/workflows/callable-e2e-tests-focus.yml
+  e2e5:
+    needs:
+      - prebuild-ubuntu
+      - prebuild-samples-staging
+    secrets: inherit
+    uses: ./.github/workflows/callable-e2e-tests-focus.yml
+  e2e6:
     needs:
       - prebuild-ubuntu
       - prebuild-samples-staging
