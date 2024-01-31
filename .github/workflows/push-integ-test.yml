@@ -8,9 +8,9 @@ concurrency:
 on:
   push:
     branches:
-      - next/main
+      - integ-testing
 
 jobs:
   e2e:
     secrets: inherit
-    uses: ./.github/workflows/callable-release-verification.yml
+    uses: ./.github/workflows/callable-release-verification-focus.yml
