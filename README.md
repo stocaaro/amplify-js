@@ -1,5 +1,5 @@
 <img src="https://s3.amazonaws.com/aws-mobile-hub-images/aws-amplify-logo.png" alt="AWS Amplify" width="550" >
-
+ 
 [![current aws-amplify package version](https://img.shields.io/npm/v/aws-amplify?color=brightgreen&label=npm%20package)](https://www.npmjs.com/package/aws-amplify)
 [![weekly downloads](https://img.shields.io/npm/dw/aws-amplify)](https://www.npmjs.com/package/aws-amplify)
 [![GitHub Workflow Status (with event)](https://img.shields.io/github/actions/workflow/status/aws-amplify/amplify-js/push-main-release.yml)
