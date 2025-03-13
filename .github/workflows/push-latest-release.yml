@@ -6,13 +6,6 @@ on:
       - release
 
 jobs:
-  release:
-    permissions:
-      contents: write
-    secrets: inherit
-    uses: ./.github/workflows/callable-npm-publish-release.yml
   publish-docs:
-    needs:
-      - release
     secrets: inherit
     uses: ./.github/workflows/callable-docs-update.yml
